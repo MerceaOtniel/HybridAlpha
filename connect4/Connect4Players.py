@@ -19,7 +19,6 @@ class HumanConnect4Player():
 
     def play(self, board):
         valid_moves = self.game.getValidMoves(board, 1)
-        print('\nMoves:', [i for (i, valid) in enumerate(valid_moves) if valid])
 
         while True:
             move = int(input())

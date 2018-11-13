@@ -9,6 +9,11 @@ from othello.keras.NNet import NNetWrapper as nn1
 from gobang.GobangGame import GobangGame as Game2
 from gobang.keras.NNet import NNetWrapper as nn2
 
+from connect4.Connect4Game import Connect4Game as Game3
+from connect4.keras.NNet import NNetWrapper as nn3
+
+
+
 from utils import *
 
 
@@ -31,7 +36,7 @@ args = dotdict({
 
 if __name__=="__main__":
 
-    choice=0 # chose which game to play 0-tictactoe, 1-othello, 2-gobang
+    choice=3 # chose which game to play 0-tictactoe, 1-othello, 2-gobang
 
     if choice==0:
         g = Game()
@@ -42,6 +47,9 @@ if __name__=="__main__":
     if choice==2:
         g=Game2(6,6)
         nnet = nn2(g)
+    if choice==3:
+        g=Game3(6,6)
+        nnet=nn3(g)
 
     if args.load_model:
         nnet.load_checkpoint(args.load_folder_file[0], args.load_folder_file[1])

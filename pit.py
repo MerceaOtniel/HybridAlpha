@@ -14,6 +14,11 @@ from gobang.keras.NNet import NNetWrapper as NNet1
 from othello.OthelloGame import OthelloGame, display as display2
 from othello.OthelloPlayers import *
 from othello.keras.NNet import NNetWrapper as NNet2
+
+from connect4.Connect4Game import Connect4Game, display as display3
+from connect4.Connect4Players import *
+from connect4.keras.NNet import NNetWrapper as NNet3
+
 import numpy as np
 from utils import *
 
@@ -21,7 +26,7 @@ from utils import *
 use this script to play any two agents against each other, or play manually with
 any agent.
 """
-choice =2
+choice =3
 
 if choice == 0:
     g = TicTacToeGame()
@@ -41,6 +46,12 @@ if choice == 2:
     n1.load_checkpoint('./temp/', 'temp.pth.tar')
     display=display2
     hp = HumanOthelloPlayer(g).play
+if choice == 3:
+    g=Connect4Game(6,6)
+    n1=NNet3(g)
+    n1.load_checkpoint('./temp/','temp.pth.tar')
+    display=display3
+    hp=HumanConnect4Player(g).play
 
 # all players
 #rp = RandomPlayer(g).play
