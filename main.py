@@ -31,15 +31,15 @@ args = dotdict({
 
 if __name__=="__main__":
 
-    alegere=2 # chose which game to play 0-tictactoe, 1-othello, 2-gobang
+    choice=0 # chose which game to play 0-tictactoe, 1-othello, 2-gobang
 
-    if alegere==0:
+    if choice==0:
         g = Game()
         nnet = nn(g)
-    if alegere==1:
+    if choice==1:
         g = Game1(6)
         nnet = nn1(g)
-    if alegere==2:
+    if choice==2:
         g=Game2(6,6)
         nnet = nn2(g)
 
