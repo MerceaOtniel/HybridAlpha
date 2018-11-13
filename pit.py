@@ -26,27 +26,27 @@ from utils import *
 use this script to play any two agents against each other, or play manually with
 any agent.
 """
-choice =3
+choice ="tictactoe"
 
-if choice == 0:
-    g = TicTacToeGame()
+if choice == "tictactoe":
+    g = TicTacToeGame(4)
     n1 = NNet(g)
-    n1.load_checkpoint('./temp/', 'temp.pth.tar')
+    n1.load_checkpoint('./temp/', 'best4x4.pth.tar')
     display=display
     hp = HumanTicTacToePlayer(g).play
-if choice == 1:
+if choice == "gobang":
     g=GobangGame(6,6)
     n1 = NNet1(g)
     n1.load_checkpoint('./temp/', 'temp.pth.tar')
     display=display1
     hp = HumanGobangPlayer(g).play
-if choice == 2:
+if choice == "othello":
     g=OthelloGame(6)
     n1 = NNet2(g)
     n1.load_checkpoint('./temp/', 'temp.pth.tar')
     display=display2
     hp = HumanOthelloPlayer(g).play
-if choice == 3:
+if choice == "connect4":
     g=Connect4Game(6,6)
     n1=NNet3(g)
     n1.load_checkpoint('./temp/','temp.pth.tar')

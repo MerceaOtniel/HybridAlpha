@@ -18,38 +18,42 @@ from utils import *
 
 
 args = dotdict({
-    'numIters': 1,
-    'numEps': 2,
+    'numIters': 25,
+    'numEps': 25,
     'tempThreshold': 15,
     'updateThreshold': 0.6,
-    'maxlenOfQueue': 10,
-    'numMCTSSims': 5,
-    'arenaCompare': 5,
+    'maxlenOfQueue': 200000,
+    'numMCTSSims': 25,
+    'arenaCompare': 40,
     'cpuct': 1,
-
+    'trainExampleCheckpoint': './temp/',
     'checkpoint': './temp/',
     'load_model': False,
     'load_folder_file': ('/dev/models/8x100x50','best.pth.tar'),
-    'numItersForTrainExamplesHistory': 10,
+    'numItersForTrainExamplesHistory': 20,
 
 })
 
 if __name__=="__main__":
 
-    choice=3 # chose which game to play 0-tictactoe, 1-othello, 2-gobang
+    choice="tictactoe"
 
-    if choice==0:
-        g = Game()
+    if choice=="tictactoe":
+        g = Game(3)
         nnet = nn(g)
-    if choice==1:
+        args.update({'trainExampleCheckpoint': './temp/tictactoe/'})
+    if choice=="othello":
         g = Game1(6)
         nnet = nn1(g)
-    if choice==2:
+        args.update({'trainExampleCheckpoint': './temp/othello/'})
+    if choice=="gobang":
         g=Game2(6,6)
         nnet = nn2(g)
-    if choice==3:
+        args.update({'trainExampleCheckpoint': './temp/gobang/'})
+    if choice=="connect4":
         g=Game3(6,6)
         nnet=nn3(g)
+        args.update({'trainExampleCheckpoint': './temp/connect4/'})
 
     if args.load_model:
         nnet.load_checkpoint(args.load_folder_file[0], args.load_folder_file[1])

@@ -110,8 +110,11 @@ class Coach():
             shuffle(trainExamples)
 
             # training new network, keeping a copy of the old one
-            self.nnet.save_checkpoint(folder=self.args.checkpoint, filename='temp.pth.tar')
-            self.pnet.load_checkpoint(folder=self.args.checkpoint, filename='temp.pth.tar')
+
+            filename = "temp:iter" + str(self.args.numIters) + ":eps"+str(self.args.numEps) + ":dim" + str(self.game.n) + ".pth.tar"
+
+            self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=filename)
+            self.pnet.load_checkpoint(folder=self.args.checkpoint, filename=filename)
             pmcts = MCTS(self.game, self.pnet, self.args)
             
             self.nnet.train(trainExamples)
@@ -121,21 +124,23 @@ class Coach():
             arena = Arena(lambda x: np.argmax(pmcts.getActionProb(x, temp=0)),
                           lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), self.game)
             pwins, nwins, draws = arena.playGames(self.args.arenaCompare)
-
+            print(' ')
             print('NEW/PREV WINS : %d / %d ; DRAWS : %d' % (nwins, pwins, draws))
-            if pwins+nwins+draws > 0 and float(nwins+draws)/(pwins+nwins+draws) < self.args.updateThreshold:
+            if pwins+nwins == 0 and float(nwins)/(pwins+nwins) < self.args.updateThreshold:
                 print('REJECTING NEW MODEL')
-                self.nnet.load_checkpoint(folder=self.args.checkpoint, filename='temp.pth.tar')
+                filename = "temp:iter" + str(self.args.numIters) +":eps"+str(self.args.numEps) + ":dim"+str(self.game.n) + ".pth.tar"
+                self.nnet.load_checkpoint(folder=self.args.checkpoint, filename=filename)
             else:
                 print('ACCEPTING NEW MODEL')
+                filename="best"+ str(self.args.numIters) +":eps"+str(self.args.numEps) + ":dim"+str(self.game.n) +".pth.tar"
                 self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=self.getCheckpointFile(i))
-                self.nnet.save_checkpoint(folder=self.args.checkpoint, filename='best.pth.tar')                
+                self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=filename)
 
     def getCheckpointFile(self, iteration):
         return 'checkpoint_' + str(iteration) + '.pth.tar'
 
     def saveTrainExamples(self, iteration):
-        folder = self.args.checkpoint
+        folder = self.args.trainExampleCheckpoint
         if not os.path.exists(folder):
             os.makedirs(folder)
         filename = os.path.join(folder, self.getCheckpointFile(iteration)+".examples")
