@@ -1,6 +1,12 @@
 import matplotlib.pyplot as plt
 
-file = open("./temp/tictactoe/graphwins:iter25:eps27:dim4.txt", "r")
+filename="./temp/tictactoe/graphwins:iter25:eps27:dim4.txt"
+
+informatii=filename.split(":")
+dimensiune=informatii[3].split(".")
+
+file = open(filename, "r")
+
 i=0
 for line in file.readlines():
     v=line.split(" ")
@@ -19,7 +25,7 @@ for i in range(len(int_list)):
 print(int_list)
 print(draws)
 
-plt.title("Evolutia retelei in timpul antrenamentului")
+plt.title("Evolutia retelei in timpul antrenamentului "+informatii[1]+" "+informatii[2]+" "+dimensiune[0])
 plt.plot(int_list)
 plt.plot(loses)
 plt.plot(draws)
@@ -27,4 +33,6 @@ plt.ylabel('numar jocuri')
 plt.xlabel('numar epoci')
 plt.ylim(-1,41)
 plt.legend(['jocuri castigate', 'jocuri pierdute', 'numar remize'], loc='right')
+plt.savefig("./temp/tictactoe/graph"+informatii[1]+":"+informatii[2]+":"+dimensiune[0]+".png")
 plt.show()
+
