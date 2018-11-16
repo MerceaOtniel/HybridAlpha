@@ -42,6 +42,11 @@ class TicTacToeGame(Game):
         b.execute_move(move, player)
         return (b.pieces, -player)
 
+    def getScore(self, board, player):
+        b = Board(self.n)
+        b.pieces = np.copy(board)
+        return b.countDiff(player)
+
     def getValidMoves(self, board, player):
         # return a fixed size binary vector
         valids = [0]*self.getActionSize()

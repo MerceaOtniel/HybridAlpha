@@ -33,6 +33,76 @@ class Board():
     def __getitem__(self, index): 
         return self.pieces[index]
 
+    def return_reward(self,count,count2):
+        if count2 == self.n - 1 and count == 1:
+            return 1
+        if count2 == self.n - 1 and count == 0:
+            return -1
+        if count2 == self.n:
+            return -1
+        if count == self.n:
+            return 1
+        return 0
+
+    def countDiff(self, color):
+        """Counts the # pieces of the given color
+        (1 for white, -1 for black, 0 for empty spaces)"""
+        for y in range(self.n):
+            count=0
+            count2=0
+            for x in range(self.n):
+                if self[x][y]==color:
+                    count=count+1
+                else:
+                    if self[x][y]==-color:
+                        count2=count2+1
+            u=self.return_reward(count,count2)
+            if u!=0:
+                return u
+
+        for x in range(self.n):
+            count = 0
+            count2=0
+            for y in range(self.n):
+                if self[x][y] == color:
+                    count = count + 1
+                else:
+                    if self[x][y] == -color:
+                        count2 = count2 + 1
+
+            u = self.return_reward(count, count2)
+            if u != 0:
+                return u
+
+        count = 0
+        count2=0
+        for d in range(self.n):
+            if self[d][d] == color:
+                count += 1
+            else:
+                if self[d][d]==-color:
+                    count2+=1
+
+        u = self.return_reward(count, count2)
+        if u != 0:
+            return u
+
+        count=0
+        count2=0
+        for d in range(self.n):
+            if self[d][self.n-d-1] == color:
+                count += 1
+            else:
+                if self[d][self.n-d-1] == -color:
+                    count2 += 1
+
+        u = self.return_reward(count, count2)
+        if u != 0:
+            return u
+
+        return 0
+
+
     def get_legal_moves(self, color):
         """Returns all the legal moves for the given color.
         (1 for white, -1 for black)
