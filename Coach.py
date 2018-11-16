@@ -69,6 +69,8 @@ class Coach():
         It then pits the new neural network against the old one and accepts it
         only if it wins >= updateThreshold fraction of games.
         """
+        epochswin=[]
+        epochdraw=[]
 
         for i in range(1, self.args.numIters+1):
             # bookkeeping
@@ -126,7 +128,21 @@ class Coach():
             pwins, nwins, draws = arena.playGames(self.args.arenaCompare)
             print(' ')
             print('NEW/PREV WINS : %d / %d ; DRAWS : %d' % (nwins, pwins, draws))
-            if pwins+nwins == 0 and float(nwins)/(pwins+nwins) < self.args.updateThreshold:
+            if i==1:
+                epochswin.append(pwins)
+                epochdraw.append(0)
+            epochswin.append(nwins)
+            epochdraw.append(draws)
+            file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + ":dim" + str(self.game.n) + ".txt", "w+")
+            print("Path-ul este " + str(file))
+            for text in epochswin:
+                file.write(str(text) + " ")
+            file.write("\n")
+            for text in epochdraw:
+                file.write(str(text)+" ")
+            file.close()
+
+            if pwins+nwins == 0 or float(nwins)/(pwins+nwins) < self.args.updateThreshold:
                 print('REJECTING NEW MODEL')
                 filename = "temp:iter" + str(self.args.numIters) +":eps"+str(self.args.numEps) + ":dim"+str(self.game.n) + ".pth.tar"
                 self.nnet.load_checkpoint(folder=self.args.checkpoint, filename=filename)
@@ -135,6 +151,15 @@ class Coach():
                 filename="best"+ str(self.args.numIters) +":eps"+str(self.args.numEps) + ":dim"+str(self.game.n) +".pth.tar"
                 self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=self.getCheckpointFile(i))
                 self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=filename)
+
+        file = open(self.args.trainExampleCheckpoint+"graphwins:iter" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + ":dim" + str( self.game.n) + ".txt", "w+")
+        print("Path-ul este "+str(file))
+        for text in epochswin:
+            file.write(str(text)+" ")
+        file.write("\n")
+        for text in epochdraw:
+            file.write(str(text)+" ")
+        file.close()
 
     def getCheckpointFile(self, iteration):
         return 'checkpoint_' + str(iteration) + '.pth.tar'

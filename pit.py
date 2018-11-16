@@ -29,9 +29,9 @@ any agent.
 choice ="tictactoe"
 
 if choice == "tictactoe":
-    g = TicTacToeGame(4)
+    g = TicTacToeGame(3)
     n1 = NNet(g)
-    n1.load_checkpoint('./temp/', 'best4x4.pth.tar')
+    n1.load_checkpoint('./temp/', 'best25:eps27:dim3.pth.tar')
     display=display
     hp = HumanTicTacToePlayer(g).play
 if choice == "gobang":
