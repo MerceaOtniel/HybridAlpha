@@ -98,7 +98,7 @@ class Coach():
             file.close()
         else:
             file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(
-                self.args.numEps) + ":dim" + str(self.game.n) + "greedyrandom.txt", "w+")
+                self.args.numEps) + ":dim" + str(self.game.n) + ":greedyrandom.txt", "w+")
             print("Path-ul este " + str(file))
             for text in epochswin:
                 file.write(str(text) + " ")
