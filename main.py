@@ -36,7 +36,7 @@ args = dotdict({
 
 if __name__=="__main__":
 
-    choice="tictactoe"
+    choice="othello"
 
     if choice=="tictactoe":
         g = Game(4)
