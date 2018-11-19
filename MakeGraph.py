@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-filename="./temp/tictactoe/graphwins:iter25:eps27:dim4.txt"
+filename="./temp/tictactoe/graphwins:iter25:eps2:dim4.txt"
 
 informatii=filename.split(":")
 dimensiune=informatii[3].split(".")

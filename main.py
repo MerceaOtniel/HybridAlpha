@@ -19,12 +19,12 @@ from utils import *
 
 args = dotdict({
     'numIters': 25,
-    'numEps': 27,
+    'numEps': 2,
     'tempThreshold': 15,
     'updateThreshold': 0.6,
     'maxlenOfQueue': 200000,
-    'numMCTSSims': 25,
-    'arenaCompare': 40,
+    'numMCTSSims': 2,
+    'arenaCompare': 4,
     'cpuct': 1,
     'trainExampleCheckpoint': './temp/',
     'checkpoint': './temp/',

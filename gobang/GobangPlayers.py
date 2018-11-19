@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class RandomPlayer():
+class RandomGobangPlayer():
     def __init__(self, game):
         self.game = game
 

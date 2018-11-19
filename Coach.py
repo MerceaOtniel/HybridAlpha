@@ -6,7 +6,10 @@ from pytorch_classification.utils import Bar, AverageMeter
 import time, os, sys
 from pickle import Pickler, Unpickler
 from random import shuffle
-
+from tictactoe import TicTacToePlayers as tictacplayers
+from othello import OthelloPlayers as othelloplayers
+from gobang import GobangPlayers as gobangplayers
+from connect4 import Connect4Players as connect4players
 
 class Coach():
     """
@@ -61,6 +64,50 @@ class Coach():
             if r!=0:
                 return [(x[0],x[2],r*((-1)**(x[1]!=self.curPlayer))) for x in trainExamples]
 
+
+    def decidePlayers(self):
+
+        if "tictactoe" in self.args.trainExampleCheckpoint:
+            rp = tictacplayers.RandomTicTacToePlayer(self.game).play
+            gp = tictacplayers.GreedyTicTacToePlayer(self.game).play
+        else:
+            if "othello" in self.args.trainExampleCheckpoint:
+                gp = othelloplayers.GreedyOthelloPlayer(self.game).play
+                rp = othelloplayers.RandomOthelloPlayer(self.game).play
+            else:
+                if "gobang" in self.args.trainExampleCheckpoint:
+                    gp = gobangplayers.GreedyGobangPlayer(self.game).play
+                    rp = gobangplayers.RandomGobangPlayer(self.game).play
+                else:
+                    if "connect4" in self.args.trainExampleCheckpoint:
+                        rp = connect4players.RandomConnect4Player(self.game).play
+                        gp = connect4players.GreedyConnect4Player(self.game).play
+        return (gp,rp)
+
+
+    def writeLogsToFile(self,epochswin,epochdraw,training=True):# True means that the training is written to file; false means that the pit is written to file
+        if training==True:
+            file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(
+                self.args.numEps) + ":dim" + str(self.game.n) + ".txt", "w+")
+            print("Path-ul este " + str(file))
+            for text in epochswin:
+                file.write(str(text) + " ")
+            file.write("\n")
+            for text in epochdraw:
+                file.write(str(text) + " ")
+            file.close()
+        else:
+            file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(
+                self.args.numEps) + ":dim" + str(self.game.n) + "greedyrandom.txt", "w+")
+            print("Path-ul este " + str(file))
+            for text in epochswin:
+                file.write(str(text) + " ")
+            file.write("\n")
+            for text in epochdraw:
+                file.write(str(text) + " ")
+            file.close()
+
+
     def learn(self):
         """
         Performs numIters iterations with numEps episodes of self-play in each
@@ -69,8 +116,10 @@ class Coach():
         It then pits the new neural network against the old one and accepts it
         only if it wins >= updateThreshold fraction of games.
         """
-        epochswin=[]
-        epochdraw=[]
+        epochswin=[] # count the number of wins at every epoch
+        epochdraw=[] # count the number of draws at every epoch
+        epochswingreedy=[] # count the number of wins against greedy at every epoch
+        epochswinrandom=[] # count the number of wins against random at every epoch
 
         for i in range(1, self.args.numIters+1):
             # bookkeeping
@@ -131,16 +180,24 @@ class Coach():
             if i==1:
                 epochswin.append(pwins)
                 epochdraw.append(0)
+
+
             epochswin.append(nwins)
             epochdraw.append(draws)
-            file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + ":dim" + str(self.game.n) + ".txt", "w+")
-            print("Path-ul este " + str(file))
-            for text in epochswin:
-                file.write(str(text) + " ")
-            file.write("\n")
-            for text in epochdraw:
-                file.write(str(text)+" ")
-            file.close()
+            self.writeLogsToFile(epochswin,epochdraw)
+
+
+            (gp, rp) = self.decidePlayers()
+            arenagreedy = Arena(lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), gp, self.game)
+            arenarandom = Arena(lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), rp, self.game)
+
+            pwinsgreedy,nwinsgreedy,drawsgreedy=arenagreedy.playGames(self.args.arenaCompare)
+            pwinsreandom,nwinsrandom,drawsrandom=arenarandom.playGames(self.args.arenaCompare)
+
+            epochswinrandom.append(pwinsreandom)
+            epochswingreedy.append(pwinsgreedy)
+            self.writeLogsToFile(epochswingreedy,epochswinrandom,False)
+
 
             if pwins+nwins == 0 or float(nwins)/(pwins+nwins) < self.args.updateThreshold:
                 print('REJECTING NEW MODEL')
@@ -152,14 +209,8 @@ class Coach():
                 self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=self.getCheckpointFile(i))
                 self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=filename)
 
-        file = open(self.args.trainExampleCheckpoint+"graphwins:iter" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + ":dim" + str( self.game.n) + ".txt", "w+")
-        print("Path-ul este "+str(file))
-        for text in epochswin:
-            file.write(str(text)+" ")
-        file.write("\n")
-        for text in epochdraw:
-            file.write(str(text)+" ")
-        file.close()
+        self.writeLogsToFile(epochswin,epochdraw)
+
 
     def getCheckpointFile(self, iteration):
         return 'checkpoint_' + str(iteration) + '.pth.tar'

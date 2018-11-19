@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class RandomPlayer():
+class RandomConnect4Player():
     def __init__(self, game):
         self.game = game
 
@@ -27,7 +27,7 @@ class HumanConnect4Player():
         return move
 
 
-class OneStepLookaheadConnect4Player():
+class GreedyConnect4Player():
     """Simple player who always takes a win if presented, or blocks a loss if obvious, otherwise is random."""
     def __init__(self, game, verbose=True):
         self.game = game
