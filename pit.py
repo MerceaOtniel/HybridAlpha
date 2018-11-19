@@ -29,7 +29,7 @@ any agent.
 choice ="tictactoe"
 
 if choice == "tictactoe":
-    g = TicTacToeGame(4)
+    g = TicTacToeGame(3)
     n1 = NNet(g)
     n1.load_checkpoint('./temp/', 'best25:eps27:dim4.pth.tar')
     display=display

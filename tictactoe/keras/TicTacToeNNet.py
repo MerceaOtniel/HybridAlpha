@@ -44,8 +44,8 @@ class TicTacToeNNet():
         self.policy_out = Dense(self.action_size, activation="softmax")(x)
 
         # for value output
-        x = Conv2D(filters=2, kernel_size=1, strides=1, data_format="channels_first")(res_out)
-        x = BatchNormalization(axis=1)(x)
+        x = Conv2D(filters=1, kernel_size=1, strides=1, data_format="channels_first")(res_out)
+        x = BatchNormalization(axis=2)(x)
         x = Activation("relu")(x)
         x = Flatten()(x)
         x = Dense(256,activation="relu")(x)
