@@ -133,7 +133,6 @@ class Coach():
                 end = time.time()
     
                 for eps in range(self.args.numEps):
-                    self.mcts = MCTS(self.game, self.nnet, self.args)   # reset search tree
                     iterationTrainExamples += self.executeEpisode()
     
                     # bookkeeping + plot progress
@@ -163,9 +162,14 @@ class Coach():
             # training new network, keeping a copy of the old one
 
             filename = "temp:iter" + str(self.args.numIters) + ":eps"+str(self.args.numEps) + ":dim" + str(self.game.n) + ".pth.tar"
+            filenameBest = "best" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + ":dim" + str(self.game.n) + ".pth.tar"
 
             self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=filename)
-            self.pnet.load_checkpoint(folder=self.args.checkpoint, filename=filename)
+            exists = os.path.isfile(filenameBest)
+            if exists:
+                self.pnet.load_checkpoint(folder=self.args.checkpoint, filename=filenameBest)
+            else:
+                self.pnet.load_checkpoint(folder=self.args.checkpoint, filename=filename)
             pmcts = MCTS(self.game, self.pnet, self.args)
             
             self.nnet.train(trainExamples)
@@ -180,7 +184,6 @@ class Coach():
             if i==1:
                 epochswin.append(pwins)
                 epochdraw.append(0)
-
 
             epochswin.append(nwins)
             epochdraw.append(draws)
@@ -199,12 +202,19 @@ class Coach():
             self.writeLogsToFile(epochswingreedy,epochswinrandom,False)
 
 
-            if pwins+nwins == 0 or float(nwins)/(pwins+nwins) < self.args.updateThreshold:
+            if pwins+nwins == 0 or float(nwins)/(pwins+nwins+draws) < self.args.updateThreshold:
                 print('REJECTING NEW MODEL')
                 filename = "temp:iter" + str(self.args.numIters) +":eps"+str(self.args.numEps) + ":dim"+str(self.game.n) + ".pth.tar"
-                self.nnet.load_checkpoint(folder=self.args.checkpoint, filename=filename)
+                filenameBest = "best" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + ":dim" + str(self.game.n) + ".pth.tar"
+                exists = os.path.isfile(filenameBest)
+                if exists:
+                    self.nnet.load_checkpoint(folder=self.args.checkpoint, filename=filenameBest)
+                else:
+                    self.nnet.load_checkpoint(folder=self.args.checkpoint, filename=filename)
+
             else:
                 print('ACCEPTING NEW MODEL')
+                self.mcts = MCTS(self.game, self.nnet, self.args)  # reset search tree
                 filename="best"+ str(self.args.numIters) +":eps"+str(self.args.numEps) + ":dim"+str(self.game.n) +".pth.tar"
                 self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=self.getCheckpointFile(i))
                 self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=filename)
