@@ -18,19 +18,19 @@ from utils import *
 
 
 args = dotdict({
-    'numIters': 80,
-    'numEps': 40,
+    'numIters': 5,
+    'numEps': 2,
     'tempThreshold': 15,
     'updateThreshold': 0.6,
-    'maxlenOfQueue': 200000,
+    'maxlenOfQueue': 2000,
     'numMCTSSims': 25,
-    'arenaCompare': 40,
+    'arenaCompare': 3,
     'cpuct': 1,
 
     'checkpoint': './temp/',
     'load_model': False,
     'load_folder_file': ('/dev/models/8x100x50','best.pth.tar'),
-    'numItersForTrainExamplesHistory': 20,
+    'numItersForTrainExamplesHistory': 50,
 
 })
 

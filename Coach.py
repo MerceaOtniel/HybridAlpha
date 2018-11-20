@@ -85,7 +85,7 @@ class Coach():
         return (gp,rp)
 
 
-    def writeLogsToFile(self,epochswin,epochdraw,training=True):# True means that the training is written to file; false means that the pit is written to file
+    def writeLogsToFile(self,epochswin,epochdraw,epochswin2=[],epochsdraw2=[],training=True):# True means that the training is written to file; false means that the pit is written to file
         if training==True:
             file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(
                 self.args.numEps) + ":dim" + str(self.game.n) + ".txt", "w+")
@@ -103,8 +103,14 @@ class Coach():
             for text in epochswin:
                 file.write(str(text) + " ")
             file.write("\n")
+            for text in epochswin2:
+                file.write(str(text)+" ")
+            file.write("\n")
             for text in epochdraw:
                 file.write(str(text) + " ")
+            file.write("\n")
+            for text in epochsdraw2:
+                file.write(str(text)+" ")
             file.close()
 
 
@@ -120,6 +126,8 @@ class Coach():
         epochdraw=[] # count the number of draws at every epoch
         epochswingreedy=[] # count the number of wins against greedy at every epoch
         epochswinrandom=[] # count the number of wins against random at every epoch
+        epochsdrawgreedy=[] #count the number of draws against greedy at every epoch
+        epochsdrawrandom=[]  #count the number of wins against random at every epoch
 
         for i in range(1, self.args.numIters+1):
             # bookkeeping
@@ -197,12 +205,14 @@ class Coach():
             pwinsgreedy,nwinsgreedy,drawsgreedy=arenagreedy.playGames(self.args.arenaCompare)
             pwinsreandom,nwinsrandom,drawsrandom=arenarandom.playGames(self.args.arenaCompare)
 
+            epochsdrawgreedy.append(drawsgreedy)
+            epochsdrawrandom.append(drawsrandom)
             epochswinrandom.append(pwinsreandom)
             epochswingreedy.append(pwinsgreedy)
-            self.writeLogsToFile(epochswingreedy,epochswinrandom,False)
+            self.writeLogsToFile(epochswingreedy,epochswinrandom,epochsdrawgreedy,epochsdrawrandom,training=False)
 
 
-            if pwins+nwins == 0 or float(nwins)/(pwins+nwins+draws) < self.args.updateThreshold:
+            if pwins+nwins == 0 or float(nwins)/(pwins+nwins+1.5*draws) < self.args.updateThreshold:
                 print('REJECTING NEW MODEL')
                 filename = "temp:iter" + str(self.args.numIters) +":eps"+str(self.args.numEps) + ":dim"+str(self.game.n) + ".pth.tar"
                 filenameBest = "best" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + ":dim" + str(self.game.n) + ".pth.tar"
@@ -219,7 +229,7 @@ class Coach():
                 self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=self.getCheckpointFile(i))
                 self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=filename)
 
-        self.writeLogsToFile(epochswin,epochdraw)
+        self.writeLogsToFile(epochswin,epochdraw,training=True)
 
 
     def getCheckpointFile(self, iteration):
