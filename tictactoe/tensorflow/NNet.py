@@ -11,14 +11,14 @@ from pytorch_classification.utils import Bar, AverageMeter
 from NeuralNet import NeuralNet
 
 import tensorflow as tf
-from othello.tensorflow.OthelloNNet import ResNet as onnet
+from tictactoe.tensorflow.TicTacToeNNet import ResNet as onnet
 
 args = dotdict({
     'lr': 0.001,
     'dropout': 0.3,
     'epochs': 10,
     'batch_size': 64,
-    'num_channels': 512,
+    'num_channels': 256,
 })
 
 class NNetWrapper(NeuralNet):
@@ -109,7 +109,7 @@ class NNetWrapper(NeuralNet):
             os.mkdir(folder)
         else:
             print("Checkpoint Directory exists! ")
-        if self.saver == None:            
+        if self.saver == None:
             self.saver = tf.train.Saver(self.nnet.graph.get_collection('variables'))
         with self.nnet.graph.as_default():
             self.saver.save(self.sess, filepath)

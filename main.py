@@ -1,10 +1,10 @@
 from Coach import Coach
 
 from tictactoe.TicTacToeGame import TicTacToeGame as Game
-from tictactoe.keras.NNet import NNetWrapper as nn
+from tictactoe.tensorflow.NNet import NNetWrapper as nn
 
 from othello.OthelloGame import OthelloGame as Game1
-from othello.keras.NNet import NNetWrapper as nn1
+from othello.tensorflow.NNet import NNetWrapper as nn1
 
 from gobang.GobangGame import GobangGame as Game2
 from gobang.keras.NNet import NNetWrapper as nn2
@@ -18,13 +18,13 @@ from utils import *
 
 
 args = dotdict({
-    'numIters': 5,
-    'numEps': 2,
+    'numIters': 25,
+    'numEps': 50,
     'tempThreshold': 15,
     'updateThreshold': 0.6,
     'maxlenOfQueue': 2000,
     'numMCTSSims': 25,
-    'arenaCompare': 3,
+    'arenaCompare': 40,
     'cpuct': 1,
 
     'checkpoint': './temp/',
