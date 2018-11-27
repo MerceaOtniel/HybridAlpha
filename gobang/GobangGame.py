@@ -59,17 +59,17 @@ class GobangGame(Game):
 
         for w in range(self.n):
             for h in range(self.n):
-                if (w in range(self.n - n + 1) and board[w][h] != 0 and
-                        len(set(board[i][h] for i in range(w, w + n))) == 1):
+                if (w in range(self.n - 5 + 1) and board[w][h] != 0 and
+                        len(set(board[i][h] for i in range(w, w + 5))) == player):
                     return board[w][h]
-                if (h in range(self.n - n + 1) and board[w][h] != 0 and
-                        len(set(board[w][j] for j in range(h, h + n))) == 1):
+                if (h in range(self.n - 5 + 1) and board[w][h] != 0 and
+                        len(set(board[w][j] for j in range(h, h + 5))) == player):
                     return board[w][h]
-                if (w in range(self.n - n + 1) and h in range(self.n - n + 1) and board[w][h] != 0 and
-                        len(set(board[w + k][h + k] for k in range(n))) == 1):
+                if (w in range(self.n - 5 + 1) and h in range(self.n - 5 + 1) and board[w][h] != 0 and
+                        len(set(board[w + k][h + k] for k in range(5))) == player):
                     return board[w][h]
-                if (w in range(self.n - n + 1) and h in range(n - 1, self.n) and board[w][h] != 0 and
-                        len(set(board[w + l][h - l] for l in range(n))) == 1):
+                if (w in range(self.n - 5 + 1) and h in range(n - 1, self.n) and board[w][h] != 0 and
+                        len(set(board[w + l][h - l] for l in range(5))) == player):
                     return board[w][h]
         if b.has_legal_moves():
             return 0
@@ -99,6 +99,11 @@ class GobangGame(Game):
     def stringRepresentation(self, board):
         # 8x8 numpy array (canonical board)
         return board.tostring()
+
+    def getScore(self, board, player):
+        b = Board(self.n)
+        b.pieces = np.copy(board)
+        return b.countDiff(player)
 
 
 def display(board):

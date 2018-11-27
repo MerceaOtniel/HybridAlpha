@@ -10,6 +10,7 @@ Board data:
 Squares are stored and manipulated as (x,y) tuples.
 x is the column, y is the row.
 '''
+import numpy as np
 class Board():
 
     # list of all 8 directions on the board, as (x,y) offsets
@@ -40,9 +41,9 @@ class Board():
         count = 0
         for y in range(self.n):
             for x in range(self.n):
-                if self[x][y]==color:
+                if self[x][y] == color:
                     count += 1
-                if self[x][y]==-color:
+                if self[x][y] == -color:
                     count -= 1
         return count
 

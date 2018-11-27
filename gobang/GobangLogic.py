@@ -11,13 +11,17 @@ Squares are stored and manipulated as (x,y) tuples.
 x is the column, y is the row.
 '''
 class Board():
+    __directions = [(1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-1, 0), (-1, 1), (0, 1)]
+
     def __init__(self, n):
         "Set up initial board configuration."
         self.n = n
         # Create the empty board array.
+        self.moveNumber=0
         self.pieces = [None]*self.n
         for i in range(self.n):
             self.pieces[i] = [0]*self.n
+
 
     # add [][] indexer syntax to the Board
     def __getitem__(self, index): 
@@ -28,6 +32,30 @@ class Board():
         (1 for white, -1 for black
         """
         moves = set()  # stores the legal moves.
+
+        if self.moveNumber==0:
+            for i in range(self.n):
+                for j in range(self.n):
+                    if self[i][j]!=0:
+                        self.moveNumber+=1
+
+        if self.moveNumber==0:
+            moves.add((int(self.n/2),int(self.n/2)))
+            return list(moves)
+
+        if self.moveNumber==2:
+            centerX=int(self.n/2)
+            centerY=int(self.n/2)
+            minX=centerX-5
+            maxX=centerX+5
+            minY=centerY-5
+            maxY=centerY+5
+            for y in range(self.n):
+                for x in range(self.n):
+                    if self[x][y]==0 and (x<minX or x>maxX) and (y<minY or y>maxY):
+                        moves.add((x,y))
+            return list(moves)
+
 
         # Get all empty locations.
         for y in range(self.n):
@@ -47,10 +75,58 @@ class Board():
         return False
 
     def execute_move(self, move, color):
-        """Perform the given move on the board; flips pieces as necessary.
-        color gives the color pf the piece to play (1=white,-1=black)
-        """
-        (x,y) = move
-        assert self[x][y] == 0
-        self[x][y] = color
 
+        flips = [flip for direction in self.__directions
+                      for flip in self._get_flips(move, direction, color)]
+
+        if len(list(flips))>0:
+            for x, y in flips:
+                #print(self[x][y],color)
+                self[x][y] = color
+        else:
+            self[move[0]][move[1]]=color
+
+
+    def _get_flips(self, origin, direction, color):
+        """ Gets the list of flips for a vertex and direction to use with the
+        execute_move function """
+        #initialize variables
+        flips = [origin]
+
+        for x, y in Board._increment_move(origin, direction, self.n):
+            #print(x,y)
+            if self[x][y] == 0:
+                return []
+            if self[x][y] == -color:
+                flips.append((x, y))
+            elif self[x][y] == color and len(flips) > 0:
+                #print(flips)
+                return flips
+
+        return []
+
+    @staticmethod
+
+    def _increment_move(move, direction, n):
+        # print(move)
+        """ Generator expression for incrementing moves """
+        move = list(map(sum, zip(move, direction)))
+        #move = (move[0]+direction[0], move[1]+direction[1])
+        while all(map(lambda x: 0 <= x < n, move)):
+        #while 0<=move[0] and move[0]<n and 0<=move[1] and move[1]<n:
+            yield move
+            move=list(map(sum,zip(move,direction)))
+            #move = (move[0]+direction[0],move[1]+direction[1])
+
+
+    def countDiff(self, color):
+        """Counts the # pieces of the given color
+        (1 for white, -1 for black, 0 for empty spaces)"""
+        count = 0
+        for y in range(self.n):
+            for x in range(self.n):
+                if self[x][y]==color:
+                    count += 1
+                if self[x][y]==-color:
+                    count -= 1
+        return count

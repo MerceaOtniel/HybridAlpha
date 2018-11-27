@@ -84,10 +84,73 @@ class OthelloGame(Game):
         # 8x8 numpy array (canonical board)
         return board.tostring()
 
-    def getScore(self, board, player):
+
+    def moveNumberHeuristics(self,color,board):
         b = Board(self.n)
+        b1=Board(self.n)
         b.pieces = np.copy(board)
-        return b.countDiff(player)
+        b1.pieces=np.copy(board)
+        legalMoves = b.get_legal_moves(color)
+        legalMoves1=b1.get_legal_moves(-color)
+
+        numberMovesPlayer=len(legalMoves)
+        numberMovesOpponent=len(legalMoves1)
+
+        if numberMovesPlayer+numberMovesOpponent==0:
+            return 0
+        return 100*(numberMovesPlayer-numberMovesOpponent)/(numberMovesPlayer+numberMovesOpponent)
+
+    def cornerNumberHeuristics(self,color,board):
+
+        playerCorners=0
+        adversaryCorners=0
+
+        if board[0][0]==color:
+            playerCorners+=1
+        else:
+            if board[0][0]==-color:
+                adversaryCorners+=1
+
+        if board[0][self.n-1]==color:
+            playerCorners+=1
+        else:
+            if board[0][self.n-1]==-color:
+                adversaryCorners+=1
+
+        if board[self.n-1][0]==color:
+            playerCorners+=1
+        else:
+            if board[self.n-1][0]==-color:
+                adversaryCorners+=1
+
+        if board[self.n-1][self.n-1]==color:
+            playerCorners+=1
+        else:
+            if board[self.n-1][self.n-1]==-color:
+                adversaryCorners+=1
+        if playerCorners+adversaryCorners==0:
+            return 0
+        return 100*(playerCorners-adversaryCorners)/(playerCorners+adversaryCorners)
+
+    def countPiecesHeuristics(self, color,board):
+        count1 = 0
+        count2 = 0
+        for y in range(self.n):
+            for x in range(self.n):
+                if board[x][y] == color:
+                    count1 += 1
+                if board[x][y] == -color:
+                    count2 += 1
+
+        if count1+count2==0:
+            return 0
+        return 100 * (count1 - count2) / (count1 + count2)
+
+    def getScore(self, board, player):
+        countPieces=self.countPiecesHeuristics(player,board)
+        countCorners=self.cornerNumberHeuristics(player,board)
+        countMoves=self.moveNumberHeuristics(player,board)
+        return countCorners+countMoves+countPieces
 
 def display(board):
     n = board.shape[0]

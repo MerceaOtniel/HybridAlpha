@@ -24,7 +24,7 @@ args = dotdict({
     'updateThreshold': 0.6,
     'maxlenOfQueue': 2000,
     'numMCTSSims': 25,
-    'arenaCompare': 40,
+    'arenaCompare': 3,
     'cpuct': 1,
 
     'checkpoint': './temp/',
@@ -36,7 +36,7 @@ args = dotdict({
 
 if __name__=="__main__":
 
-    choice="connect4"
+    choice="gobang"
 
     if choice=="tictactoe":
         g = Game(3)
@@ -47,7 +47,7 @@ if __name__=="__main__":
         nnet = nn1(g)
         args.update({'trainExampleCheckpoint': './temp/othello/'})
     if choice=="gobang":
-        g=Game2(6,6)
+        g=Game2(14,14)
         nnet = nn2(g)
         args.update({'trainExampleCheckpoint': './temp/gobang/'})
     if choice=="connect4":

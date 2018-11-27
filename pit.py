@@ -26,7 +26,7 @@ from utils import *
 use this script to play any two agents against each other, or play manually with
 any agent.
 """
-choice ="tictactoe"
+choice ="gobang"
 
 if choice == "tictactoe":
     g = TicTacToeGame(3)
@@ -35,9 +35,9 @@ if choice == "tictactoe":
     display=display
     hp = HumanTicTacToePlayer(g).play
 if choice == "gobang":
-    g=GobangGame(6,6)
+    g=GobangGame(14,14)
     n1 = NNet1(g)
-    n1.load_checkpoint('./temp/', 'temp.pth.tar')
+    n1.load_checkpoint('./temp/', 'temp:iter25:eps1:dim14.pth.tar')
     display=display1
     hp = HumanGobangPlayer(g).play
 if choice == "othello":
