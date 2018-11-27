@@ -103,10 +103,11 @@ class NNetWrapper(NeuralNet):
         return prob[0], v[0]
 
     def save_checkpoint(self, folder='checkpoint', filename='checkpoint.pth.tar'):
-        filepath = os.path.join(folder, filename)
+        folder1 = folder + "tictactoe/"
+        filepath = os.path.join(folder1, filename)
         if not os.path.exists(folder):
-            print("Checkpoint Directory does not exist! Making directory {}".format(folder))
-            os.mkdir(folder)
+            print("Checkpoint Directory does not exist! Making directory {}".format(folder1))
+            os.mkdir(folder1)
         else:
             print("Checkpoint Directory exists! ")
         if self.saver == None:
@@ -115,7 +116,8 @@ class NNetWrapper(NeuralNet):
             self.saver.save(self.sess, filepath)
 
     def load_checkpoint(self, folder='checkpoint', filename='checkpoint.pth.tar'):
-        filepath = os.path.join(folder, filename)
+        folder1 = folder + "tictactoe/"
+        filepath = os.path.join(folder1, filename)
         if not os.path.exists(filepath+'.meta'):
             raise("No model in path {}".format(filepath))
         with self.nnet.graph.as_default():

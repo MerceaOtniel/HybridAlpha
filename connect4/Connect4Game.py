@@ -14,6 +14,7 @@ class Connect4Game(Game):
     def __init__(self, height=None, width=None, win_length=None, np_pieces=None):
         Game.__init__(self)
         self._base_board = Board(height, width, win_length, np_pieces)
+        self.n=height
 
     def getInitBoard(self):
         return self._base_board.np_pieces

@@ -7,10 +7,10 @@ from othello.OthelloGame import OthelloGame as Game1
 from othello.tensorflow.NNet import NNetWrapper as nn1
 
 from gobang.GobangGame import GobangGame as Game2
-from gobang.keras.NNet import NNetWrapper as nn2
+from gobang.tensorflow.NNet import NNetWrapper as nn2
 
 from connect4.Connect4Game import Connect4Game as Game3
-from connect4.keras.NNet import NNetWrapper as nn3
+from connect4.tensorflow.NNet import NNetWrapper as nn3
 
 
 
@@ -19,7 +19,7 @@ from utils import *
 
 args = dotdict({
     'numIters': 25,
-    'numEps': 50,
+    'numEps': 1,
     'tempThreshold': 15,
     'updateThreshold': 0.6,
     'maxlenOfQueue': 2000,
@@ -36,7 +36,7 @@ args = dotdict({
 
 if __name__=="__main__":
 
-    choice="tictactoe"
+    choice="connect4"
 
     if choice=="tictactoe":
         g = Game(3)
