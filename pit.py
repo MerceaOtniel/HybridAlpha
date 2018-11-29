@@ -31,15 +31,15 @@ choice ="gobang"
 if choice == "tictactoe":
     g = TicTacToeGame(3)
     n1 = NNet(g)
-    n1.load_checkpoint('./temp/', 'temp:iter25:eps50:dim3.pth.tar')
+    n1.load_checkpoint('./temp/', 'temp:iter25:eps1:dim3.pth.tar')
     display=display
-    hp = HumanTicTacToePlayer(g).play
+    hp = GreedyTicTacToePlayer(g).play
 if choice == "gobang":
     g=GobangGame(14,14)
     n1 = NNet1(g)
     n1.load_checkpoint('./temp/', 'temp:iter25:eps1:dim14.pth.tar')
     display=display1
-    hp = HumanGobangPlayer(g).play
+    hp = GreedyGobangPlayer(g).play
 if choice == "othello":
     g=OthelloGame(6)
     n1 = NNet2(g)

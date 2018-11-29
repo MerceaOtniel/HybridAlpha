@@ -24,7 +24,7 @@ class Board():
 
 
     # add [][] indexer syntax to the Board
-    def __getitem__(self, index): 
+    def __getitem__(self, index):
         return self.pieces[index]
 
     def get_legal_moves(self, color):
@@ -118,15 +118,52 @@ class Board():
             move=list(map(sum,zip(move,direction)))
             #move = (move[0]+direction[0],move[1]+direction[1])
 
+    def check_number_moves(self,x,y,player):
+
+        max=0
+        for i in range(self.n):
+            numbercontiguous = 0
+            for j in range(self.n):
+                pozx=i
+                pozy=j
+                for u in range(5):
+                    if not(pozx>=0 and pozx<self.n):
+                        break
+                    if not(pozy>=0 and pozy<self.n):
+                        break
+                    if self[pozx][pozy]==player:
+                        numbercontiguous+=1
+                    else:
+                        break
+                    pozx+=x
+                    pozy+=y
+
+            if numbercontiguous>max:
+                max=numbercontiguous
+        return max
+
 
     def countDiff(self, color):
         """Counts the # pieces of the given color
         (1 for white, -1 for black, 0 for empty spaces)"""
-        count = 0
-        for y in range(self.n):
-            for x in range(self.n):
-                if self[x][y]==color:
-                    count += 1
-                if self[x][y]==-color:
-                    count -= 1
-        return count
+        maxadv=0
+        maxadv=max(maxadv,self.check_number_moves(1,0,-color))
+        maxadv=max(maxadv,self.check_number_moves(0,1,-color))
+        maxadv=max(maxadv,self.check_number_moves(1,1,-color))
+        maxadv=max(maxadv,self.check_number_moves(1,-1,-color))
+
+        if maxadv ==5:
+            return -5
+
+        maxplayer=0
+
+        maxplayer = max(maxplayer, self.check_number_moves(1, 0, color))
+        maxplayer = max(maxplayer, self.check_number_moves(0, 1, color))
+        maxplayer = max(maxplayer, self.check_number_moves(1, 1, color))
+        maxplayer = max(maxplayer, self.check_number_moves(1, -1, color))
+
+        if maxplayer==5:
+            return 5
+
+        return maxplayer-maxadv
+
