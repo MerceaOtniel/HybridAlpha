@@ -98,4 +98,5 @@ class MinMaxOthelloPlayer():
                     best[1]=score[1]
                     best[0]=a
 
+        return best
 

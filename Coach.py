@@ -65,6 +65,8 @@ class Coach():
                 return [(x[0],x[2],r*((-1)**(x[1]!=self.curPlayer))) for x in trainExamples]
 
 
+
+    ''' Use this function to decide the players that will be faced by the network at each iteration'''
     def decidePlayers(self):
 
         if "tictactoe" in self.args.trainExampleCheckpoint:
@@ -211,6 +213,8 @@ class Coach():
             epochdraw.append(draws)
             self.writeLogsToFile(epochswin,epochdraw)
 
+
+            ''' Get all the players and then put them against the network'''
             (gp, rp, mp) = self.decidePlayers()
 
             arenagreedy = Arena(lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), gp, self.game)
@@ -229,7 +233,7 @@ class Coach():
             epochsdrawminmax.append(drawsminmax)
 
 
-            self.writeLogsToFile(epochswingreedy,epochswinrandom,epochsdrawgreedy,epochsdrawrandom,epochswinminmax,epochsdrawminmax,training=False)
+            self.writeLogsToFile(epochswingreedy,epochsdrawgreedy,epochswinrandom,epochsdrawrandom,epochswinminmax,epochsdrawminmax,training=False)
 
 
             if pwins+nwins == 0 or float(nwins)/(pwins+nwins+draws) < self.args.updateThreshold:

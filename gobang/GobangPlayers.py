@@ -96,4 +96,5 @@ class MinMaxGobangPlayer():
                 if score[1]<best[1]:
                     best[1]=score[1]
                     best[0]=a
+        return best
 
