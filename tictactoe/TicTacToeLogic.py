@@ -47,6 +47,9 @@ class Board():
     def countDiff(self, color):
         """Counts the # pieces of the given color
         (1 for white, -1 for black, 0 for empty spaces)"""
+
+        rezultat=[]
+        min=0
         for y in range(self.n):
             count=0
             count2=0
@@ -57,8 +60,10 @@ class Board():
                     if self[x][y]==-color:
                         count2=count2+1
             u=self.return_reward(count,count2)
-            if u!=0:
-                return u
+            if u<min:
+                min=u
+        rezultat.append(min)
+        min=0
 
         for x in range(self.n):
             count = 0
@@ -71,8 +76,10 @@ class Board():
                         count2 = count2 + 1
 
             u = self.return_reward(count, count2)
-            if u != 0:
-                return u
+            if u < min:
+                min = u
+        rezultat.append(min)
+        min = 0
 
         count = 0
         count2=0
@@ -83,9 +90,11 @@ class Board():
                 if self[d][d]==-color:
                     count2+=1
 
-        u = self.return_reward(count, count2)
-        if u != 0:
-            return u
+            u = self.return_reward(count, count2)
+            if u < min:
+                min = u
+        rezultat.append(min)
+        min = 0
 
         count=0
         count2=0
@@ -96,11 +105,16 @@ class Board():
                 if self[d][self.n-d-1] == -color:
                     count2 += 1
 
-        u = self.return_reward(count, count2)
-        if u != 0:
-            return u
+            u = self.return_reward(count, count2)
+            if u<min:
+                min=u
 
-        return 0
+
+        rezultat.append(min)
+        rezultat.sort()
+
+        return rezultat[0]
+
 
 
     def get_legal_moves(self, color):

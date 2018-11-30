@@ -77,8 +77,10 @@ class MinMaxTicTacToePlayer():
                 continue
             nextBoard=self.game.getNextState(board,1,a)
             score = self.minimax(nextBoard,9,-1)
-            candidates+=[(-score[1],a)]
+            candidates+=[(score[1],a)]
         candidates.sort()
+        print(str(candidates))
+        print(str(candidates[0][1]))
         return candidates[0][1]
 
     def minimax(self,state,depth,player):
