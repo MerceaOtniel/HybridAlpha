@@ -19,7 +19,7 @@ from utils import *
 
 args = dotdict({
     'numIters': 25,
-    'numEps': 1,
+    'numEps': 25,
     'tempThreshold': 15,
     'updateThreshold': 0.6,
     'maxlenOfQueue': 2000,
@@ -36,7 +36,7 @@ args = dotdict({
 
 if __name__=="__main__":
 
-    choice="gobang"
+    choice="tictactoe"
 
     if choice=="tictactoe":
         g = Game(3)

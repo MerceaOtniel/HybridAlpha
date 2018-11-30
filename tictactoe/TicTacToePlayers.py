@@ -64,53 +64,21 @@ class GreedyTicTacToePlayer():
         candidates.sort()
         return candidates[0][1]
 
+
 class MinMaxTicTacToePlayer():
     def __init__(self,game):
-       self.game=game
+        self.game=game
 
     def play(self,board):
-        print("Custom Player moves")
-        valids=self.game.getValidMoves(board,1)
-        candidates=[]
-        for a in range(self.game.getActionSize()):
-            if valids[a]==0:
-                continue
-            nextBoard=self.game.getNextState(board,1,a)
-            score = self.minimax(nextBoard,9,-1)
-            candidates+=[(score[1],a)]
-        candidates.sort()
-        print(str(candidates))
-        print(str(candidates[0][1]))
-        return candidates[0][1]
-
-    def minimax(self,state,depth,player):
-
-        best = [None, None]
-
-        if player==1:
-            best[1]=-1
-        else:
-            best[1]=1
-
-
-        if depth==0 or self.game.getGameEnded(self.game.getCanonicalForm(state[0],player),player)!=0:
-            score=self.game.getScore(self.game.getCanonicalForm(state[0],player),player)
-            return [None,score]
-
-        valids = self.game.getValidMoves(self.game.getCanonicalForm(state[0],player), player)
+        valids = self.game.getValidMoves(board, 1)
+        candidates = []
         for a in range(self.game.getActionSize()):
             if valids[a] == 0:
                 continue
-            nextBoard= self.game.getNextState(self.game.getCanonicalForm(state[0],player), player, a)
-            score = self.minimax(nextBoard, depth-1, -player)
-
-            if player==1:
-                if score[1] > best[1]:
-                    best[1]=score[1]
-                    best[0]=a
-            else:
-                if score[1]<best[1]:
-                    best[1]=score[1]
-                    best[0]=a
-
-        return best
+            nextBoard, _ = self.game.getNextState(board, 1, a)
+            score = self.game.getScore(nextBoard, 1)
+            move = (int(a / self.game.n), a% self.game.n)
+           # print(str(score)+" "+str(move))
+            candidates += [(-score, a)]
+        candidates.sort()
+        return candidates[0][1]

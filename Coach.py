@@ -70,22 +70,38 @@ class Coach():
         if "tictactoe" in self.args.trainExampleCheckpoint:
             rp = tictacplayers.RandomTicTacToePlayer(self.game).play
             gp = tictacplayers.GreedyTicTacToePlayer(self.game).play
+            mp = tictacplayers.MinMaxTicTacToePlayer(self.game).play
         else:
             if "othello" in self.args.trainExampleCheckpoint:
                 gp = othelloplayers.GreedyOthelloPlayer(self.game).play
                 rp = othelloplayers.RandomOthelloPlayer(self.game).play
+                mp = othelloplayers.MinMaxOthelloPlayer(self.game).play
             else:
                 if "gobang" in self.args.trainExampleCheckpoint:
                     gp = gobangplayers.GreedyGobangPlayer(self.game).play
                     rp = gobangplayers.RandomGobangPlayer(self.game).play
+                    mp = gobangplayers.MinMaxGobangPlayer(self.game).play
                 else:
                     if "connect4" in self.args.trainExampleCheckpoint:
                         rp = connect4players.RandomConnect4Player(self.game).play
                         gp = connect4players.GreedyConnect4Player(self.game).play
-        return (gp,rp)
+                        mp = tictacplayers.GreedyTicTacToePlayer(self.game).play
+
+        return (gp, rp, mp)
 
 
-    def writeLogsToFile(self,epochswin,epochdraw,epochswin2=[],epochsdraw2=[],training=True):# True means that the training is written to file; false means that the pit is written to file
+    ''' Use this function to write to file the number of draws/wins '''
+    def writeToFile(self,file,epochs):
+        for text in epochs:
+            file.write(str(text)+" ")
+        file.write("\n")
+
+
+    ''' 
+    True means that the training is written to file; false means that the pit is written to file
+    Pass this function the output of the agents and it should write it into a file
+    '''
+    def writeLogsToFile(self,epochswin,epochdraw,epochswin2=[],epochsdraw2=[],epochswin3=[],epochsdraw3=[],training=True):
         if training==True:
             file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(
                 self.args.numEps) + ":dim" + str(self.game.n) + ".txt", "w+")
@@ -100,17 +116,13 @@ class Coach():
             file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(
                 self.args.numEps) + ":dim" + str(self.game.n) + ":greedyrandom.txt", "w+")
             print("Path-ul este " + str(file))
-            for text in epochswin:
-                file.write(str(text) + " ")
-            file.write("\n")
-            for text in epochswin2:
-                file.write(str(text)+" ")
-            file.write("\n")
-            for text in epochdraw:
-                file.write(str(text) + " ")
-            file.write("\n")
-            for text in epochsdraw2:
-                file.write(str(text)+" ")
+
+            self.writeToFile(file,epochswin)
+            self.writeToFile(file, epochdraw)
+            self.writeToFile(file, epochswin2)
+            self.writeToFile(file, epochsdraw2)
+            self.writeToFile(file, epochswin3)
+            self.writeToFile(file, epochsdraw3)
             file.close()
 
 
@@ -122,12 +134,14 @@ class Coach():
         It then pits the new neural network against the old one and accepts it
         only if it wins >= updateThreshold fraction of games.
         """
-        epochswin=[] # count the number of wins at every epoch
-        epochdraw=[] # count the number of draws at every epoch
+        epochswin=[] # count the number of wins at every epoch of the network against the preceding version
+        epochdraw=[] # count the number of draws at every epoch of the network against the preceding version
         epochswingreedy=[] # count the number of wins against greedy at every epoch
         epochswinrandom=[] # count the number of wins against random at every epoch
         epochsdrawgreedy=[] #count the number of draws against greedy at every epoch
         epochsdrawrandom=[]  #count the number of wins against random at every epoch
+        epochswinminmax=[] #count the number of wins against minmax at every epoch
+        epochsdrawminmax=[] #count the number of draws against minmax at every epoch
 
         for i in range(1, self.args.numIters+1):
             # bookkeeping
@@ -197,11 +211,13 @@ class Coach():
             epochdraw.append(draws)
             self.writeLogsToFile(epochswin,epochdraw)
 
+            (gp, rp, mp) = self.decidePlayers()
 
-            (gp, rp) = self.decidePlayers()
             arenagreedy = Arena(lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), gp, self.game)
             arenarandom = Arena(lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), rp, self.game)
+            arenaminmax = Arena(lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), mp, self.game)
 
+            pwinsminmax,nwinsminmax,drawsminmax=arenaminmax.playGames(self.args.arenaCompare)
             pwinsgreedy,nwinsgreedy,drawsgreedy=arenagreedy.playGames(self.args.arenaCompare)
             pwinsreandom,nwinsrandom,drawsrandom=arenarandom.playGames(self.args.arenaCompare)
 
@@ -209,7 +225,11 @@ class Coach():
             epochsdrawrandom.append(drawsrandom)
             epochswinrandom.append(pwinsreandom)
             epochswingreedy.append(pwinsgreedy)
-            self.writeLogsToFile(epochswingreedy,epochswinrandom,epochsdrawgreedy,epochsdrawrandom,training=False)
+            epochswinminmax.append(pwinsminmax)
+            epochsdrawminmax.append(drawsminmax)
+
+
+            self.writeLogsToFile(epochswingreedy,epochswinrandom,epochsdrawgreedy,epochsdrawrandom,epochswinminmax,epochsdrawminmax,training=False)
 
 
             if pwins+nwins == 0 or float(nwins)/(pwins+nwins+draws) < self.args.updateThreshold:
