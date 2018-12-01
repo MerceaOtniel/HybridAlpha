@@ -47,7 +47,7 @@ class Arena():
             if verbose:
                 assert (self.display)
                 print("Turn ", str(it), "Player ", str(curPlayer))
-                self.display(board)
+
 
             if valids[action]==0:
                 print(action)
@@ -55,6 +55,9 @@ class Arena():
 
             board, curPlayer = self.game.getNextState(board, curPlayer, action)
 
+            if verbose:
+                assert (self.display)
+                self.display(board)
 
 
         if verbose:

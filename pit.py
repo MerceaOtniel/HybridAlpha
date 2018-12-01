@@ -31,7 +31,7 @@ choice ="tictactoe"
 if choice == "tictactoe":
     g = TicTacToeGame(3)
     n1 = NNet(g)
-    n1.load_checkpoint('./temp/', 'temp:iter25:eps25:dim3.pth.tar')
+    n1.load_checkpoint('./temp/', 'best75:eps50:dim3.pth.tar')
     display=display
     hp = MinMaxTicTacToePlayer(g).play
 if choice == "gobang":

@@ -1,6 +1,5 @@
 import numpy as np
-from tictactoe.TicTacToeLogic import Board
-
+from math import inf as infinity
 """
 Random and Human-ineracting players for the game of TicTacToe.
 
@@ -15,6 +14,7 @@ class RandomTicTacToePlayer():
         self.game = game
 
     def play(self, board):
+
         a = np.random.randint(self.game.getActionSize())
         valids = self.game.getValidMoves(board, 1)
         while valids[a]!=1:
@@ -51,6 +51,7 @@ class GreedyTicTacToePlayer():
         self.game=game
 
     def play(self,board):
+        print("Custom player move")
         valids = self.game.getValidMoves(board, 1)
         candidates = []
         for a in range(self.game.getActionSize()):
@@ -62,7 +63,6 @@ class GreedyTicTacToePlayer():
            # print(str(score)+" "+str(move))
             candidates += [(-score, a)]
         candidates.sort()
-        print(str(candidates))
         return candidates[0][1]
 
 
@@ -71,42 +71,35 @@ class MinMaxTicTacToePlayer():
        self.game=game
 
     def play(self,board):
-        valids=self.game.getValidMoves(board,1)
-        candidates=[]
-        for a in range(self.game.getActionSize()):
-            if valids[a]==0:
-                continue
-            nextBoard=self.game.getNextState(board,1,a)
-            score = self.minimax(nextBoard,9,-1)
-            candidates+=[(score[1],a)]
-        candidates.sort()
-        return candidates[0][1]
+        print("MinMax player move")
+        score = self.minimax((board,-1),9,-1,-infinity,+infinity)
+        return score[0]
 
-    def minimax(self,state,depth,player):
+    def minimax(self,state,depth,player,alfa,beta):
 
         best = [None, None]
 
         if player==1:
-            best[1]=-1
+            best[1]=-infinity
         else:
-            best[1]=1
+            best[1]=+infinity
 
-
-        if depth==0 or self.game.getGameEnded(self.game.getCanonicalForm(state[0],player),player)!=0:
-            score=self.game.getScore(self.game.getCanonicalForm(state[0],player),player)
+        if depth==0 or self.game.getGameEnded(state[0],player)!=0:
+            score=self.game.getScore(state[0],player)
             return [None,score]
 
-        valids = self.game.getValidMoves(self.game.getCanonicalForm(state[0],player), player)
+        valids = self.game.getValidMoves(state[0], player)
         for a in range(self.game.getActionSize()):
             if valids[a] == 0:
                 continue
-            nextBoard= self.game.getNextState(self.game.getCanonicalForm(state[0],player), player, a)
-            score = self.minimax(nextBoard, depth-1, -player)
+            nextBoard= self.game.getNextState(state[0], player, a)
+            score = self.minimax(nextBoard, depth-1, -player,alfa,beta)
 
             if player==1:
                 if score[1] > best[1]:
                     best[1]=score[1]
                     best[0]=a
+
             else:
                 if score[1]<best[1]:
                     best[1]=score[1]

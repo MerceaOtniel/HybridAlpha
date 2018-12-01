@@ -49,7 +49,7 @@ class Board():
         (1 for white, -1 for black, 0 for empty spaces)"""
 
         rezultat=[]
-        min=999
+        min=-999
         for y in range(self.n):
             count=0
             count2=0
@@ -61,10 +61,10 @@ class Board():
                         count2=count2+1
 
             u=self.return_reward(count,count2)
-            if u<min:
+            if u>min:
                 min=u
         rezultat.append(min)
-        min=999
+        min=-999
 
         for x in range(self.n):
             count = 0
@@ -77,10 +77,10 @@ class Board():
                         count2 = count2 + 1
 
             u = self.return_reward(count, count2)
-            if u < min:
+            if u > min:
                 min = u
         rezultat.append(min)
-        min = 999
+        min = -999
 
         count = 0
         count2=0
@@ -92,10 +92,10 @@ class Board():
                     count2+=1
 
             u = self.return_reward(count, count2)
-            if u < min:
+            if u > min:
                 min = u
         rezultat.append(min)
-        min = 99
+        min = -999
 
         count=0
         count2=0
@@ -107,16 +107,19 @@ class Board():
                     count2 += 1
 
             u = self.return_reward(count, count2)
-            if u<min:
+            if u>min:
                 min=u
 
 
         rezultat.append(min)
 
         rezultat.sort()
+        sum=0
+        for i in range(len(rezultat)):
+            sum=sum+rezultat[i]
 
         if len(rezultat)!=0:
-            return rezultat[0]
+            return sum
         else:
             return 0
 

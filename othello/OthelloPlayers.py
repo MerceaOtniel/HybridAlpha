@@ -1,5 +1,5 @@
 import numpy as np
-
+from math import inf as infinity
 
 class RandomOthelloPlayer():
     def __init__(self, game):
@@ -56,26 +56,25 @@ class MinMaxOthelloPlayer():
        self.game=game
 
     def play(self,board):
-
         valids=self.game.getValidMoves(board,1)
         candidates=[]
         for a in range(self.game.getActionSize()):
             if valids[a]==0:
                 continue
             nextBoard=self.game.getNextState(board,1,a)
-            score = self.minimax(nextBoard,9,-1)
+            score = self.minimax(nextBoard,9,-1,-infinity,infinity)
             candidates+=[(score[1],a)]
         candidates.sort()
         return candidates[0][1]
 
-    def minimax(self,state,depth,player):
+    def minimax(self,state,depth,player,alfa,beta):
 
         best = [None, None]
 
         if player==1:
-            best[1]=-1
+            best[1]=-infinity
         else:
-            best[1]=1
+            best[1]=+infinity
 
 
         if depth==0 or self.game.getGameEnded(self.game.getCanonicalForm(state[0],player),player)!=0:
@@ -87,16 +86,20 @@ class MinMaxOthelloPlayer():
             if valids[a] == 0:
                 continue
             nextBoard= self.game.getNextState(self.game.getCanonicalForm(state[0],player), player, a)
-            score = self.minimax(nextBoard, depth-1, -player)
+            score = self.minimax(nextBoard, depth-1, -player,alfa,beta)
 
             if player==1:
                 if score[1] > best[1]:
                     best[1]=score[1]
                     best[0]=a
+                alfa=max(alfa,best[1])
+                if beta <=alfa:
+                    break
             else:
                 if score[1]<best[1]:
                     best[1]=score[1]
                     best[0]=a
-
+                beta=min(beta,best[1])
+                if beta<=alfa:
+                    break
         return best
-

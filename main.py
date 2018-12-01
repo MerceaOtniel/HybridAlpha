@@ -18,8 +18,8 @@ from utils import *
 
 
 args = dotdict({
-    'numIters': 25,
-    'numEps': 25,
+    'numIters': 75,
+    'numEps': 50,
     'tempThreshold': 15,
     'updateThreshold': 0.6,
     'maxlenOfQueue': 2000,

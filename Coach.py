@@ -227,16 +227,16 @@ class Coach():
 
             epochsdrawgreedy.append(drawsgreedy)
             epochsdrawrandom.append(drawsrandom)
-            epochswinrandom.append(pwinsreandom)
-            epochswingreedy.append(pwinsgreedy)
-            epochswinminmax.append(pwinsminmax)
+            epochswinrandom.append(nwinsrandom)
+            epochswingreedy.append(nwinsgreedy)
+            epochswinminmax.append(nwinsminmax)
             epochsdrawminmax.append(drawsminmax)
 
 
             self.writeLogsToFile(epochswingreedy,epochsdrawgreedy,epochswinrandom,epochsdrawrandom,epochswinminmax,epochsdrawminmax,training=False)
 
 
-            if pwins+nwins == 0 or float(nwins)/(pwins+nwins+draws) < self.args.updateThreshold:
+            if pwins+nwins == 0 or float(nwins)/(pwins+nwins) < self.args.updateThreshold:
                 print('REJECTING NEW MODEL')
                 filename = "temp:iter" + str(self.args.numIters) +":eps"+str(self.args.numEps) + ":dim"+str(self.game.n) + ".pth.tar"
                 filenameBest = "best" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + ":dim" + str(self.game.n) + ".pth.tar"
