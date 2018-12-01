@@ -227,9 +227,9 @@ class Coach():
 
             epochsdrawgreedy.append(drawsgreedy)
             epochsdrawrandom.append(drawsrandom)
-            epochswinrandom.append(nwinsrandom)
-            epochswingreedy.append(nwinsgreedy)
-            epochswinminmax.append(nwinsminmax)
+            epochswinrandom.append(pwinsreandom)
+            epochswingreedy.append(pwinsgreedy)
+            epochswinminmax.append(pwinsminmax)
             epochsdrawminmax.append(drawsminmax)
 
 

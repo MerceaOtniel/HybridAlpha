@@ -1,5 +1,6 @@
 import numpy as np
 from math import inf as infinity
+from tictactoe.TicTacToeGame import Board
 """
 Random and Human-ineracting players for the game of TicTacToe.
 
@@ -72,7 +73,7 @@ class MinMaxTicTacToePlayer():
 
     def play(self,board):
         print("MinMax player move")
-        score = self.minimax((board,-1),9,-1,-infinity,+infinity)
+        score = self.minimax((board,-1),9,1,-infinity,+infinity)
         return score[0]
 
     def minimax(self,state,depth,player,alfa,beta):
@@ -85,7 +86,7 @@ class MinMaxTicTacToePlayer():
             best[1]=+infinity
 
         if depth==0 or self.game.getGameEnded(state[0],player)!=0:
-            score=self.game.getScore(state[0],player)
+            score=self.game.getGameEnded(state[0],player)
             return [None,score]
 
         valids = self.game.getValidMoves(state[0], player)
@@ -99,10 +100,17 @@ class MinMaxTicTacToePlayer():
                 if score[1] > best[1]:
                     best[1]=score[1]
                     best[0]=a
+                alfa=max(alfa,best[1])
+                if beta<=alfa:
+                    break
 
             else:
                 if score[1]<best[1]:
                     best[1]=score[1]
                     best[0]=a
-
+                beta=min(beta,best[1])
+                if beta<=alfa:
+                    break
         return best
+
+

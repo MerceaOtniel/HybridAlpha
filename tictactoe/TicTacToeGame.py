@@ -67,9 +67,9 @@ class TicTacToeGame(Game):
         b.pieces = np.copy(board)
 
         if b.is_win(player):
-            return 1
+            return 1*player
         if b.is_win(-player):
-            return -1
+            return -1*player
         if b.has_legal_moves():
             return 0
         # draw has a very little value 
