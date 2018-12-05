@@ -39,7 +39,7 @@ if __name__=="__main__":
     choice="tictactoe"
 
     if choice=="tictactoe":
-        g = Game(4)
+        g = Game(3)
         nnet = nn(g)
         args.update({'trainExampleCheckpoint': './temp/tictactoe/'})
     if choice=="othello":

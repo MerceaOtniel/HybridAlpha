@@ -52,7 +52,6 @@ class GreedyTicTacToePlayer():
         self.game=game
 
     def play(self,board):
-        print("Custom player move")
         valids = self.game.getValidMoves(board, 1)
         candidates = []
         for a in range(self.game.getActionSize()):
@@ -72,7 +71,6 @@ class MinMaxTicTacToePlayer():
        self.game=game
 
     def play(self,board):
-        print("MinMax player move")
         score = self.minimax((board,-1),9,1,-infinity,+infinity)
         return score[0]
 

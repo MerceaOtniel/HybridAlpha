@@ -56,16 +56,8 @@ class MinMaxOthelloPlayer():
        self.game=game
 
     def play(self,board):
-        valids=self.game.getValidMoves(board,1)
-        candidates=[]
-        for a in range(self.game.getActionSize()):
-            if valids[a]==0:
-                continue
-            nextBoard=self.game.getNextState(board,1,a)
-            score = self.minimax(nextBoard,9,-1,-infinity,infinity)
-            candidates+=[(score[1],a)]
-        candidates.sort()
-        return candidates[0][1]
+        score = self.minimax((board,-1),9,1,-infinity,+infinity)
+        return score[0]
 
     def minimax(self,state,depth,player,alfa,beta):
 
@@ -76,16 +68,15 @@ class MinMaxOthelloPlayer():
         else:
             best[1]=+infinity
 
-
-        if depth==0 or self.game.getGameEnded(self.game.getCanonicalForm(state[0],player),player)!=0:
-            score=self.game.getScore(self.game.getCanonicalForm(state[0],player),player)
+        if depth==0 or self.game.getGameEnded(state[0],player)!=0:
+            score=self.game.getGameEnded(state[0],player)
             return [None,score]
 
-        valids = self.game.getValidMoves(self.game.getCanonicalForm(state[0],player), player)
+        valids = self.game.getValidMoves(state[0], player)
         for a in range(self.game.getActionSize()):
             if valids[a] == 0:
                 continue
-            nextBoard= self.game.getNextState(self.game.getCanonicalForm(state[0],player), player, a)
+            nextBoard= self.game.getNextState(state[0], player, a)
             score = self.minimax(nextBoard, depth-1, -player,alfa,beta)
 
             if player==1:
@@ -93,8 +84,9 @@ class MinMaxOthelloPlayer():
                     best[1]=score[1]
                     best[0]=a
                 alfa=max(alfa,best[1])
-                if beta <=alfa:
+                if beta<=alfa:
                     break
+
             else:
                 if score[1]<best[1]:
                     best[1]=score[1]
@@ -103,3 +95,5 @@ class MinMaxOthelloPlayer():
                 if beta<=alfa:
                     break
         return best
+
+
