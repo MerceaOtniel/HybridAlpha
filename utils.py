@@ -1,3 +1,6 @@
 class dotdict(dict):
-    def __getattr__(self, name):
-        return self[name]
+    def __getattr__(self, item):
+        try:
+            return self[item]
+        except KeyError:
+            raise AttributeError(item)

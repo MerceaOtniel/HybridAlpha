@@ -14,6 +14,9 @@ Date: Jan 5, 2018.
 Based on the board for the game of Othello by Eric P. Nichols.
 
 '''
+
+from copy import copy, deepcopy
+
 # from bkcharts.attributes import color
 class Board():
 
@@ -182,6 +185,15 @@ class Board():
             return True
         
         return False
+
+
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        for k, v in self.__dict__.items():
+            setattr(result, k, deepcopy(v, memo))
+
 
     def execute_move(self, move, color):
         """Perform the given move on the board; 

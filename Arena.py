@@ -2,6 +2,8 @@ import numpy as np
 from pytorch_classification.utils import Bar, AverageMeter
 import time
 
+
+
 class Arena():
     """
     An Arena class where any 2 agents can be pit against each other.
@@ -121,5 +123,6 @@ class Arena():
             bar.next()
             
         bar.finish()
-
         return oneWon, twoWon, draws
+
+

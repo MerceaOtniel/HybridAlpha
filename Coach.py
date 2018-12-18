@@ -10,6 +10,11 @@ from tictactoe import TicTacToePlayers as tictacplayers
 from othello import OthelloPlayers as othelloplayers
 from gobang import GobangPlayers as gobangplayers
 from connect4 import Connect4Players as connect4players
+from utils import *
+import multiprocessing as mp
+from tictactoe.TicTacToeGame import TicTacToeGame as Game
+from tictactoe.tensorflow.NNet import NNetWrapper as nn
+
 
 class Coach():
     """
@@ -24,6 +29,8 @@ class Coach():
         self.mcts = MCTS(self.game, self.nnet, self.args)
         self.trainExamplesHistory = []    # history of examples from args.numItersForTrainExamplesHistory latest iterations
         self.skipFirstSelfPlay = False # can be overriden in loadTrainExamples()
+        self.counter=0
+
 
     def executeEpisode(self):
         """
@@ -87,7 +94,7 @@ class Coach():
                     if "connect4" in self.args.trainExampleCheckpoint:
                         rp = connect4players.RandomConnect4Player(self.game).play
                         gp = connect4players.GreedyConnect4Player(self.game).play
-                        mp = tictacplayers.GreedyTicTacToePlayer(self.game).play
+                        mp = connect4players.MinMaxConnect4Player(self.game).play
 
         return (gp, rp, mp)
 
@@ -202,7 +209,9 @@ class Coach():
             print('PITTING AGAINST PREVIOUS VERSION')
             arena = Arena(lambda x: np.argmax(pmcts.getActionProb(x, temp=0)),
                           lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), self.game)
-            pwins, nwins, draws = arena.playGames(self.args.arenaCompare)
+
+            pwins, nwins, draws = arena.playGames(self.args.arenaCompare,False)
+
             print(' ')
             print('NEW/PREV WINS : %d / %d ; DRAWS : %d' % (nwins, pwins, draws))
             if i==1:
@@ -213,17 +222,23 @@ class Coach():
             epochdraw.append(draws)
             self.writeLogsToFile(epochswin,epochdraw)
 
-
-            ''' Get all the players and then put them against the network'''
+            ''' Get all the players and then pit them against the network'''
             (gp, rp, mp) = self.decidePlayers()
+
 
             arenagreedy = Arena(lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), gp, self.game)
             arenarandom = Arena(lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), rp, self.game)
             arenaminmax = Arena(lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), mp, self.game)
 
-            pwinsminmax,nwinsminmax,drawsminmax=arenaminmax.playGames(self.args.arenaCompare)
-            pwinsgreedy,nwinsgreedy,drawsgreedy=arenagreedy.playGames(self.args.arenaCompare)
-            pwinsreandom,nwinsrandom,drawsrandom=arenarandom.playGames(self.args.arenaCompare)
+
+            #pwinsminmax, nwinsminmax, drawsminmax = arenaminmax.playGames(self.args.arenaCompare)
+            pwinsgreedy, nwinsgreedy, drawsgreedy = arenagreedy.playGames( self.args.arenaCompare)
+            pwinsreandom, nwinsrandom, drawsrandom = arenarandom.playGames(self.args.arenaCompare)
+
+            pwinsminmax,nwinsminmax,drawsminmax = self.parallel("minmax", self.args.arenaCompare)
+            #pwinsgreedy,nwinsgreedy,drawsgreedy = self.parallel("greedy",self.args.arenaCompare)
+            #pwinsreandom,nwinsrandom,drawsrandom = self.parallel("random",self.args.arenaCompare)
+
 
             epochsdrawgreedy.append(drawsgreedy)
             epochsdrawrandom.append(drawsrandom)
@@ -232,8 +247,8 @@ class Coach():
             epochswinminmax.append(pwinsminmax)
             epochsdrawminmax.append(drawsminmax)
 
-
             self.writeLogsToFile(epochswingreedy,epochsdrawgreedy,epochswinrandom,epochsdrawrandom,epochswinminmax,epochsdrawminmax,training=False)
+
 
 
             if pwins+nwins == 0 or float(nwins)/(pwins+nwins) < self.args.updateThreshold:
@@ -283,3 +298,65 @@ class Coach():
             f.closed
             # examples based on the model were already collected (loaded)
             self.skipFirstSelfPlay = True
+
+    def parallel(self,arena,num):
+
+        pwins=0
+        nwins=0
+        draws=0
+
+        if self.counter==0:
+            mp.set_start_method('spawn')
+        q = mp.Queue()
+
+        args= dotdict({
+                        'numIters': 75,
+                        'numEps': 2,
+                        'tempThreshold': 15,
+                        'updateThreshold': 0.6,
+                        'maxlenOfQueue': 2000,
+                        'numMCTSSims': 25,
+                        'arenaCompare': 2,
+                        'cpuct': 1,
+
+                        'checkpoint': './temp/',
+                        'load_model': False,
+                        'load_folder_file': ('/dev/models/8x100x50','best.pth.tar'),
+                        'numItersForTrainExamplesHistory': 50,
+
+        })
+
+        self.counter += 1
+
+        p1 = mp.Process(target=apelareminmax, args=(15, q,args,))
+        p1.start()
+
+        p2 = mp.Process(target=apelareminmax, args=(15, q, args,))
+        p2.start()
+
+        p3 = mp.Process(target=apelareminmax, args=(10, q, args,))
+        p3.start()
+
+        p1.join()
+        p2.join()
+        p3.join()
+
+        while q.empty() == False:
+            (pwins1,nwins1,draws1)=q.get()
+            pwins+=pwins1
+            nwins+=nwins1
+            draws+=draws1
+        return pwins,nwins,draws
+
+
+def apelareminmax(num,q,args):
+
+        g = Game(5)
+        nnet = nn(g)
+
+        mp = tictacplayers.MinMaxTicTacToePlayer(g).play
+        nmcts1 = MCTS(g, nnet, args)
+        arenaminmax = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), mp, g)
+        pwins,nwins,drawwins=arenaminmax.playGames(num)
+        q.put((pwins, nwins, drawwins))
+

@@ -71,7 +71,7 @@ class MinMaxTicTacToePlayer():
        self.game=game
 
     def play(self,board):
-        score = self.minimax((board,-1),9,1,-infinity,+infinity)
+        score = self.minimax((board,-1),4,1,-infinity,+infinity)
         return score[0]
 
     def minimax(self,state,depth,player,alfa,beta):

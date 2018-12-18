@@ -4,6 +4,7 @@ sys.path.append('..')
 from Game import Game
 from .TicTacToeLogic import Board
 import numpy as np
+from copy import copy, deepcopy
 
 """
 Game class implementation for the game of TicTacToe.
@@ -98,6 +99,14 @@ class TicTacToeGame(Game):
     def stringRepresentation(self, board):
         # 8x8 numpy array (canonical board)
         return board.tostring()
+
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+        for k, v in self.__dict__.items():
+            setattr(result, k, deepcopy(v, memo))
+        return result
 
 def display(board):
     n = board.shape[0]
