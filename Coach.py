@@ -237,7 +237,7 @@ class Coach():
                 pwinsreandom, nwinsrandom, drawsrandom = arenarandom.playGames(self.args.arenaCompare)
 
             else:
-                p=self.parallel("minmax",self.args.arenaCompare)
+                p=self.parallel(self.args.arenaCompare)
                 (pwinsminmax,nwinsminmax,drawsminmax)  = p[0] #self.parallel("minmax", self.args.arenaCompare)
                 (pwinsgreedy,nwinsgreedy,drawsgreedy)  = p[1] #self.parallel("greedy",self.args.arenaCompare)
                 (pwinsreandom,nwinsrandom,drawsrandom) = p[2] #self.parallel("random",self.args.arenaCompare)
@@ -302,7 +302,7 @@ class Coach():
             # examples based on the model were already collected (loaded)
             self.skipFirstSelfPlay = True
 
-    def parallel(self,arena,num):
+    def parallel(self,num):
 
         pwinsminmax = 0
         nwinsminmax = 0
@@ -326,16 +326,19 @@ class Coach():
 
         self.counter += 1
 
-        p1 = mp.Process(target=apelareminmax, args=(20, q, args,))
+
+        first_half=num/2
+        second_half=num/2+num%2
+        p1 = mp.Process(target=apelareminmax, args=(first_half, q, args,))
         p1.start()
 
-        p2 = mp.Process(target=apelareminmax, args=(20, q, args,))
+        p2 = mp.Process(target=apelareminmax, args=(second_half, q, args,))
         p2.start()
 
-        p4 = mp.Process(target=apelarerandom, args=(40, q1, args,))
+        p4 = mp.Process(target=apelarerandom, args=(num, q1, args,))
         p4.start()
 
-        p5 = mp.Process(target=apelaregreedy, args=(40, q2, args,))
+        p5 = mp.Process(target=apelaregreedy, args=(num, q2, args,))
         p5.start()
 
         p1.join()
@@ -399,6 +402,9 @@ def apelaregreedy(num,q,args):
         pwins, nwins, drawwins = arenagreedy.playGames(num)
         q.put((pwins, nwins, drawwins))
 
+
+
+'''Whenever adding new players and games this method needs to be updated'''
 
 def returnplayer(args,playertype,g):
 
