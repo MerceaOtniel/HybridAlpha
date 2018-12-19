@@ -15,6 +15,7 @@ import multiprocessing as mp
 from tictactoe.TicTacToeGame import TicTacToeGame as Game
 from tictactoe.tensorflow.NNet import NNetWrapper as nn
 
+import copy
 
 class Coach():
     """
@@ -225,23 +226,21 @@ class Coach():
             ''' Get all the players and then pit them against the network'''
             (gp, rp, mp) = self.decidePlayers()
 
+            if self.args.parallel==0:
 
-            arenagreedy = Arena(lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), gp, self.game)
-            arenarandom = Arena(lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), rp, self.game)
-            arenaminmax = Arena(lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), mp, self.game)
+                arenagreedy = Arena(lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), gp, self.game)
+                arenarandom = Arena(lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), rp, self.game)
+                arenaminmax = Arena(lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), mp, self.game)
 
+                pwinsminmax, nwinsminmax, drawsminmax = arenaminmax.playGames(self.args.arenaCompare)
+                pwinsgreedy, nwinsgreedy, drawsgreedy = arenagreedy.playGames( self.args.arenaCompare)
+                pwinsreandom, nwinsrandom, drawsrandom = arenarandom.playGames(self.args.arenaCompare)
 
-            #pwinsminmax, nwinsminmax, drawsminmax = arenaminmax.playGames(self.args.arenaCompare)
-            #pwinsgreedy, nwinsgreedy, drawsgreedy = arenagreedy.playGames( self.args.arenaCompare)
-            #pwinsreandom, nwinsrandom, drawsrandom = arenarandom.playGames(self.args.arenaCompare)
-
-
-            p=self.parallel("minmax",self.args.arenaCompare)
-
-
-            (pwinsminmax,nwinsminmax,drawsminmax)  = p[0] #self.parallel("minmax", self.args.arenaCompare)
-            (pwinsgreedy,nwinsgreedy,drawsgreedy)  = p[1] #self.parallel("greedy",self.args.arenaCompare)
-            (pwinsreandom,nwinsrandom,drawsrandom) = p[2] #self.parallel("random",self.args.arenaCompare)
+            else:
+                p=self.parallel("minmax",self.args.arenaCompare)
+                (pwinsminmax,nwinsminmax,drawsminmax)  = p[0] #self.parallel("minmax", self.args.arenaCompare)
+                (pwinsgreedy,nwinsgreedy,drawsgreedy)  = p[1] #self.parallel("greedy",self.args.arenaCompare)
+                (pwinsreandom,nwinsrandom,drawsrandom) = p[2] #self.parallel("random",self.args.arenaCompare)
 
 
             epochsdrawgreedy.append(drawsgreedy)
@@ -305,9 +304,9 @@ class Coach():
 
     def parallel(self,arena,num):
 
-        pwinsminmax=0
-        nwinsminmax=0
-        drawsminmax=0
+        pwinsminmax = 0
+        nwinsminmax = 0
+        drawsminmax = 0
 
         pwinsgreedy = 0
         nwinsgreedy = 0
@@ -323,35 +322,20 @@ class Coach():
         q1=mp.Queue()
         q2=mp.Queue()
 
-        args= dotdict({
-                        'numIters': 75,
-                        'numEps': 2,
-                        'tempThreshold': 15,
-                        'updateThreshold': 0.6,
-                        'maxlenOfQueue': 2000,
-                        'numMCTSSims': 25,
-                        'arenaCompare': 2,
-                        'cpuct': 1,
-
-                        'checkpoint': './temp/',
-                        'load_model': False,
-                        'load_folder_file': ('/dev/models/8x100x50','best.pth.tar'),
-                        'numItersForTrainExamplesHistory': 50,
-
-        })
+        args = copy.deepcopy(self.args)
 
         self.counter += 1
 
-        p1 = mp.Process(target=apelareminmax, args=(20, q,args,))
+        p1 = mp.Process(target=apelareminmax, args=(20, q, args,))
         p1.start()
 
         p2 = mp.Process(target=apelareminmax, args=(20, q, args,))
         p2.start()
 
-        p4=mp.Process(target=apelarerandom,args=(40,q1,args,))
+        p4 = mp.Process(target=apelarerandom, args=(40, q1, args,))
         p4.start()
 
-        p5=mp.Process(target=apelaregreedy,args=(40,q2,args,))
+        p5 = mp.Process(target=apelaregreedy, args=(40, q2, args,))
         p5.start()
 
         p1.join()
@@ -371,7 +355,6 @@ class Coach():
             nwinsrandom+=nwins1
             drawsrandom+=draws1
 
-
         while q2.empty() == False:
             (pwins1,nwins1,draws1)=q2.get()
             pwinsgreedy+=pwins1
@@ -386,9 +369,8 @@ class Coach():
 def apelareminmax(num,q,args):
 
         g = Game(5)
-        nnet = nn(g,0.07)
-
-        mp = tictacplayers.MinMaxTicTacToePlayer(g).play
+        nnet = nn(g,0.06)
+        mp=returnplayer(args,"minmax",g)
         nmcts1 = MCTS(g, nnet, args)
         arenaminmax = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), mp, g)
         pwins,nwins,drawwins=arenaminmax.playGames(num)
@@ -398,9 +380,8 @@ def apelareminmax(num,q,args):
 def apelarerandom(num, q, args):
 
         g = Game(5)
-        nnet = nn(g,0.07)
-
-        rp = tictacplayers.RandomTicTacToePlayer(g).play
+        nnet = nn(g,0.06)
+        rp = returnplayer(args, "random", g)
         nmcts1 = MCTS(g, nnet, args)
         arenarandom = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), rp, g)
         pwins, nwins, drawwins = arenarandom.playGames(num)
@@ -411,13 +392,41 @@ def apelarerandom(num, q, args):
 def apelaregreedy(num,q,args):
 
         g = Game(5)
-        nnet = nn(g,0.07)
-
-        gp = tictacplayers.GreedyTicTacToePlayer(g).play
+        nnet = nn(g,0.06)
+        gp = returnplayer(args, "greedy", g)
         nmcts1 = MCTS(g, nnet, args)
         arenagreedy = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), gp, g)
         pwins, nwins, drawwins = arenagreedy.playGames(num)
         q.put((pwins, nwins, drawwins))
 
 
+def returnplayer(args,playertype,g):
 
+    if args.name=="tictactoe":
+        if playertype=="greedy":
+            return tictacplayers.GreedyTicTacToePlayer(g).play
+        elif playertype=="random":
+            return tictacplayers.RandomTicTacToePlayer(g).play
+        elif playertype=="minmax":
+            return tictacplayers.MinMaxTicTacToePlayer(g).play
+    elif args.name=="othello":
+        if playertype=="greedy":
+            return othelloplayers.GreedyOthelloPlayer(g).play
+        elif playertype=="random":
+            return othelloplayers.RandomOthelloPlayer(g).play
+        elif playertype=="minmax":
+            return othelloplayers.MinMaxOthelloPlayer(g).play
+    elif args.name=="gobang":
+        if playertype=="greedy":
+            return gobangplayers.GreedyGobangPlayer(g).play
+        elif playertype=="random":
+            return gobangplayers.RandomGobangPlayer(g).play
+        elif playertype=="minmax":
+            return gobangplayers.MinMaxGobangPlayer(g).play
+    elif args.name=="connect4":
+        if playertype=="greedy":
+            return connect4players.GreedyConnect4Player(g).play
+        elif playertype=="random":
+            return connect4players.RandomConnect4Player(g).play
+        elif playertype=="minmax":
+            return connect4players.MinMaxConnect4Player(g).play

@@ -26,7 +26,7 @@ args = dotdict({
     'numMCTSSims': 25,
     'arenaCompare': 2,
     'cpuct': 1,
-
+    'parallel': 1,
     'checkpoint': './temp/',
     'load_model': False,
     'load_folder_file': ('/dev/models/8x100x50','best.pth.tar'),
@@ -42,18 +42,22 @@ if __name__=="__main__":
         g = Game(5)
         nnet = nn(g)
         args.update({'trainExampleCheckpoint': './temp/tictactoe/'})
+        args.update({'name': 'tictactoe'})
     if choice=="othello":
         g = Game1(6)
         nnet = nn1(g)
         args.update({'trainExampleCheckpoint': './temp/othello/'})
+        args.update({'name': 'othello'})
     if choice=="gobang":
         g=Game2(14,14)
         nnet = nn2(g)
         args.update({'trainExampleCheckpoint': './temp/gobang/'})
+        args.update({'name': 'gobang'})
     if choice=="connect4":
         g=Game3(6,6)
         nnet=nn3(g)
         args.update({'trainExampleCheckpoint': './temp/connect4/'})
+        args.update({'name': 'connect4'})
 
     if args.load_model:
         nnet.load_checkpoint(args.load_folder_file[0], args.load_folder_file[1])
