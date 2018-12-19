@@ -22,12 +22,12 @@ args = dotdict({
 })
 
 class NNetWrapper(NeuralNet):
-    def __init__(self, game):
+    def __init__(self, game,percentage=0.3):
         self.nnet = onnet(game, args)
         self.board_x, self.board_y = game.getBoardSize()
         self.action_size = game.getActionSize()
 
-        gpu_fraction = 0.1
+        gpu_fraction = percentage
         gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=gpu_fraction)
         self.sess = tf.Session(graph=self.nnet.graph,config=tf.ConfigProto(gpu_options=gpu_options))
 
