@@ -10,11 +10,7 @@ from tictactoe import TicTacToePlayers as tictacplayers
 from othello import OthelloPlayers as othelloplayers
 from gobang import GobangPlayers as gobangplayers
 from connect4 import Connect4Players as connect4players
-from utils import *
 import multiprocessing as mp
-from tictactoe.TicTacToeGame import TicTacToeGame as Game
-from tictactoe.tensorflow.NNet import NNetWrapper as nn
-
 import copy
 
 class Coach():
@@ -304,35 +300,25 @@ class Coach():
 
     def parallel(self,num):
 
-        pwinsminmax = 0
-        nwinsminmax = 0
-        drawsminmax = 0
-
-        pwinsgreedy = 0
-        nwinsgreedy = 0
-        drawsgreedy = 0
-
-        pwinsrandom = 0
-        nwinsrandom = 0
-        drawsrandom = 0
-
-        if self.counter==0:
-            mp.set_start_method('spawn')
-        q = mp.Queue()
-        q1=mp.Queue()
-        q2=mp.Queue()
+        first_half=num/2
+        second_half=num/2+num%2
 
         args = copy.deepcopy(self.args)
 
+        if self.counter==0:
+            mp.set_start_method('spawn')
+
+        q = mp.Queue()
+        q1 = mp.Queue()
+        q2 = mp.Queue()
+        q3 = mp.Queue()
+
         self.counter += 1
-
-
-        first_half=num/2
-        second_half=num/2+num%2
+        '''
         p1 = mp.Process(target=apelareminmax, args=(first_half, q, args,))
         p1.start()
 
-        p2 = mp.Process(target=apelareminmax, args=(second_half, q, args,))
+        p2 = mp.Process(target=apelareminmax, args=(second_half, q3, args,))
         p2.start()
 
         p4 = mp.Process(target=apelarerandom, args=(num, q1, args,))
@@ -340,67 +326,167 @@ class Coach():
 
         p5 = mp.Process(target=apelaregreedy, args=(num, q2, args,))
         p5.start()
+        '''
+        p1 = startprocess(apelareminmax,first_half,q,args)
+        p2 = startprocess(apelareminmax, second_half, q3, args)
+        p4 = startprocess(apelarerandom, num, q1, args)
+        p5 = startprocess(apelaregreedy, num, q2, args)
 
         p1.join()
         p2.join()
         p4.join()
         p5.join()
 
+        while q.empty()==True:
+            f = open("minmax99.txt", "w+")
+            f.write("minmax ")
+            p1 = mp.Process(target=apelareminmax, args=(first_half, q, args,))
+            p1.start()
+            p1.join()
+
+
+        while q2.empty()==True:
+            f = open("greedy.txt", "w+")
+            f.write("greedy ")
+            p5 = mp.Process(target=apelaregreedy, args=(num, q2, args,))
+            p5.start()
+            p5.join()
+
+
+        while q1.empty()==True:
+            f = open("random.txt", "w+")
+            f.write("random ")
+            p4 = mp.Process(target=apelarerandom, args=(num, q1, args,))
+            p4.start()
+            p4.join()
+
+
+        while q3.empty()==True:
+            f = open("minmax2.txt", "w+")
+            f.write("minmax ")
+            p2 = mp.Process(target=apelareminmax, args=(first_half, q3, args,))
+            p2.start()
+            p2.join()
+
+        '''
         while q.empty() == False:
             (pwins1,nwins1,draws1)=q.get()
             pwinsminmax+=pwins1
             nwinsminmax+=nwins1
             drawsminmax+=draws1
 
+        while q3.empty() == False:
+            (pwins1,nwins1,draws1)=q3.get()
+            pwinsminmax+=pwins1
+            nwinsminmax+=nwins1
+            drawsminmax+=draws1
+        '''
+        (pwinsminmax1,nwinsminmax1,drawsminmax1)=verifyvalues(q)
+        (pwinsminmax2,nwinsminmax2,drawsminmax2)=verifyvalues(q3)
+        pwinsminmax=pwinsminmax1+pwinsminmax2
+        nwinsminmax=nwinsminmax1+nwinsminmax2
+        drawsminmax=drawsminmax1+drawsminmax2
+        (pwinsrandom,nwinsrandom,drawsrandom)=verifyvalues(q1)
+        (pwinsgreedy,nwinsgreedy,drawsgreedy)=verifyvalues(q2)
+        '''
         while q1.empty() == False:
             (pwins1,nwins1,draws1)=q1.get()
             pwinsrandom+=pwins1
             nwinsrandom+=nwins1
             drawsrandom+=draws1
-
+        
         while q2.empty() == False:
             (pwins1,nwins1,draws1)=q2.get()
             pwinsgreedy+=pwins1
             nwinsgreedy+=nwins1
             drawsgreedy+=draws1
-
+        '''
         u=[(pwinsminmax,nwinsminmax,drawsminmax),(pwinsgreedy,nwinsgreedy,drawsgreedy),(pwinsrandom,nwinsrandom,drawsrandom)]
 
         return u
 
+def startprocess(function,num,q,args):
+    p = mp.Process(target=function, args=(num, q, args,))
+    p.start()
+    return p
+
+def verifyvalues(q):
+
+    (pwins, nwins, draws) = extractvaluefromqueue(q)
+    while pwins == 0 and nwins == 0 and draws == 0:
+        f = open("toate0.txt", "w+")
+        f.write("toate 0 ")
+        (pwins, nwins, draws) = extractvaluefromqueue(q)
+    return (pwins,nwins,draws)
+
+def extractvaluefromqueue(q):
+    while q.empty()==False:
+        (pwins1,nwins1,draws1)=q.get()
+    return (pwins1,nwins1,draws1)
+
 
 def apelareminmax(num,q,args):
 
-        g = Game(5)
-        nnet = nn(g,0.06)
-        mp=returnplayer(args,"minmax",g)
-        nmcts1 = MCTS(g, nnet, args)
-        arenaminmax = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), mp, g)
-        pwins,nwins,drawwins=arenaminmax.playGames(num)
-        q.put((pwins, nwins, drawwins))
+        from tictactoe.TicTacToeGame import TicTacToeGame as Game
+        from tictactoe.tensorflow.NNet import NNetWrapper as nn
+        verificare=0
+        while verificare==0:
+            try:
+                g = Game(5)
+                nnet = nn(g, 0.06)
+                mp = returnplayer(args, "minmax", g)
+                nmcts1 = MCTS(g, nnet, args)
+                arenaminmax = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), mp, g)
+                pwins, nwins, drawwins = arenaminmax.playGames(num)
+                q.put((pwins, nwins, drawwins))
+                verificare=1
+            except:
+                f = open("guru99.txt", "w+")
+                f.write("minmax ")
+                verificare=0
 
 
 def apelarerandom(num, q, args):
 
-        g = Game(5)
-        nnet = nn(g,0.06)
-        rp = returnplayer(args, "random", g)
-        nmcts1 = MCTS(g, nnet, args)
-        arenarandom = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), rp, g)
-        pwins, nwins, drawwins = arenarandom.playGames(num)
-        q.put((pwins, nwins, drawwins))
+        from tictactoe.TicTacToeGame import TicTacToeGame as Game
+        from tictactoe.tensorflow.NNet import NNetWrapper as nn
+        verificare=0
+        while verificare==0:
+            try:
+                g = Game(5)
+                nnet = nn(g,0.06)
+                rp = returnplayer(args, "random", g)
+                nmcts1 = MCTS(g, nnet, args)
+                arenarandom = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), rp, g)
+                pwins, nwins, drawwins = arenarandom.playGames(num)
+                q.put((pwins, nwins, drawwins))
+                verificare=1
+            except:
+                f = open("guru99.txt", "w+")
+                f.write("random")
+                verificare==0
 
 
 
 def apelaregreedy(num,q,args):
 
-        g = Game(5)
-        nnet = nn(g,0.06)
-        gp = returnplayer(args, "greedy", g)
-        nmcts1 = MCTS(g, nnet, args)
-        arenagreedy = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), gp, g)
-        pwins, nwins, drawwins = arenagreedy.playGames(num)
-        q.put((pwins, nwins, drawwins))
+        from tictactoe.TicTacToeGame import TicTacToeGame as Game
+        from tictactoe.tensorflow.NNet import NNetWrapper as nn
+        verificare=0
+        while verificare==0:
+            try:
+                g = Game(5)
+                nnet = nn(g,0.06)
+                gp = returnplayer(args, "greedy", g)
+                nmcts1 = MCTS(g, nnet, args)
+                arenagreedy = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), gp, g)
+                pwins, nwins, drawwins = arenagreedy.playGames(num)
+                q.put((pwins, nwins, drawwins))
+                verificare=1
+            except:
+                f = open("guru99.txt", "w+")
+                f.write("greedy")
+                verificare=0
 
 
 
