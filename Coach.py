@@ -308,99 +308,32 @@ class Coach():
         if self.counter==0:
             mp.set_start_method('spawn')
 
-        q = mp.Queue()
-        q1 = mp.Queue()
-        q2 = mp.Queue()
-        q3 = mp.Queue()
+        qminmax = mp.Queue()
+        qrandom = mp.Queue()
+        qgreedy = mp.Queue()
+        qminmax1 = mp.Queue()
 
         self.counter += 1
-        '''
-        p1 = mp.Process(target=apelareminmax, args=(first_half, q, args,))
-        p1.start()
 
-        p2 = mp.Process(target=apelareminmax, args=(second_half, q3, args,))
-        p2.start()
+        processminmax = startprocess(apelareminmax,first_half,qminmax,args)
+        processminmax1 = startprocess(apelareminmax, second_half, qminmax1, args)
+        processrandom = startprocess(apelarerandom, num, qrandom, args)
+        processgreedy = startprocess(apelaregreedy, num, qgreedy, args)
 
-        p4 = mp.Process(target=apelarerandom, args=(num, q1, args,))
-        p4.start()
+        processminmax.join()
+        processminmax1.join()
+        processrandom.join()
+        processgreedy.join()
 
-        p5 = mp.Process(target=apelaregreedy, args=(num, q2, args,))
-        p5.start()
-        '''
-        p1 = startprocess(apelareminmax,first_half,q,args)
-        p2 = startprocess(apelareminmax, second_half, q3, args)
-        p4 = startprocess(apelarerandom, num, q1, args)
-        p5 = startprocess(apelaregreedy, num, q2, args)
-
-        p1.join()
-        p2.join()
-        p4.join()
-        p5.join()
-
-        while q.empty()==True:
-            f = open("minmax99.txt", "w+")
-            f.write("minmax ")
-            p1 = mp.Process(target=apelareminmax, args=(first_half, q, args,))
-            p1.start()
-            p1.join()
-
-
-        while q2.empty()==True:
-            f = open("greedy.txt", "w+")
-            f.write("greedy ")
-            p5 = mp.Process(target=apelaregreedy, args=(num, q2, args,))
-            p5.start()
-            p5.join()
-
-
-        while q1.empty()==True:
-            f = open("random.txt", "w+")
-            f.write("random ")
-            p4 = mp.Process(target=apelarerandom, args=(num, q1, args,))
-            p4.start()
-            p4.join()
-
-
-        while q3.empty()==True:
-            f = open("minmax2.txt", "w+")
-            f.write("minmax ")
-            p2 = mp.Process(target=apelareminmax, args=(first_half, q3, args,))
-            p2.start()
-            p2.join()
-
-        '''
-        while q.empty() == False:
-            (pwins1,nwins1,draws1)=q.get()
-            pwinsminmax+=pwins1
-            nwinsminmax+=nwins1
-            drawsminmax+=draws1
-
-        while q3.empty() == False:
-            (pwins1,nwins1,draws1)=q3.get()
-            pwinsminmax+=pwins1
-            nwinsminmax+=nwins1
-            drawsminmax+=draws1
-        '''
-        (pwinsminmax1,nwinsminmax1,drawsminmax1)=verifyvalues(q)
-        (pwinsminmax2,nwinsminmax2,drawsminmax2)=verifyvalues(q3)
+        (pwinsminmax1,nwinsminmax1,drawsminmax1)=verifyqueue(apelareminmax,first_half,qminmax,args)
+        (pwinsminmax2,nwinsminmax2,drawsminmax2)=verifyqueue(apelareminmax,second_half,qminmax1,args)
         pwinsminmax=pwinsminmax1+pwinsminmax2
         nwinsminmax=nwinsminmax1+nwinsminmax2
         drawsminmax=drawsminmax1+drawsminmax2
-        (pwinsrandom,nwinsrandom,drawsrandom)=verifyvalues(q1)
-        (pwinsgreedy,nwinsgreedy,drawsgreedy)=verifyvalues(q2)
-        '''
-        while q1.empty() == False:
-            (pwins1,nwins1,draws1)=q1.get()
-            pwinsrandom+=pwins1
-            nwinsrandom+=nwins1
-            drawsrandom+=draws1
-        
-        while q2.empty() == False:
-            (pwins1,nwins1,draws1)=q2.get()
-            pwinsgreedy+=pwins1
-            nwinsgreedy+=nwins1
-            drawsgreedy+=draws1
-        '''
+        (pwinsrandom,nwinsrandom,drawsrandom)=verifyqueue(apelarerandom,num,qrandom,args)
+        (pwinsgreedy,nwinsgreedy,drawsgreedy)=verifyqueue(apelaregreedy,num,qgreedy,args)
+
+
         u=[(pwinsminmax,nwinsminmax,drawsminmax),(pwinsgreedy,nwinsgreedy,drawsgreedy),(pwinsrandom,nwinsrandom,drawsrandom)]
 
         return u
@@ -410,19 +343,36 @@ def startprocess(function,num,q,args):
     p.start()
     return p
 
-def verifyvalues(q):
+
+def verifyqueue(function,num,q,args):
+
+    while q.empty() == True:
+        f = open("failedcudnn.txt", "w+")
+        f.write("whatever")
+        p=startprocess(function,num,q,args)
+        p.join()
+    return verifyvalues(function,num,q,args)
+
+
+
+def verifyvalues(function,num,q,args):
 
     (pwins, nwins, draws) = extractvaluefromqueue(q)
     while pwins == 0 and nwins == 0 and draws == 0:
         f = open("toate0.txt", "w+")
         f.write("toate 0 ")
+        p=startprocess(function,num,q,args)
+        p.join()
         (pwins, nwins, draws) = extractvaluefromqueue(q)
     return (pwins,nwins,draws)
+
+
 
 def extractvaluefromqueue(q):
     while q.empty()==False:
         (pwins1,nwins1,draws1)=q.get()
     return (pwins1,nwins1,draws1)
+
 
 
 def apelareminmax(num,q,args):
@@ -444,6 +394,7 @@ def apelareminmax(num,q,args):
                 f = open("guru99.txt", "w+")
                 f.write("minmax ")
                 verificare=0
+
 
 
 def apelarerandom(num, q, args):
