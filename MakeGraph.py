@@ -68,21 +68,16 @@ def paintGraph(filename,training=False):
             v = line.split(" ")
             if i==0:
                 greedywin=[int(i) for i in v]
-            else:
-                if i==1:
-                    greedydraw=[int(i) for i in v]
-                else:
-                    if i==2:
-                        randomwin=[int(i) for i in v]
-                    else:
-                        if i==3:
-                            randomdraw=[int(i) for i in v]
-                        else:
-                            if i==4:
-                                minmaxwin=[int(i) for i in v]
-                            else:
-                                if i==5:
-                                    minmaxdraw=[int(i) for i in v]
+            elif i==1:
+                greedydraw=[int(i) for i in v]
+            elif i==2:
+                randomwin=[int(i) for i in v]
+            elif i==3:
+                randomdraw=[int(i) for i in v]
+            elif i==4:
+                minmaxwin=[int(i) for i in v]
+            elif i==5:
+                minmaxdraw=[int(i) for i in v]
             i+=1
         for i in range(len(greedywin)):
             greedylose.append(40-greedywin[i]-greedydraw[i])

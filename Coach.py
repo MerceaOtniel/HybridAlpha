@@ -25,7 +25,6 @@ class Coach():
         self.args = args
         self.mcts = MCTS(self.game, self.nnet, self.args)
         self.trainExamplesHistory = []    # history of examples from args.numItersForTrainExamplesHistory latest iterations
-        self.skipFirstSelfPlay = False # can be overriden in loadTrainExamples()
         self.counter=0
 
 
@@ -107,30 +106,35 @@ class Coach():
     True means that the training is written to file; false means that the pit is written to file
     Pass this function the output of the agents and it should write it into a file
     '''
-    def writeLogsToFile(self,epochswin,epochdraw,epochswin2=[],epochsdraw2=[],epochswin3=[],epochsdraw3=[],training=True):
-        if training==True:
+
+    def writeLogsToFile(self, epochswin, epochdraw, epochswin2=[], epochsdraw2=[], epochswin3=[], epochsdraw3=[],
+                        training=True):
+        if training == True:
             file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(
                 self.args.numEps) + ":dim" + str(self.game.n) + ".txt", "w+")
             print("Path-ul este " + str(file))
+            self.writeToFile(file,epochswin)
+            self.writeToFile(file,epochdraw)
+            '''
             for text in epochswin:
                 file.write(str(text) + " ")
             file.write("\n")
             for text in epochdraw:
                 file.write(str(text) + " ")
+            '''
             file.close()
         else:
             file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(
                 self.args.numEps) + ":dim" + str(self.game.n) + ":greedyrandom.txt", "w+")
             print("Path-ul este " + str(file))
 
-            self.writeToFile(file,epochswin)
+            self.writeToFile(file, epochswin)
             self.writeToFile(file, epochdraw)
             self.writeToFile(file, epochswin2)
             self.writeToFile(file, epochsdraw2)
             self.writeToFile(file, epochswin3)
             self.writeToFile(file, epochsdraw3)
             file.close()
-
 
     def learn(self):
         """
@@ -149,30 +153,67 @@ class Coach():
         epochswinminmax=[] #count the number of wins against minmax at every epoch
         epochsdrawminmax=[] #count the number of draws against minmax at every epoch
 
+
+        file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(
+            self.args.numEps) + ":dim" + str(self.game.n) + ".txt", "r+")
+        lines = file.readlines()
+        line1 = lines[0]
+        line2 = lines[1]
+        for word in line1.split():
+            epochswin.append(word)
+        for word in line2.split():
+            epochdraw.append(word)
+        file.close()
+
+        file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(
+            self.args.numEps) + ":dim" + str(self.game.n) + ":greedyrandom.txt", "r+")
+
+        lines = file.readlines()
+
+        for index,line in enumerate(lines):
+            for word in line.split():
+                if index==0:
+                    epochswingreedy.append(word)
+                elif index==1:
+                    epochsdrawgreedy.append(word)
+                elif index==2:
+                    epochswinrandom.append(word)
+                elif index==3:
+                    epochsdrawrandom.append(word)
+                elif index==4:
+                    epochswinminmax.append(word)
+                elif index==5:
+                    epochsdrawminmax.append(word)
+        file.close()
+
+
+        if self.args.load_model==True:
+
+            self.loadTrainExamples()
+
         for i in range(1, self.args.numIters+1):
             # bookkeeping
             print('------ITER ' + str(i) + '------')
             # examples of the iteration
-            if not self.skipFirstSelfPlay or i>1:
-                iterationTrainExamples = deque([], maxlen=self.args.maxlenOfQueue)
+            iterationTrainExamples = deque([], maxlen=self.args.maxlenOfQueue)
     
-                eps_time = AverageMeter()
-                bar = Bar('Self Play', max=self.args.numEps)
+            eps_time = AverageMeter()
+            bar = Bar('Self Play', max=self.args.numEps)
+            end = time.time()
+    
+            for eps in range(self.args.numEps):
+                iterationTrainExamples += self.executeEpisode()
+    
+                # bookkeeping + plot progress
+                eps_time.update(time.time() - end)
                 end = time.time()
-    
-                for eps in range(self.args.numEps):
-                    iterationTrainExamples += self.executeEpisode()
-    
-                    # bookkeeping + plot progress
-                    eps_time.update(time.time() - end)
-                    end = time.time()
-                    bar.suffix  = '({eps}/{maxeps}) Eps Time: {et:.3f}s | Total: {total:} | ETA: {eta:}'.format(eps=eps+1, maxeps=self.args.numEps, et=eps_time.avg,
+                bar.suffix  = '({eps}/{maxeps}) Eps Time: {et:.3f}s | Total: {total:} | ETA: {eta:}'.format(eps=eps+1, maxeps=self.args.numEps, et=eps_time.avg,
                                                                                                                total=bar.elapsed_td, eta=bar.eta_td)
-                    bar.next()
-                bar.finish()
+                bar.next()
+            bar.finish()
 
                 # save the iteration examples to the history 
-                self.trainExamplesHistory.append(iterationTrainExamples)
+            self.trainExamplesHistory.append(iterationTrainExamples)
                 
             if len(self.trainExamplesHistory) > self.args.numItersForTrainExamplesHistory:
                 print("len(trainExamplesHistory) =", len(self.trainExamplesHistory), " => remove the oldest trainExamples")
@@ -295,8 +336,6 @@ class Coach():
             with open(examplesFile, "rb") as f:
                 self.trainExamplesHistory = Unpickler(f).load()
             f.closed
-            # examples based on the model were already collected (loaded)
-            self.skipFirstSelfPlay = True
 
     def parallel(self,num):
 
@@ -349,6 +388,7 @@ def verifyqueue(function,num,q,args):
     while q.empty() == True:
         f = open("failedcudnn.txt", "w+")
         f.write("whatever")
+        f.close()
         p=startprocess(function,num,q,args)
         p.join()
     return verifyvalues(function,num,q,args)
@@ -361,6 +401,7 @@ def verifyvalues(function,num,q,args):
     while pwins == 0 and nwins == 0 and draws == 0:
         f = open("toate0.txt", "w+")
         f.write("toate 0 ")
+        f.close()
         p=startprocess(function,num,q,args)
         p.join()
         (pwins, nwins, draws) = extractvaluefromqueue(q)
@@ -393,6 +434,7 @@ def apelareminmax(num,q,args):
             except:
                 f = open("guru99.txt", "w+")
                 f.write("minmax ")
+                f.close()
                 verificare=0
 
 
@@ -415,7 +457,8 @@ def apelarerandom(num, q, args):
             except:
                 f = open("guru99.txt", "w+")
                 f.write("random")
-                verificare==0
+                f.close()
+                verificare=0
 
 
 
@@ -437,6 +480,7 @@ def apelaregreedy(num,q,args):
             except:
                 f = open("guru99.txt", "w+")
                 f.write("greedy")
+                f.close()
                 verificare=0
 
 
