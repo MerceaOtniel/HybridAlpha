@@ -29,15 +29,13 @@ def paintGraph(filename,training=False):
         dimensiune=informatii[3].split(".")
 
         file = open(filename, "r")
-        i=0
-
-        for line in file.readlines():
+        lines=file.readlines()
+        for index,line in enumerate(lines):
             v=line.split(" ")
-            if i==0:
-                int_list = [int(i) for i in v]
+            if index==0:
+                int_list=[int(i) for i in v]
             else:
                 draws=[int(i) for i in v]
-            i+=1
         loses=[]
         for i in range(len(int_list)):
             loses.append(40-int_list[i]-draws[i])
@@ -52,7 +50,6 @@ def paintGraph(filename,training=False):
         dimensiune = informatii[3].split(".")
 
         file = open(filename, "r")
-        i = 0
 
         greedywin=[]
         greedydraw=[]
@@ -64,21 +61,22 @@ def paintGraph(filename,training=False):
         minmaxdraw=[]
         minmaxlose=[]
 
-        for line in file.readlines():
+        lines=file.readlines()
+        for index,line in enumerate(lines):
             v = line.split(" ")
-            if i==0:
+            if index==0:
                 greedywin=[int(i) for i in v]
-            elif i==1:
+            elif index==1:
                 greedydraw=[int(i) for i in v]
-            elif i==2:
+            elif index==2:
                 randomwin=[int(i) for i in v]
-            elif i==3:
+            elif index==3:
                 randomdraw=[int(i) for i in v]
-            elif i==4:
+            elif index==4:
                 minmaxwin=[int(i) for i in v]
-            elif i==5:
+            elif index==5:
                 minmaxdraw=[int(i) for i in v]
-            i+=1
+
         for i in range(len(greedywin)):
             greedylose.append(40-greedywin[i]-greedydraw[i])
             randomlose.append(40-randomwin[i]-randomdraw[i])

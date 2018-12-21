@@ -115,13 +115,6 @@ class Coach():
             print("Path-ul este " + str(file))
             self.writeToFile(file,epochswin)
             self.writeToFile(file,epochdraw)
-            '''
-            for text in epochswin:
-                file.write(str(text) + " ")
-            file.write("\n")
-            for text in epochdraw:
-                file.write(str(text) + " ")
-            '''
             file.close()
         else:
             file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(
@@ -153,42 +146,36 @@ class Coach():
         epochswinminmax=[] #count the number of wins against minmax at every epoch
         epochsdrawminmax=[] #count the number of draws against minmax at every epoch
 
-
-        file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(
-            self.args.numEps) + ":dim" + str(self.game.n) + ".txt", "r+")
-        lines = file.readlines()
-        line1 = lines[0]
-        line2 = lines[1]
-        for word in line1.split():
-            epochswin.append(word)
-        for word in line2.split():
-            epochdraw.append(word)
-        file.close()
-
-        file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(
-            self.args.numEps) + ":dim" + str(self.game.n) + ":greedyrandom.txt", "r+")
-
-        lines = file.readlines()
-
-        for index,line in enumerate(lines):
-            for word in line.split():
-                if index==0:
-                    epochswingreedy.append(word)
-                elif index==1:
-                    epochsdrawgreedy.append(word)
-                elif index==2:
-                    epochswinrandom.append(word)
-                elif index==3:
-                    epochsdrawrandom.append(word)
-                elif index==4:
-                    epochswinminmax.append(word)
-                elif index==5:
-                    epochsdrawminmax.append(word)
-        file.close()
-
-
         if self.args.load_model==True:
+            file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(
+                self.args.numEps) + ":dim" + str(self.game.n) + ".txt", "r+")
+            lines = file.readlines()
+            for index, line in enumerate(lines):
+                for word in line.split():
+                    if index == 0:
+                        epochswin.append(word)
+                    elif index == 1:
+                        epochdraw.append(word)
+            file.close()
 
+            file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(
+                self.args.numEps) + ":dim" + str(self.game.n) + ":greedyrandom.txt", "r+")
+            lines = file.readlines()
+            for index, line in enumerate(lines):
+                for word in line.split():
+                    if index == 0:
+                        epochswingreedy.append(word)
+                    elif index == 1:
+                        epochsdrawgreedy.append(word)
+                    elif index == 2:
+                        epochswinrandom.append(word)
+                    elif index == 3:
+                        epochsdrawrandom.append(word)
+                    elif index == 4:
+                        epochswinminmax.append(word)
+                    elif index == 5:
+                        epochsdrawminmax.append(word)
+            file.close()
             self.loadTrainExamples()
 
         for i in range(1, self.args.numIters+1):
