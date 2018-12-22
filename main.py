@@ -22,15 +22,15 @@ args = dotdict({
     'numEps': 50,
     'tempThreshold': 15,
     'updateThreshold': 0.6,
-    'maxlenOfQueue': 2000,
+    'maxlenOfQueue': 800,
     'numMCTSSims': 30,
     'arenaCompare': 40,
     'cpuct': 1,
     'parallel': 1,
     'checkpoint': './temp/',
-    'load_model': False,
-    'load_folder_file': ('./temp/tictactoe/','checkpoint_44.pth.tar.examples'),
-    'numItersForTrainExamplesHistory': 50,
+    'load_model': True,
+    'load_folder_file': ('./temp/tictactoe/','checkpoint_26.pth.tar'),
+    'numItersForTrainExamplesHistory': 15,
 
 })
 
@@ -59,8 +59,11 @@ if __name__=="__main__":
         args.update({'trainExampleCheckpoint': './temp/connect4/'})
         args.update({'name': 'connect4'})
 
+    filenameBest = "best" + str(args.numIters) + ":eps" + str(args.numEps) + ":dim" + str(
+        g.n) + ".pth.tar"
+
     if args.load_model:
-        nnet.load_checkpoint(args.load_folder_file[0], args.load_folder_file[1])
+        nnet.load_checkpoint(args.checkpoint, filenameBest)
 
     c = Coach(g, nnet, args)
     if args.load_model:

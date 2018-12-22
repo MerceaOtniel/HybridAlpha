@@ -1,0 +1,13 @@
+#!/bin/sh
+
+now=$(date)
+echo "The temperature is rising to a dangerous level at "$now" !" | mail -s "Deep Learning model" otimercea@gmail.com
+
+pkill python3.6
+
+for i in $(seq 1 1 20)
+do
+    aplay -q /usr/share/sounds/freedesktop/stereo/message.oga
+done
+
+
