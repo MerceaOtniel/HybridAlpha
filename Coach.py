@@ -353,9 +353,9 @@ class Coach():
 
         (pwinsminmax1,nwinsminmax1,drawsminmax1)=verifyqueue(apelareminmax,first_half,qminmax,args)
         (pwinsminmax2,nwinsminmax2,drawsminmax2)=verifyqueue(apelareminmax,second_half,qminmax1,args)
-        pwinsminmax=pwinsminmax1+pwinsminmax2
-        nwinsminmax=nwinsminmax1+nwinsminmax2
-        drawsminmax=drawsminmax1+drawsminmax2
+        pwinsminmax=pwinsminmax2+pwinsminmax1
+        nwinsminmax=nwinsminmax2+nwinsminmax1
+        drawsminmax=drawsminmax2+drawsminmax1
         (pwinsrandom,nwinsrandom,drawsrandom)=verifyqueue(apelarerandom,num,qrandom,args)
         (pwinsgreedy,nwinsgreedy,drawsgreedy)=verifyqueue(apelaregreedy,num,qgreedy,args)
 

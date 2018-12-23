@@ -83,9 +83,19 @@ class MinMaxTicTacToePlayer():
         else:
             best[1]=+infinity
 
+
+        if self.game.getGameEnded(state[0],player)!=0:
+            score=self.game.getGameEnded(state[0],player)
+            return [None,score]
+        elif depth==0:
+            score=self.game.getScore(state[0],player)
+            return [None,score]
+        '''
         if depth==0 or self.game.getGameEnded(state[0],player)!=0:
             score=self.game.getGameEnded(state[0],player)
             return [None,score]
+        '''
+
 
         valids = self.game.getValidMoves(state[0], player)
         for a in range(self.game.getActionSize()):
