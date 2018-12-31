@@ -31,7 +31,7 @@ choice ="tictactoe"
 if choice == "tictactoe":
     g = TicTacToeGame(5)
     n1 = NNet(g)
-    n1.load_checkpoint('./temp/', 'temp:iter75:eps50:dim5.pth.tar')
+    n1.load_checkpoint('./temp/', 'best75:eps55:dim5.pth.tar')
     display=display
     hp = MinMaxTicTacToePlayer(g).play
 if choice == "gobang":
@@ -59,7 +59,7 @@ if choice == "connect4":
 
 
 # nnet players
-args1 = dotdict({'numMCTSSims': 25, 'cpuct':1.0})
+args1 = dotdict({'numMCTSSims': 60, 'cpuct':1.0,'epsilon': 0,'dirAlpha':0.3})
 mcts1 = MCTS(g, n1, args1)
 n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 
@@ -70,5 +70,5 @@ n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 #mcts2 = MCTS(g, n2, args2)
 #n2p = lambda x: np.argmax(mcts2.getActionProb(x, temp=0))
 
-arena = Arena.Arena(n1p, hp, g, display=display)
-print(arena.playGames(2, verbose=True))
+arena = Arena.Arena(n1p, hp, g,display=display)
+print(arena.playGames(6, verbose=True))

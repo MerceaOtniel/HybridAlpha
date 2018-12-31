@@ -24,7 +24,7 @@ class ResNet():
 
             x_image = tf.layers.conv2d(x_image, filters=args.num_channels, kernel_size=(1, 1), strides=(1, 1), padding='same',
                                       use_bias=False)
-            x_image = tf.layers.batch_normalization(x_image, axis=1, training=self.isTraining)
+            x_image = tf.layers.batch_normalization(x_image, axis=3, training=self.isTraining)
             x_image = tf.nn.relu(x_image)
 
             residual_tower = self.residual_block(inputLayer=x_image, kernel_size=3, filters=args.num_channels, stage=1,
@@ -68,7 +68,7 @@ class ResNet():
 
             policy = tf.layers.conv2d(residual_tower, 2, kernel_size=(1, 1), strides=(1, 1), name='pi', padding='same',
                                       use_bias=False)
-            policy = tf.layers.batch_normalization(policy, axis=1, name='bn_pi', training=self.isTraining)
+            policy = tf.layers.batch_normalization(policy, axis=3, name='bn_pi', training=self.isTraining)
             policy = tf.nn.relu(policy)
             policy = tf.layers.flatten(policy, name='p_flatten')
             self.pi = tf.layers.dense(policy, self.action_size)
@@ -76,7 +76,7 @@ class ResNet():
 
             value = tf.layers.conv2d(residual_tower, 1, kernel_size=(1, 1), strides=(1, 1), name='v', padding='same',
                                      use_bias=False)
-            value = tf.layers.batch_normalization(value, axis=1, name='bn_v', training=self.isTraining)
+            value = tf.layers.batch_normalization(value, axis=3, name='bn_v', training=self.isTraining)
             value = tf.nn.relu(value)
             value = tf.layers.flatten(value, name='v_flatten')
             value = tf.layers.dense(value, units=256)
@@ -94,12 +94,12 @@ class ResNet():
 
         residual_layer = tf.layers.conv2d(inputLayer, filters, kernel_size=(kernel_size, kernel_size), strides=(1, 1),
                                           name=conv_name + '2a', padding='same', use_bias=False)
-        residual_layer = tf.layers.batch_normalization(residual_layer, axis=1, name=bn_name + '2a',
+        residual_layer = tf.layers.batch_normalization(residual_layer, axis=3, name=bn_name + '2a',
                                                        training=self.isTraining)
         residual_layer = tf.nn.relu(residual_layer)
         residual_layer = tf.layers.conv2d(residual_layer, filters, kernel_size=(kernel_size, kernel_size),
                                           strides=(1, 1), name=conv_name + '2b', padding='same', use_bias=False)
-        residual_layer = tf.layers.batch_normalization(residual_layer, axis=1, name=bn_name + '2b',
+        residual_layer = tf.layers.batch_normalization(residual_layer, axis=3, name=bn_name + '2b',
                                                        training=self.isTraining)
         add_shortcut = tf.add(residual_layer, shortcut)
         residual_result = tf.nn.relu(add_shortcut)

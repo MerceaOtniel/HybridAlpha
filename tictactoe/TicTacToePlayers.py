@@ -52,6 +52,7 @@ class GreedyTicTacToePlayer():
         self.game=game
 
     def play(self,board):
+        print("greedy")
         valids = self.game.getValidMoves(board, 1)
         candidates = []
         for a in range(self.game.getActionSize()):
@@ -60,7 +61,7 @@ class GreedyTicTacToePlayer():
             nextBoard, _ = self.game.getNextState(board, 1, a)
             score = self.game.getScore(nextBoard, 1)
             move = (int(a / self.game.n), a% self.game.n)
-           # print(str(score)+" "+str(move))
+            #print(str(score)+" "+str(move))
             candidates += [(-score, a)]
         candidates.sort()
         return candidates[0][1]
@@ -71,7 +72,7 @@ class MinMaxTicTacToePlayer():
        self.game=game
 
     def play(self,board):
-        score = self.minimax((board,-1),4,1,-infinity,+infinity)
+        score = self.minimax((board,-1),6,1,-infinity,+infinity)
         return score[0]
 
     def minimax(self,state,depth,player,alfa,beta):

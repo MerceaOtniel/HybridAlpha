@@ -22,7 +22,7 @@ args = dotdict({
 })
 
 class NNetWrapper(NeuralNet):
-    def __init__(self, game,percentage=0.25):
+    def __init__(self, game,percentage=0.90):
 
         self.nnet = onnet(game, args)
         self.board_x, self.board_y = game.getBoardSize()
