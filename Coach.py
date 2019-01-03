@@ -260,9 +260,9 @@ class Coach():
                 nmcts2 = MCTS(self.game, self.nnet, self.args)
                 nmcts3 = MCTS(self.game, self.nnet, self.args)
 
-                arenagreedy = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), gp, self.game)
-                arenarandom = Arena(lambda x: np.argmax(nmcts2.getActionProb(x, temp=0)), rp, self.game)
-                arenaminmax = Arena(lambda x: np.argmax(nmcts3.getActionProb(x, temp=0)), mp, self.game)
+                arenagreedy = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), gp, self.game,nmcts1)
+                arenarandom = Arena(lambda x: np.argmax(nmcts2.getActionProb(x, temp=0)), rp, self.game,nmcts2)
+                arenaminmax = Arena(lambda x: np.argmax(nmcts3.getActionProb(x, temp=0)), mp, self.game,nmcts3)
 
                 pwinsminmax, nwinsminmax, drawsminmax = arenaminmax.playGames(self.args.arenaCompare)
                 pwinsgreedy, nwinsgreedy, drawsgreedy = arenagreedy.playGames(self.args.arenaCompare)

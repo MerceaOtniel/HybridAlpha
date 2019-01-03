@@ -1,5 +1,6 @@
 import math
 import numpy as np
+import random
 
 EPS = 1e-8
 
@@ -20,6 +21,14 @@ class MCTS():
 
         self.Es = {}  # stores game.getGameEnded ended for board s
         self.Vs = {}  # stores game.getValidMoves for board s
+
+    def clear(self):
+        self.Qsa={}
+        self.Nsa={}
+        self.Ns={}
+        self.Ps={}
+        self.Es={}
+        self.Vs={}
 
     def getActionProb(self, canonicalBoard, temp=1):
         """
@@ -96,7 +105,7 @@ class MCTS():
 
         valids = self.Vs[s]
         cur_best = -float('inf')
-        best_act = -1
+        best_act = []
 
         e=self.args.epsilon
         if isRootNode and e>0:
@@ -120,9 +129,12 @@ class MCTS():
 
                 if u > cur_best:
                     cur_best = u
-                    best_act = a
+                    best_act = [a]
+                elif u==cur_best:
+                    print("am intrat in egalitate")
+                    best_act.append(a)
 
-        a = best_act
+        a = random.choice(best_act)
         next_s, next_player = self.game.getNextState(canonicalBoard, 1, a)
         next_s = self.game.getCanonicalForm(next_s, next_player)
 

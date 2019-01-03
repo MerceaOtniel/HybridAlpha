@@ -8,7 +8,7 @@ class Arena():
     An Arena class where any 2 agents can be pit against each other.
     """
 
-    def __init__(self, player1, player2, game, display=None):
+    def __init__(self, player1, player2, game, mcts1=None,mcts2=None,display=None):
         """
         Input:
             player 1,2: two functions that takes board as input, return action
@@ -23,6 +23,14 @@ class Arena():
         self.player2 = player2
         self.game = game
         self.display = display
+        self.mcts1=mcts1
+        self.mcts2=mcts2
+
+    def clearMCTS(self):
+        if self.mcts1:
+            self.mcts1.clear()
+        if self.mcts2:
+            self.mcts2.clear()
 
     def playGame(self, verbose=False):
         """
@@ -36,6 +44,7 @@ class Arena():
         players = [self.player2, None, self.player1]
         curPlayer = 1
         board = self.game.getInitBoard()
+        self.clearMCTS()
         it = 0
         while self.game.getGameEnded(board, curPlayer) == 0:
             it += 1
@@ -48,13 +57,7 @@ class Arena():
                 assert (self.display)
                 print("Turn ", str(it), "Player ", str(curPlayer))
 
-            if it==1:
-                random_action=np.random.randint(0,self.game.getActionSize()-1)
-                while True:
-                    if valids[random_action]==1:
-                        action=random_action
-                        break
-            elif valids[action] == 0:
+            if valids[action] == 0:
                 print(action)
                 assert valids[action] > 0
 

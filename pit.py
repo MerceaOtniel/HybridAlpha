@@ -70,5 +70,5 @@ n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 #mcts2 = MCTS(g, n2, args2)
 #n2p = lambda x: np.argmax(mcts2.getActionProb(x, temp=0))
 
-arena = Arena.Arena(n1p, hp, g,display=display)
+arena = Arena.Arena(n1p, hp, g,mcts1,display=display)
 print(arena.playGames(6, verbose=True))
