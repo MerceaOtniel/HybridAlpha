@@ -19,12 +19,12 @@ from utils import *
 
 args = dotdict({
     'numIters': 75,
-    'numEps': 100 ,
+    'numEps': 1 ,
     'tempThreshold': 15,
     'updateThreshold': 0.55,
     'maxlenOfQueue': 20000,
-    'numMCTSSims': 55,
-    'arenaCompare': 14,
+    'numMCTSSims': 5,
+    'arenaCompare': 1,
     'cpuct': 1,
     'parallel': 0,
     'epsilon': 0.25,
@@ -32,7 +32,7 @@ args = dotdict({
     'checkpoint': './temp/',
     'load_model': False,
     'load_folder_file': ('./temp/tictactoe/','checkpoint_13.pth.tar'),
-    'numItersForTrainExamplesHistory': 5,
+    'numItersForTrainExamplesHistory': 15,
 
 })
 

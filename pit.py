@@ -31,9 +31,9 @@ choice ="tictactoe"
 if choice == "tictactoe":
     g = TicTacToeGame(3)
     n1 = NNet(g)
-    n1.load_checkpoint('./temp/', 'best75_eps70_dim3.pth.tar')
+    n1.load_checkpoint('./temp/', 'temp:iter75:eps1:dim3.pth.tar')
     display=display
-    hp = GreedyTicTacToePlayer(g).play
+    hp = MinMaxTicTacToePlayer(g,9).play
 if choice == "gobang":
     g=GobangGame(14,14)
     n1 = NNet1(g)
@@ -71,4 +71,4 @@ n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 #n2p = lambda x: np.argmax(mcts2.getActionProb(x, temp=0))
 
 arena = Arena.Arena(n1p, hp, g,mcts1,display=display)
-print(arena.playGames(6, verbose=True))
+print(arena.playGames(2, verbose=True))

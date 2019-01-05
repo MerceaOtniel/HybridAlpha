@@ -73,20 +73,17 @@ class GreedyTicTacToePlayer():
 
 
 class MinMaxTicTacToePlayer():
-    def __init__(self,game):
+    def __init__(self,game,depth):
        self.game=game
+       self.depth=depth
 
     def play(self,board):
-        score = self.minimax((board,-1),9,1,-infinity,+infinity)
-        list=[]
-        for i in range(len(score[0])):
-            list.append(score[0][i][0])
-        action=random.choice(list)
-        return action
+        score = self.minimax((board,-1),self.depth,1,-infinity,+infinity)
+        return score[0]
 
     def minimax(self,state,depth,player,alfa,beta):
 
-        best = [[], None]
+        best = [None, None]
 
         if player==1:
             best[1]=-infinity
@@ -96,10 +93,10 @@ class MinMaxTicTacToePlayer():
 
         if self.game.getGameEnded(state[0],player)!=0:
             score=self.game.getGameEnded(state[0],player)
-            return [[],score]
+            return [None,score]
         elif depth==0:
             score=self.game.getScore(state[0],player)
-            return [[],score]
+            return [None,score]
         '''
         if depth==0 or self.game.getGameEnded(state[0],player)!=0:
             score=self.game.getGameEnded(state[0],player)
@@ -116,20 +113,16 @@ class MinMaxTicTacToePlayer():
             if player==1:
                 if score[1] > best[1]:
                     best[1]=score[1]
-                    best[0]=[(a,score[1])]
-                elif score[1]==best[1]:
-                    best[0].append((a,score[1]))
+                    best[0]=a
                 alfa=max(alfa,best[1])
-                if beta<alfa: # here is not equal because i want to select random from multiple actions with the same reward
+                if beta<=alfa: # here is not equal because i want to select random from multiple actions with the same reward
                     break
             else:
                 if score[1]<best[1]:
                     best[1]=score[1]
-                    best[0]=[(a,score[1])]
-                elif score[1]==best[1]:
-                    best[0].append((a,score[1]))
+                    best[0]=a
                 beta=min(beta,best[1])
-                if beta < alfa:
+                if beta <= alfa:
                     break
 
         return best
