@@ -1,6 +1,7 @@
 import numpy as np
 from math import inf as infinity
 from tictactoe.TicTacToeGame import Board
+import random
 """
 Random and Human-ineracting players for the game of TicTacToe.
 
@@ -52,7 +53,6 @@ class GreedyTicTacToePlayer():
         self.game=game
 
     def play(self,board):
-        print("greedy")
         valids = self.game.getValidMoves(board, 1)
         candidates = []
         for a in range(self.game.getActionSize()):
@@ -64,7 +64,12 @@ class GreedyTicTacToePlayer():
             #print(str(score)+" "+str(move))
             candidates += [(-score, a)]
         candidates.sort()
-        return candidates[0][1]
+        list=[]
+        max=candidates[0][0]
+        for i in range(len(candidates)):
+            if candidates[i][0] == max:
+                list.append(candidates[i][1])
+        return random.choice(list)
 
 
 class MinMaxTicTacToePlayer():
@@ -72,12 +77,16 @@ class MinMaxTicTacToePlayer():
        self.game=game
 
     def play(self,board):
-        score = self.minimax((board,-1),4,1,-infinity,+infinity)
-        return score[0]
+        score = self.minimax((board,-1),9,1,-infinity,+infinity)
+        list=[]
+        for i in range(len(score[0])):
+            list.append(score[0][i][0])
+        action=random.choice(list)
+        return action
 
     def minimax(self,state,depth,player,alfa,beta):
 
-        best = [None, None]
+        best = [[], None]
 
         if player==1:
             best[1]=-infinity
@@ -87,16 +96,15 @@ class MinMaxTicTacToePlayer():
 
         if self.game.getGameEnded(state[0],player)!=0:
             score=self.game.getGameEnded(state[0],player)
-            return [None,score]
+            return [[],score]
         elif depth==0:
             score=self.game.getScore(state[0],player)
-            return [None,score]
+            return [[],score]
         '''
         if depth==0 or self.game.getGameEnded(state[0],player)!=0:
             score=self.game.getGameEnded(state[0],player)
             return [None,score]
         '''
-
 
         valids = self.game.getValidMoves(state[0], player)
         for a in range(self.game.getActionSize()):
@@ -108,18 +116,22 @@ class MinMaxTicTacToePlayer():
             if player==1:
                 if score[1] > best[1]:
                     best[1]=score[1]
-                    best[0]=a
+                    best[0]=[(a,score[1])]
+                elif score[1]==best[1]:
+                    best[0].append((a,score[1]))
                 alfa=max(alfa,best[1])
-                if beta<=alfa:
+                if beta<alfa: # here is not equal because i want to select random from multiple actions with the same reward
                     break
-
             else:
                 if score[1]<best[1]:
                     best[1]=score[1]
-                    best[0]=a
+                    best[0]=[(a,score[1])]
+                elif score[1]==best[1]:
+                    best[0].append((a,score[1]))
                 beta=min(beta,best[1])
-                if beta<=alfa:
+                if beta < alfa:
                     break
+
         return best
 
 

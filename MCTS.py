@@ -107,9 +107,6 @@ class MCTS():
         cur_best = -float('inf')
         best_act = []
 
-        e=self.args.epsilon
-        if isRootNode and e>0:
-            noise=np.random.dirichlet([self.args.dirAlpha]*len(self.game.getValidMoves(canonicalBoard,1)))
         i=-1
         # pick the action with the highest upper confidence bound
         for a in range(self.game.getActionSize()):
@@ -117,21 +114,18 @@ class MCTS():
                 i+=1
                 if (s, a) in self.Qsa:
                     probability = self.Ps[s][a]
-                    if isRootNode and e>0:
-                        probability = (1-e) * probability + e * noise[i]
+
                     u = self.Qsa[(s, a)] + self.args.cpuct * probability * math.sqrt(self.Ns[s]) / (
                                 1 + self.Nsa[(s, a)])
                 else:
                     probability = self.Ps[s][a]
-                    if isRootNode and e > 0:
-                        probability = (1 - e) * probability + e * noise[i]
+
                     u = self.args.cpuct * probability * math.sqrt(self.Ns[s] + EPS)  # Q = 0 ?
 
                 if u > cur_best:
                     cur_best = u
                     best_act = [a]
                 elif u==cur_best:
-                    print("am intrat in egalitate")
                     best_act.append(a)
 
         a = random.choice(best_act)

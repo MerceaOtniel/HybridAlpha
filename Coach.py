@@ -236,7 +236,7 @@ class Coach():
 
             print('PITTING AGAINST PREVIOUS VERSION')
             arena = Arena(lambda x: np.argmax(pmcts.getActionProb(x, temp=0)),
-                          lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), self.game)
+                          lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), self.game,nmcts,pmcts,evaluate=True)
 
             pwins, nwins, draws = arena.playGames(self.args.arenaCompare, False)
 

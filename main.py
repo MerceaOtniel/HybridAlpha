@@ -19,12 +19,12 @@ from utils import *
 
 args = dotdict({
     'numIters': 75,
-    'numEps': 75,
+    'numEps': 100 ,
     'tempThreshold': 15,
     'updateThreshold': 0.6,
     'maxlenOfQueue': 20000,
-    'numMCTSSims': 35,
-    'arenaCompare': 15,
+    'numMCTSSims': 55,
+    'arenaCompare': 14,
     'cpuct': 1,
     'parallel': 0,
     'epsilon': 0.25,
@@ -32,7 +32,7 @@ args = dotdict({
     'checkpoint': './temp/',
     'load_model': False,
     'load_folder_file': ('./temp/tictactoe/','checkpoint_13.pth.tar'),
-    'numItersForTrainExamplesHistory': 15,
+    'numItersForTrainExamplesHistory': 5,
 
 })
 
@@ -41,7 +41,7 @@ if __name__=="__main__":
     choice="tictactoe"
 
     if choice=="tictactoe":
-        g = Game(6)
+        g = Game(3)
         nnet = nn(g)
         args.update({'trainExampleCheckpoint': './temp/tictactoe/'})
         args.update({'name': 'tictactoe'})
