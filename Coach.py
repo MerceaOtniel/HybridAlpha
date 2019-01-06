@@ -68,15 +68,6 @@ class Coach():
 
     ''' Use this function to decide the players that will be faced by the network at each iteration'''
 
-
-    def getMinMaxArena(self,depth):
-
-        nmcts3 = MCTS(self.game, self.nnet, self.args)
-        mp = tictacplayers.MinMaxTicTacToePlayer(self.game,depth).play
-        arenaminmax = Arena(lambda x: np.argmax(nmcts3.getActionProb(x, temp=0)), mp, self.game, nmcts3)
-        pwinsminmax, nwinsminmax, drawsminmax = arenaminmax.playGames(2)
-        return (pwinsminmax,nwinsminmax,drawsminmax)
-
     def decidePlayers(self):
 
         if "tictactoe" in self.args.trainExampleCheckpoint:
@@ -131,12 +122,8 @@ class Coach():
             self.writeToFile(file, epochdraw)
             self.writeToFile(file, epochswin2)
             self.writeToFile(file, epochsdraw2)
-            self.writeToFile(file, epochswin3[0])
-            self.writeToFile(file, epochsdraw3[0])
-            self.writeToFile(file, epochswin3[1])
-            self.writeToFile(file, epochsdraw3[1])
-            self.writeToFile(file, epochswin3[2])
-            self.writeToFile(file, epochsdraw3[2])
+            self.writeToFile(file, epochswin3)
+            self.writeToFile(file, epochsdraw3)
 
             file.close()
 
@@ -154,8 +141,8 @@ class Coach():
         epochswinrandom = []  # count the number of wins against random at every epoch
         epochsdrawgreedy = []  # count the number of draws against greedy at every epoch
         epochsdrawrandom = []  # count the number of wins against random at every epoch
-        epochswinminmax = [[],[],[]]  # count the number of wins against minmax at every epoch
-        epochsdrawminmax = [[],[],[]]  # count the number of draws against minmax at every epoch
+        epochswinminmax = []  # count the number of wins against minmax at every epoch
+        epochsdrawminmax = []  # count the number of draws against minmax at every epoch
 
         if self.args.load_model == True:
             file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(
@@ -265,28 +252,20 @@ class Coach():
             self.writeLogsToFile(epochswin, epochdraw)
 
             ''' Get all the players and then pit them against the network'''
-            (gp, rp, _) = self.decidePlayers()
+            (gp, rp, mp) = self.decidePlayers()
 
             if self.args.parallel == 0:
 
 
                 nmcts1 = MCTS(self.game, self.nnet, self.args)
                 nmcts2 = MCTS(self.game, self.nnet, self.args)
+                nmcts3 = MCTS(self.game, self.nnet, self.args)
 
                 arenagreedy = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), gp, self.game,nmcts1)
                 arenarandom = Arena(lambda x: np.argmax(nmcts2.getActionProb(x, temp=0)), rp, self.game,nmcts2)
+                arenaminmax = Arena(lambda x: np.argmax(nmcts3.getActionProb(x, temp=0)), mp, self.game,nmcts3,evaluate=True)
 
-                '''
-                instead of the following three lines you can use the default minmax returned by decidePlayers
-                these lines were used for a better evaluation of the network 
-                '''
-                pwinsminmax, nwinsminmax, drawsminmax = self.getMinMaxArena(4) #it plays only 2 games, but you can set the min max depth
-                pwinsminmax1, nwinsminmax1, drawsminmax1 = self.getMinMaxArena(6)
-                pwinsminmax2, nwinsminmax2, drawsminmax2 = self.getMinMaxArena(9)
-
-                print("deocamdata afisez al doilea joc"+str(pwinsminmax1)+" "+str(nwinsminmax1)+" "+str(drawsminmax1))
-                print("deocamdata afisez al treilea joc" + str(pwinsminmax2) + " " + str(nwinsminmax2) + " " + str(drawsminmax2))
-
+                pwinsminmax, nwinsminmax, drawsminmax = arenaminmax.playGames(self.args.arenaCompare)
                 pwinsgreedy, nwinsgreedy, drawsgreedy = arenagreedy.playGames(self.args.arenaCompare)
                 pwinsreandom, nwinsrandom, drawsrandom = arenarandom.playGames(self.args.arenaCompare)
 
@@ -300,12 +279,9 @@ class Coach():
             epochsdrawrandom.append(drawsrandom)
             epochswinrandom.append(pwinsreandom)
             epochswingreedy.append(pwinsgreedy)
-            epochswinminmax[0].append(pwinsminmax)
-            epochsdrawminmax[0].append(drawsminmax)
-            epochswinminmax[1].append(pwinsminmax1)
-            epochsdrawminmax[1].append(drawsminmax1)
-            epochswinminmax[2].append(pwinsminmax2)
-            epochsdrawminmax[2].append(drawsminmax2)
+            epochswinminmax.append(pwinsminmax)
+            epochsdrawminmax.append(drawsminmax)
+
 
             self.writeLogsToFile(epochswingreedy, epochsdrawgreedy, epochswinrandom, epochsdrawrandom, epochswinminmax,
                                  epochsdrawminmax, training=False)
@@ -444,7 +420,7 @@ def apelareminmax(num, q, args):
             nnet = nn(g, 0.06)
             mp = returnplayer(args, "minmax", g)
             nmcts1 = MCTS(g, nnet, args)
-            arenaminmax = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), mp, g)
+            arenaminmax = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), mp, g,nmcts1,evaluate=True)
             pwins, nwins, drawwins = arenaminmax.playGames(num)
             q.put((pwins, nwins, drawwins))
             verificare = 1
