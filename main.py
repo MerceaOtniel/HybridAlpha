@@ -19,12 +19,12 @@ from utils import *
 
 args = dotdict({
     'numIters': 75,
-    'numEps': 1 ,
+    'numEps': 75 ,
     'tempThreshold': 15,
     'updateThreshold': 0.55,
     'maxlenOfQueue': 20000,
-    'numMCTSSims': 5,
-    'arenaCompare': 1,
+    'numMCTSSims': 45,
+    'arenaCompare': 14,
     'cpuct': 1,
     'parallel': 0,
     'epsilon': 0.25,
@@ -41,7 +41,7 @@ if __name__=="__main__":
     choice="tictactoe"
 
     if choice=="tictactoe":
-        g = Game(3)
+        g = Game(6)
         nnet = nn(g)
         args.update({'trainExampleCheckpoint': './temp/tictactoe/'})
         args.update({'name': 'tictactoe'})

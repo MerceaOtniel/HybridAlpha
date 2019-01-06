@@ -29,11 +29,11 @@ any agent.
 choice ="tictactoe"
 
 if choice == "tictactoe":
-    g = TicTacToeGame(3)
+    g = TicTacToeGame(6)
     n1 = NNet(g)
-    n1.load_checkpoint('./temp/', 'temp:iter75:eps1:dim3.pth.tar')
+    n1.load_checkpoint('./temp/', 'best75:eps75:dim6.pth.tar')
     display=display
-    hp = MinMaxTicTacToePlayer(g,9).play
+    hp = MinMaxTicTacToePlayer(g,1).play
 if choice == "gobang":
     g=GobangGame(14,14)
     n1 = NNet1(g)
@@ -59,7 +59,7 @@ if choice == "connect4":
 
 
 # nnet players
-args1 = dotdict({'numMCTSSims': 60, 'cpuct':1.0,'epsilon': 0,'dirAlpha':0.3})
+args1 = dotdict({'numMCTSSims': 45, 'cpuct':1.0,'epsilon': 0,'dirAlpha':0.3})
 mcts1 = MCTS(g, n1, args1)
 n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 

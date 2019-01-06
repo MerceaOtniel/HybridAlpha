@@ -69,7 +69,7 @@ class GreedyTicTacToePlayer():
         for i in range(len(candidates)):
             if candidates[i][0] == max:
                 list.append(candidates[i][1])
-        return random.choice(list)
+        return candidates[0][1]
 
 
 class MinMaxTicTacToePlayer():
@@ -78,7 +78,7 @@ class MinMaxTicTacToePlayer():
        self.depth=depth
 
     def play(self,board):
-        score = self.minimax((board,-1),self.depth,1,-infinity,+infinity)
+        score = self.minimax((board,-1),self.depth,-1,-infinity,+infinity)
         return score[0]
 
     def minimax(self,state,depth,player,alfa,beta):
@@ -109,7 +109,6 @@ class MinMaxTicTacToePlayer():
                 continue
             nextBoard= self.game.getNextState(state[0], player, a)
             score = self.minimax(nextBoard, depth-1, -player,alfa,beta)
-
             if player==1:
                 if score[1] > best[1]:
                     best[1]=score[1]
