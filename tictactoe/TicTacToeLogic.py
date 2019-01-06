@@ -36,7 +36,13 @@ class Board():
     def __getitem__(self, index): 
         return self.pieces[index]
 
-    def return_reward(self,count,count2):
+    def return_reward(self,count,count2,color):
+
+        if color==-1:
+            aux=count
+            count=count2
+            count2=aux
+
         if count2 == self.n - 1 and count == 1:
             return 1
         if count2 == self.n - 1 and count == 0:
@@ -62,8 +68,7 @@ class Board():
                 else:
                     if self[x][y]==-color:
                         count2=count2+1
-
-            u=self.return_reward(count,count2)
+            u=self.return_reward(count,count2,color)
             if u<min:
                 min=u
         rezultat.append(min)
@@ -78,7 +83,7 @@ class Board():
                 else:
                     if self[x][y] == -color:
                         count2 = count2 + 1
-            u = self.return_reward(count, count2)
+            u = self.return_reward(count, count2,color)
             if u < min:
                 min = u
         rezultat.append(min)
@@ -93,7 +98,7 @@ class Board():
                 if self[d][d]==-color:
                     count2+=1
 
-        u = self.return_reward(count, count2)
+        u = self.return_reward(count, count2,color)
         if u < min:
             min = u
         rezultat.append(min)
@@ -108,7 +113,7 @@ class Board():
                 if self[d][self.n-d-1] == -color:
                     count2 += 1
 
-        u = self.return_reward(count, count2)
+        u = self.return_reward(count, count2,color)
         if u<min:
             min=u
 

@@ -58,7 +58,7 @@ class Arena():
                 assert (self.display)
                 print("Turn ", str(it), "Player ", str(curPlayer))
 
-            if it<=2 and self.evaluate==True:
+            if it<=1 and self.evaluate==True:
                 print("intru in asta")
                 while True:
                     random_action = np.random.randint(0, self.game.getActionSize() - 1)
