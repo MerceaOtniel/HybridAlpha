@@ -73,7 +73,7 @@ class Coach():
         if "tictactoe" in self.args.trainExampleCheckpoint:
             rp = tictacplayers.RandomTicTacToePlayer(self.game).play
             gp = tictacplayers.GreedyTicTacToePlayer(self.game).play
-            mp = tictacplayers.MinMaxTicTacToePlayer(self.game,4).play #it creates by default a minmax with depth4
+            mp = tictacplayers.MinMaxTicTacToePlayer(self.game,9).play #it creates by default a minmax with depth4
         else:
             if "othello" in self.args.trainExampleCheckpoint:
                 gp = othelloplayers.GreedyOthelloPlayer(self.game).play
