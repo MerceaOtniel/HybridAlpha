@@ -73,22 +73,22 @@ class Coach():
         if "tictactoe" in self.args.trainExampleCheckpoint:
             rp = tictacplayers.RandomTicTacToePlayer(self.game).play
             gp = tictacplayers.GreedyTicTacToePlayer(self.game).play
-            mp = tictacplayers.MinMaxTicTacToePlayer(self.game,9).play #it creates by default a minmax with depth4
+            mp = tictacplayers.MinMaxTicTacToePlayer(self.game,4).play #it creates by default a minmax with depth4
         else:
             if "othello" in self.args.trainExampleCheckpoint:
                 gp = othelloplayers.GreedyOthelloPlayer(self.game).play
                 rp = othelloplayers.RandomOthelloPlayer(self.game).play
-                mp = othelloplayers.MinMaxOthelloPlayer(self.game,4).play
+                mp = othelloplayers.MinMaxOthelloPlayer(self.game,1).play
             else:
                 if "gobang" in self.args.trainExampleCheckpoint:
                     gp = gobangplayers.GreedyGobangPlayer(self.game).play
                     rp = gobangplayers.RandomGobangPlayer(self.game).play
-                    mp = gobangplayers.MinMaxGobangPlayer(self.game,4).play
+                    mp = gobangplayers.MinMaxGobangPlayer(self.game,1).play
                 else:
                     if "connect4" in self.args.trainExampleCheckpoint:
                         rp = connect4players.RandomConnect4Player(self.game).play
                         gp = connect4players.GreedyConnect4Player(self.game).play
-                        mp = connect4players.MinMaxConnect4Player(self.game,4).play
+                        mp = connect4players.MinMaxConnect4Player(self.game,1).play
 
         return (gp, rp, mp)
 

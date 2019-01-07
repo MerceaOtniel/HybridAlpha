@@ -19,12 +19,12 @@ from utils import *
 
 args = dotdict({
     'numIters': 75,
-    'numEps': 80 ,
+    'numEps': 1,
     'tempThreshold': 15,
     'updateThreshold': 0.55,
     'maxlenOfQueue': 20000,
-    'numMCTSSims': 35,
-    'arenaCompare': 14,
+    'numMCTSSims': 55,
+    'arenaCompare': 2,
     'cpuct': 1,
     'parallel': 0,
     'checkpoint': './temp/',
@@ -36,10 +36,10 @@ args = dotdict({
 
 if __name__=="__main__":
 
-    choice="tictactoe"
+    choice="gobang"
 
     if choice=="tictactoe":
-        g = Game(3)
+        g = Game(6)
         nnet = nn(g)
         args.update({'trainExampleCheckpoint': './temp/tictactoe/'})
         args.update({'name': 'tictactoe'})
@@ -54,7 +54,7 @@ if __name__=="__main__":
         args.update({'trainExampleCheckpoint': './temp/gobang/'})
         args.update({'name': 'gobang'})
     if choice=="connect4":
-        g=Game3(6,6)
+        g=Game3(6,7)
         nnet=nn3(g)
         args.update({'trainExampleCheckpoint': './temp/connect4/'})
         args.update({'name': 'connect4'})

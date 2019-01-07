@@ -122,8 +122,8 @@ class Board():
 
         max=0
         for i in range(self.n):
-            numbercontiguous = 0
             for j in range(self.n):
+                numbercontiguous = 0
                 pozx=i
                 pozy=j
                 for u in range(5):
@@ -138,14 +138,16 @@ class Board():
                     pozx+=x
                     pozy+=y
 
-            if numbercontiguous>max:
-                max=numbercontiguous
+                if numbercontiguous>max:
+                    max=numbercontiguous
         return max
 
 
     def countDiff(self, color):
         """Counts the # pieces of the given color
         (1 for white, -1 for black, 0 for empty spaces)"""
+
+
         maxadv=0
         maxadv=max(maxadv,self.check_number_moves(1,0,-color))
         maxadv=max(maxadv,self.check_number_moves(0,1,-color))
@@ -153,7 +155,7 @@ class Board():
         maxadv=max(maxadv,self.check_number_moves(1,-1,-color))
 
         if maxadv ==5:
-            return -5
+            return -5*-color
 
         maxplayer=0
 
@@ -163,7 +165,9 @@ class Board():
         maxplayer = max(maxplayer, self.check_number_moves(1, -1, color))
 
         if maxplayer==5:
-            return 5
+            return 5*color
 
-        return maxplayer-maxadv
+        if maxplayer+maxadv==0:
+            return 0
+        return ((maxplayer-maxadv)/(maxplayer+maxadv))*color
 

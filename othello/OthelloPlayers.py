@@ -52,11 +52,11 @@ class GreedyOthelloPlayer():
 
 
 class MinMaxOthelloPlayer():
-    def __init__(self,game):
+    def __init__(self,game,depth):
        self.game=game
-
+       self.depth=depth
     def play(self,board):
-        score = self.minimax((board,-1),9,1,-infinity,+infinity)
+        score = self.minimax((board,-1),self.depth,1,-infinity,+infinity)
         return score[0]
 
     def minimax(self,state,depth,player,alfa,beta):
