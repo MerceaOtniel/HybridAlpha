@@ -170,4 +170,3 @@ class Board():
         if maxplayer+maxadv==0:
             return 0
         return ((maxplayer-maxadv)/(maxplayer+maxadv))*color
-

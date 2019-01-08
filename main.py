@@ -19,12 +19,12 @@ from utils import *
 
 args = dotdict({
     'numIters': 75,
-    'numEps': 70,
+    'numEps': 1,
     'tempThreshold': 15,
     'updateThreshold': 0.55,
     'maxlenOfQueue': 20000,
     'numMCTSSims': 55,
-    'arenaCompare': 14,
+    'arenaCompare': 2,
     'cpuct': 1,
     'parallel': 0,
     'checkpoint': './temp/',
@@ -36,7 +36,7 @@ args = dotdict({
 
 if __name__=="__main__":
 
-    choice="othello"
+    choice="connect4"
 
     if choice=="tictactoe":
         g = Game(6)

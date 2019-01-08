@@ -59,6 +59,7 @@ class GreedyTicTacToePlayer():
             if valids[a] == 0:
                 continue
             nextBoard, _ = self.game.getNextState(board, 1, a)
+            print("nextboard="+str(nextBoard))
             score = self.game.getScore(nextBoard, 1)
             move = (int(a / self.game.n), a% self.game.n)
             #print(str(score)+" "+str(move))

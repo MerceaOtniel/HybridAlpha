@@ -48,7 +48,6 @@ class GreedyGobangPlayer():
             nextBoard, _ = self.game.getNextState(board, 1, a)
             score = self.game.getScore(nextBoard, 1)
             candidates += [(-score, a)]
-        candidates += [(-score, a)]
         candidates.sort()
         list = []
         max = candidates[0][0]
@@ -111,5 +110,3 @@ class MinMaxGobangPlayer():
                 if beta<=alfa:
                     break
         return best
-
-
