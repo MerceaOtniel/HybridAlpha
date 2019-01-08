@@ -78,7 +78,7 @@ class Coach():
             if "othello" in self.args.trainExampleCheckpoint:
                 gp = othelloplayers.GreedyOthelloPlayer(self.game).play
                 rp = othelloplayers.RandomOthelloPlayer(self.game).play
-                mp = othelloplayers.MinMaxOthelloPlayer(self.game,1).play
+                mp = othelloplayers.MinMaxOthelloPlayer(self.game,3).play
             else:
                 if "gobang" in self.args.trainExampleCheckpoint:
                     gp = gobangplayers.GreedyGobangPlayer(self.game).play

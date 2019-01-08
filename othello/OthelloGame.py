@@ -96,9 +96,14 @@ class OthelloGame(Game):
         numberMovesPlayer=len(legalMoves)
         numberMovesOpponent=len(legalMoves1)
 
+        if color==-1:
+            aux=numberMovesOpponent
+            numberMovesOpponent=numberMovesPlayer
+            numberMovesPlayer=aux
+
         if numberMovesPlayer+numberMovesOpponent==0:
             return 0
-        return 100*(numberMovesPlayer-numberMovesOpponent)/(numberMovesPlayer+numberMovesOpponent)
+        return (numberMovesPlayer-numberMovesOpponent)/(numberMovesPlayer+numberMovesOpponent)
 
     def cornerNumberHeuristics(self,color,board):
 
@@ -128,9 +133,15 @@ class OthelloGame(Game):
         else:
             if board[self.n-1][self.n-1]==-color:
                 adversaryCorners+=1
+
+        if color==-1:
+            aux=adversaryCorners
+            adversaryCorners=playerCorners
+            playerCorners=aux
+
         if playerCorners+adversaryCorners==0:
             return 0
-        return 100*(playerCorners-adversaryCorners)/(playerCorners+adversaryCorners)
+        return (playerCorners-adversaryCorners)/(playerCorners+adversaryCorners)
 
     def countPiecesHeuristics(self, color,board):
         count1 = 0
@@ -142,15 +153,20 @@ class OthelloGame(Game):
                 if board[x][y] == -color:
                     count2 += 1
 
+        if color==-1:
+            aux=count1
+            count1=count2
+            count2=aux
+
         if count1+count2==0:
             return 0
-        return 100 * (count1 - count2) / (count1 + count2)
+        return (count1 - count2) / (count1 + count2)
 
     def getScore(self, board, player):
         countPieces=self.countPiecesHeuristics(player,board)
         countCorners=self.cornerNumberHeuristics(player,board)
         countMoves=self.moveNumberHeuristics(player,board)
-        return countCorners+countMoves+countPieces
+        return (countCorners+countMoves+countPieces)
 
 def display(board):
     n = board.shape[0]
