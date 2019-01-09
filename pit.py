@@ -26,14 +26,14 @@ from utils import *
 use this script to play any two agents against each other, or play manually with
 any agent.
 """
-choice ="gobang"
+choice ="connect4"
 
 if choice == "tictactoe":
-    g = TicTacToeGame(3)
+    g = TicTacToeGame(6)
     n1 = NNet(g)
-    n1.load_checkpoint('./temp/', 'best75_eps100_dim3.pth.tar')
+    n1.load_checkpoint('./temp/', 'best75_eps90_dim6.pth.tar')
     display=display
-    hp = GreedyTicTacToePlayer(g).play
+    hp = MinMaxTicTacToePlayer(g,2).play
 if choice == "gobang":
     g=GobangGame(14,14)
     n1 = NNet1(g)
@@ -51,7 +51,7 @@ if choice == "connect4":
     n1=NNet3(g)
     n1.load_checkpoint('./temp/','best75_eps1_dim6.pth.tar')
     display=display3
-    hp=MinMaxConnect4Player(g,1).play
+    hp=MinMaxConnect4Player(g,7).play
 
 # all players
 #rp = RandomPlayer(g).play

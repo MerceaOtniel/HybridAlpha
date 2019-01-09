@@ -53,15 +53,18 @@ class GreedyConnect4Player():
 
         if len(win_move_set) > 0:
             ret_move = np.random.choice(list(win_move_set))
+            ret_move=list(win_move_set)[0]
             if self.verbose: print('Playing winning action %s from %s' % (ret_move, win_move_set))
         elif len(stop_loss_move_set) > 0:
             ret_move = np.random.choice(list(stop_loss_move_set))
+            ret_move=list(stop_loss_move_set)[0]
             if self.verbose: print('Playing loss stopping action %s from %s' % (ret_move, stop_loss_move_set))
         elif len(fallback_move_set) > 0:
             ret_move = np.random.choice(list(fallback_move_set))
+            ret_move=list(fallback_move_set)[0]
             if self.verbose: print('Playing random action %s from %s' % (ret_move, fallback_move_set))
         else:
-            raise Exception('No valid moves remaining: %s' % game.stringRepresentation(board))
+            raise Exception('No valid moves remaining: %s' % self.game.stringRepresentation(board))
 
         return ret_move
 
@@ -88,7 +91,9 @@ class MinMaxConnect4Player():
 
         if depth==0 or self.game.getGameEnded(state[0],player)!=0:
             score=self.game.getGameEnded(state[0],player)
-            return [None,score]
+            score1=self.game.getGameEnded(state[0],-player)
+            #print("aici score="+str(score)+" score1="+str(score1))
+            return [None,score*player]
         '''
         if depth==0 or self.game.getGameEnded(state[0],player)!=0:
             score=self.game.getGameEnded(state[0],player)
@@ -99,9 +104,9 @@ class MinMaxConnect4Player():
         for a in range(self.game.getActionSize()):
             if valids[a] == 0:
                 continue
-            nextBoard= self.game.getNextState(state[0], player, a)
+            nextBoard= self.game.getNextState(state[0], -player, a)
             score = self.minimax(nextBoard, depth-1, -player,alfa,beta)
-            print("action ="+str(a)+" score="+str(score))
+            #print("action ="+str(a)+" score="+str(score))
             if player==1:
                 if score[1] > best[1]:
                     best[1]=score[1]
@@ -116,5 +121,5 @@ class MinMaxConnect4Player():
                 beta=min(beta,best[1])
                 if beta <= alfa:
                     break
-
+        best[1] = best[1] * player
         return best

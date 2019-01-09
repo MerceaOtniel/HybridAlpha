@@ -59,7 +59,6 @@ class GreedyTicTacToePlayer():
             if valids[a] == 0:
                 continue
             nextBoard, _ = self.game.getNextState(board, 1, a)
-            print("nextboard="+str(nextBoard))
             score = self.game.getScore(nextBoard, 1)
             move = (int(a / self.game.n), a% self.game.n)
             #print(str(score)+" "+str(move))
@@ -91,31 +90,33 @@ class MinMaxTicTacToePlayer():
         else:
             best[1]=+infinity
 
-
+        '''
+        
         if self.game.getGameEnded(state[0],player)!=0:
             score=self.game.getGameEnded(state[0],player)
-            return [None,score]
+            print("Aici")
+            return [None,score*player]
         elif depth==0:
             score=self.game.getScore(state[0],player)
-            return [None,score]
+            return [None,score*player]
         '''
         if depth==0 or self.game.getGameEnded(state[0],player)!=0:
             score=self.game.getGameEnded(state[0],player)
-            return [None,score]
-        '''
+            return [None,score*player]
+
 
         valids = self.game.getValidMoves(state[0], player)
         for a in range(self.game.getActionSize()):
             if valids[a] == 0:
                 continue
-            nextBoard= self.game.getNextState(state[0], player, a)
+            nextBoard= self.game.getNextState(state[0], -player, a)
             score = self.minimax(nextBoard, depth-1, -player,alfa,beta)
             if player==1:
                 if score[1] > best[1]:
                     best[1]=score[1]
                     best[0]=a
                 alfa=max(alfa,best[1])
-                if beta<=alfa: # here is not equal because i want to select random from multiple actions with the same reward
+                if beta<=alfa:
                     break
             else:
                 if score[1]<best[1]:
@@ -125,6 +126,7 @@ class MinMaxTicTacToePlayer():
                 if beta <= alfa:
                     break
 
+        best[1]=best[1]*player
         return best
 
 

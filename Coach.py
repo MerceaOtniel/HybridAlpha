@@ -83,12 +83,12 @@ class Coach():
                 if "gobang" in self.args.trainExampleCheckpoint:
                     gp = gobangplayers.GreedyGobangPlayer(self.game).play
                     rp = gobangplayers.RandomGobangPlayer(self.game).play
-                    mp = gobangplayers.MinMaxGobangPlayer(self.game,1).play
+                    mp = gobangplayers.MinMaxGobangPlayer(self.game,2).play
                 else:
                     if "connect4" in self.args.trainExampleCheckpoint:
                         rp = connect4players.RandomConnect4Player(self.game).play
                         gp = connect4players.GreedyConnect4Player(self.game).play
-                        mp = connect4players.MinMaxConnect4Player(self.game,1).play
+                        mp = connect4players.MinMaxConnect4Player(self.game,2).play
 
         return (gp, rp, mp)
 
@@ -251,7 +251,9 @@ class Coach():
             epochdraw.append(draws)
             self.writeLogsToFile(epochswin, epochdraw)
 
-            ''' Get all the players and then pit them against the network'''
+            ''' Get all the players and then pit them against the network. You need to modify here if you implement 
+                more players
+            '''
             (gp, rp, mp) = self.decidePlayers()
 
             if self.args.parallel == 0:
@@ -281,7 +283,6 @@ class Coach():
             epochswingreedy.append(pwinsgreedy)
             epochswinminmax.append(pwinsminmax)
             epochsdrawminmax.append(drawsminmax)
-
 
             self.writeLogsToFile(epochswingreedy, epochsdrawgreedy, epochswinrandom, epochsdrawrandom, epochswinminmax,
                                  epochsdrawminmax, training=False)
@@ -383,9 +384,6 @@ def startprocess(function, num, q, args):
 
 def verifyqueue(function, num, q, args):
     while q.empty() == True:
-        f = open("failedcudnn.txt", "w+")
-        f.write("whatever")
-        f.close()
         p = startprocess(function, num, q, args)
         p.join()
     return verifyvalues(function, num, q, args)
@@ -394,9 +392,6 @@ def verifyqueue(function, num, q, args):
 def verifyvalues(function, num, q, args):
     (pwins, nwins, draws) = extractvaluefromqueue(q)
     while pwins == 0 and nwins == 0 and draws == 0:
-        f = open("toate0.txt", "w+")
-        f.write("toate 0 ")
-        f.close()
         p = startprocess(function, num, q, args)
         p.join()
         (pwins, nwins, draws) = extractvaluefromqueue(q)
@@ -425,9 +420,6 @@ def apelareminmax(num, q, args):
             q.put((pwins, nwins, drawwins))
             verificare = 1
         except:
-            f = open("guru99.txt", "w+")
-            f.write("minmax ")
-            f.close()
             verificare = 0
 
 
@@ -446,9 +438,6 @@ def apelarerandom(num, q, args):
             q.put((pwins, nwins, drawwins))
             verificare = 1
         except:
-            f = open("guru99.txt", "w+")
-            f.write("random")
-            f.close()
             verificare = 0
 
 
@@ -467,9 +456,6 @@ def apelaregreedy(num, q, args):
             q.put((pwins, nwins, drawwins))
             verificare = 1
         except:
-            f = open("guru99.txt", "w+")
-            f.write("greedy")
-            f.close()
             verificare = 0
 
 
