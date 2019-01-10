@@ -53,15 +53,12 @@ class GreedyConnect4Player():
 
         if len(win_move_set) > 0:
             ret_move = np.random.choice(list(win_move_set))
-            ret_move=list(win_move_set)[0]
             if self.verbose: print('Playing winning action %s from %s' % (ret_move, win_move_set))
         elif len(stop_loss_move_set) > 0:
             ret_move = np.random.choice(list(stop_loss_move_set))
-            ret_move=list(stop_loss_move_set)[0]
             if self.verbose: print('Playing loss stopping action %s from %s' % (ret_move, stop_loss_move_set))
         elif len(fallback_move_set) > 0:
             ret_move = np.random.choice(list(fallback_move_set))
-            ret_move=list(fallback_move_set)[0]
             if self.verbose: print('Playing random action %s from %s' % (ret_move, fallback_move_set))
         else:
             raise Exception('No valid moves remaining: %s' % self.game.stringRepresentation(board))
@@ -91,8 +88,6 @@ class MinMaxConnect4Player():
 
         if depth==0 or self.game.getGameEnded(state[0],player)!=0:
             score=self.game.getGameEnded(state[0],player)
-            score1=self.game.getGameEnded(state[0],-player)
-            #print("aici score="+str(score)+" score1="+str(score1))
             return [None,score*player]
         '''
         if depth==0 or self.game.getGameEnded(state[0],player)!=0:
@@ -106,7 +101,8 @@ class MinMaxConnect4Player():
                 continue
             nextBoard= self.game.getNextState(state[0], -player, a)
             score = self.minimax(nextBoard, depth-1, -player,alfa,beta)
-            #print("action ="+str(a)+" score="+str(score))
+            if depth==7:
+                print("action ="+str(a)+" score="+str(score))
             if player==1:
                 if score[1] > best[1]:
                     best[1]=score[1]

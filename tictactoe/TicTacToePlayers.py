@@ -91,7 +91,6 @@ class MinMaxTicTacToePlayer():
             best[1]=+infinity
 
         '''
-        
         if self.game.getGameEnded(state[0],player)!=0:
             score=self.game.getGameEnded(state[0],player)
             print("Aici")
@@ -100,16 +99,17 @@ class MinMaxTicTacToePlayer():
             score=self.game.getScore(state[0],player)
             return [None,score*player]
         '''
+
         if depth==0 or self.game.getGameEnded(state[0],player)!=0:
             score=self.game.getGameEnded(state[0],player)
-            return [None,score*player]
+            return [None,score]
 
 
         valids = self.game.getValidMoves(state[0], player)
         for a in range(self.game.getActionSize()):
             if valids[a] == 0:
                 continue
-            nextBoard= self.game.getNextState(state[0], -player, a)
+            nextBoard= self.game.getNextState(state[0], player, a)
             score = self.minimax(nextBoard, depth-1, -player,alfa,beta)
             if player==1:
                 if score[1] > best[1]:
@@ -125,8 +125,6 @@ class MinMaxTicTacToePlayer():
                 beta=min(beta,best[1])
                 if beta <= alfa:
                     break
-
-        best[1]=best[1]*player
         return best
 
 
