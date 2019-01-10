@@ -85,13 +85,13 @@ class MinMaxGobangPlayer():
         '''
         if depth==0 or self.game.getGameEnded(state[0],player)!=0:
             score=self.game.getGameEnded(state[0],player)
-            return [None,score*player]
+            return [None,score]
 
         valids = self.game.getValidMoves(state[0], player)
         for a in range(self.game.getActionSize()):
             if valids[a] == 0:
                 continue
-            nextBoard= self.game.getNextState(state[0], -player, a)
+            nextBoard= self.game.getNextState(state[0], player, a)
             score = self.minimax(nextBoard, depth-1, -player,alfa,beta)
             if player==1:
                 if score[1] > best[1]:
@@ -100,7 +100,6 @@ class MinMaxGobangPlayer():
                 alfa=max(alfa,best[1])
                 if beta<=alfa:
                     break
-
             else:
                 if score[1]<best[1]:
                     best[1]=score[1]
@@ -108,5 +107,4 @@ class MinMaxGobangPlayer():
                 beta=min(beta,best[1])
                 if beta<=alfa:
                     break
-        best[1] = best[1] * player
         return best
