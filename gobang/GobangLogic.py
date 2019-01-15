@@ -42,14 +42,14 @@ class Board():
         if self.moveNumber==0:
             moves.add((int(self.n/2),int(self.n/2)))
             return list(moves)
-
+        # for a moment it is scripted  to +-1
         if self.moveNumber==2:
             centerX=int(self.n/2)
             centerY=int(self.n/2)
-            minX=centerX-5
-            maxX=centerX+5
-            minY=centerY-5
-            maxY=centerY+5
+            minX=centerX-1
+            maxX=centerX+1
+            minY=centerY-1
+            maxY=centerY+1
             for y in range(self.n):
                 for x in range(self.n):
                     if self[x][y]==0 and (x<minX or x>maxX) and (y<minY or y>maxY):

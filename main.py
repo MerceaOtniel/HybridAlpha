@@ -36,7 +36,7 @@ args = dotdict({
 
 if __name__=="__main__":
 
-    choice="connect4"
+    choice="gobang"
 
     if choice=="tictactoe":
         g = Game(6)
@@ -49,7 +49,7 @@ if __name__=="__main__":
         args.update({'trainExampleCheckpoint': './temp/othello/'})
         args.update({'name': 'othello'})
     if choice=="gobang":
-        g=Game2(14,14)
+        g=Game2(6)
         nnet = nn2(g)
         args.update({'trainExampleCheckpoint': './temp/gobang/'})
         args.update({'name': 'gobang'})
