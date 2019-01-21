@@ -28,8 +28,8 @@ class Board():
         # Set up the initial 4 pieces.
         self.pieces[int(self.n/2)-1][int(self.n/2)] = 1
         self.pieces[int(self.n/2)][int(self.n/2)-1] = 1
-        self.pieces[int(self.n/2)-1][int(self.n/2)-1] = -1;
-        self.pieces[int(self.n/2)][int(self.n/2)] = -1;
+        self.pieces[int(self.n/2)-1][int(self.n/2)-1] = -1
+        self.pieces[int(self.n/2)][int(self.n/2)] = -1
 
     # add [][] indexer syntax to the Board
     def __getitem__(self, index): 

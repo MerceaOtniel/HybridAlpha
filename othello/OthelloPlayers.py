@@ -53,7 +53,6 @@ class GreedyOthelloPlayer():
         for i in range(len(candidates)):
             if candidates[i][0] == max:
                 list.append(candidates[i][1])
-        print("greedy")
         return random.choice(list)
 
 

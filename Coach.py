@@ -352,23 +352,23 @@ class Coach():
 
         self.counter += 1
 
-        processminmax = startprocess(apelareminmax, first_half, qminmax, args)
+        processminmax = startprocess(callminmax, first_half, qminmax, args)
         processminmax.join()
-        processminmax1 = startprocess(apelareminmax, second_half, qminmax1, args)
+        processminmax1 = startprocess(callminmax, second_half, qminmax1, args)
         processminmax1.join()
-        processrandom = startprocess(apelarerandom, num, qrandom, args)
+        processrandom = startprocess(callrandom, num, qrandom, args)
         processrandom.join()
-        processgreedy = startprocess(apelaregreedy, num, qgreedy, args)
+        processgreedy = startprocess(callgreedy, num, qgreedy, args)
         processgreedy.join()
 
 
-        (pwinsminmax1, nwinsminmax1, drawsminmax1) = verifyqueue(apelareminmax, first_half, qminmax, args)
-        (pwinsminmax2, nwinsminmax2, drawsminmax2) = verifyqueue(apelareminmax, second_half, qminmax1, args)
+        (pwinsminmax1, nwinsminmax1, drawsminmax1) = verifyqueue(callminmax, first_half, qminmax, args)
+        (pwinsminmax2, nwinsminmax2, drawsminmax2) = verifyqueue(callminmax, second_half, qminmax1, args)
         pwinsminmax = pwinsminmax2 + pwinsminmax1
         nwinsminmax = nwinsminmax2 + nwinsminmax1
         drawsminmax = drawsminmax2 + drawsminmax1
-        (pwinsrandom, nwinsrandom, drawsrandom) = verifyqueue(apelarerandom, num, qrandom, args)
-        (pwinsgreedy, nwinsgreedy, drawsgreedy) = verifyqueue(apelaregreedy, num, qgreedy, args)
+        (pwinsrandom, nwinsrandom, drawsrandom) = verifyqueue(callrandom, num, qrandom, args)
+        (pwinsgreedy, nwinsgreedy, drawsgreedy) = verifyqueue(callgreedy, num, qgreedy, args)
 
         u = [(pwinsminmax, nwinsminmax, drawsminmax), (pwinsgreedy, nwinsgreedy, drawsgreedy),
              (pwinsrandom, nwinsrandom, drawsrandom)]
@@ -405,11 +405,11 @@ def extractvaluefromqueue(q):
     return (pwins1, nwins1, draws1)
 
 
-def apelareminmax(num, q, args):
+def callminmax(num, q, args):
     from tictactoe.TicTacToeGame import TicTacToeGame as Game
     from tictactoe.tensorflow.NNet import NNetWrapper as nn
-    verificare = 0
-    while verificare == 0:
+    verify = 0
+    while verify == 0:
         try:
             g = Game(3)
             nnet = nn(g, 0.06)
@@ -418,16 +418,16 @@ def apelareminmax(num, q, args):
             arenaminmax = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), mp, g,nmcts1,evaluate=True)
             pwins, nwins, drawwins = arenaminmax.playGames(num)
             q.put((pwins, nwins, drawwins))
-            verificare = 1
+            verify = 1
         except:
-            verificare = 0
+            verify = 0
 
 
-def apelarerandom(num, q, args):
+def callrandom(num, q, args):
     from tictactoe.TicTacToeGame import TicTacToeGame as Game
     from tictactoe.tensorflow.NNet import NNetWrapper as nn
-    verificare = 0
-    while verificare == 0:
+    verify = 0
+    while verify == 0:
         try:
             g = Game(3)
             nnet = nn(g, 0.06)
@@ -436,16 +436,16 @@ def apelarerandom(num, q, args):
             arenarandom = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), rp, g)
             pwins, nwins, drawwins = arenarandom.playGames(num)
             q.put((pwins, nwins, drawwins))
-            verificare = 1
+            verify = 1
         except:
-            verificare = 0
+            verify = 0
 
 
-def apelaregreedy(num, q, args):
+def callgreedy(num, q, args):
     from tictactoe.TicTacToeGame import TicTacToeGame as Game
     from tictactoe.tensorflow.NNet import NNetWrapper as nn
-    verificare = 0
-    while verificare == 0:
+    verify = 0
+    while verify == 0:
         try:
             g = Game(3)
             nnet = nn(g, 0.06)
@@ -454,9 +454,9 @@ def apelaregreedy(num, q, args):
             arenagreedy = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), gp, g)
             pwins, nwins, drawwins = arenagreedy.playGames(num)
             q.put((pwins, nwins, drawwins))
-            verificare = 1
+            verify = 1
         except:
-            verificare = 0
+            verify = 0
 
 
 '''Whenever adding new players and games this method needs to be updated'''
