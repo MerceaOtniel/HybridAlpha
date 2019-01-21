@@ -26,22 +26,22 @@ from utils import *
 use this script to play any two agents against each other, or play manually with
 any agent.
 """
-choice ="connect4"
+choice ="othello"
 
 if choice == "tictactoe":
-    g = TicTacToeGame(3)
+    g = TicTacToeGame(5)
     n1 = NNet(g)
-    n1.load_checkpoint('./temp/', 'best75_eps100_dim3.pth.tar')
+    n1.load_checkpoint('./temp/', 'best75_eps95_dim5.pth.tar')
     display=display
     hp = MinMaxTicTacToePlayer(g,4).play
 if choice == "gobang":
-    g=GobangGame(14,14)
+    g=GobangGame(6,6)
     n1 = NNet1(g)
-    n1.load_checkpoint('./temp/', 'temp_iter75_eps1_dim14.pth.tar')
+    n1.load_checkpoint('./temp/', 'temp:iter75:eps5:dim6.pth.tar')
     display=display1
-    hp = MinMaxGobangPlayer(g,2).play
+    hp = MinMaxGobangPlayer(g,6).play
 if choice == "othello":
-    g=OthelloGame(6)
+    g=OthelloGame(4)
     n1 = NNet2(g)
     n1.load_checkpoint('./temp/', 'best75:eps1:dim6.pth.tar')
     display=display2
@@ -59,7 +59,7 @@ if choice == "connect4":
 
 
 # nnet players
-args1 = dotdict({'numMCTSSims': 55, 'cpuct':1.0,'epsilon': 0,'dirAlpha':0.3})
+args1 = dotdict({'numMCTSSims': 200, 'cpuct':1.0,'epsilon': 0,'dirAlpha':0.3})
 mcts1 = MCTS(g, n1, args1)
 n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 

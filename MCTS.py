@@ -10,7 +10,7 @@ class MCTS():
     This class handles the MCTS tree.
     """
 
-    def __init__(self, game, nnet, args):
+    def __init__(self, game, nnet, args,mcts=False):
         self.game = game
         self.nnet = nnet
         self.args = args
@@ -21,6 +21,7 @@ class MCTS():
 
         self.Es = {}  # stores game.getGameEnded ended for board s
         self.Vs = {}  # stores game.getValidMoves for board s
+        self.mcts=mcts
 
     def clear(self):
         self.Qsa={}
@@ -38,8 +39,9 @@ class MCTS():
             probs: a policy vector where the probability of the ith action is
                    proportional to Nsa[(s,a)]**(1./temp)
         """
+        self.search(canonicalBoard,True)
         for i in range(self.args.numMCTSSims):
-            self.search(canonicalBoard)
+            self.search(canonicalBoard,False)
 
         s = self.game.stringRepresentation(canonicalBoard)
         counts = [self.Nsa[(s, a)] if (s, a) in self.Nsa else 0 for a in range(self.game.getActionSize())]
@@ -54,7 +56,7 @@ class MCTS():
         probs = [x / float(sum(counts)) for x in counts]
         return probs
 
-    def search(self, canonicalBoard):
+    def search(self, canonicalBoard,isRootNode):
         """
         This function performs one iteration of MCTS. It is recursively called
         till a leaf node is found. The action chosen at each node is one that
@@ -107,20 +109,23 @@ class MCTS():
         cur_best = -float('inf')
         best_act = []
 
+        e=self.args.epsilon
+        if isRootNode==True and e>0 and self.mcts==True:
+            noise=np.random.dirichlet([self.args.dirAlpha]*len(self.game.getValidMoves(canonicalBoard,1)))
         i=-1
         # pick the action with the highest upper confidence bound
         for a in range(self.game.getActionSize()):
             if valids[a]:
                 i+=1
-                if (s, a) in self.Qsa:
-                    probability = self.Ps[s][a]
 
-                    u = self.Qsa[(s, a)] + self.args.cpuct * probability * math.sqrt(self.Ns[s]) / (
+                if isRootNode==True and e > 0 and self.mcts == True:
+                    self.Ps[s][a] = (1 - e) * self.Ps[s][a] + e * noise[0]
+
+                if (s, a) in self.Qsa:
+                    u = self.Qsa[(s, a)] + self.args.cpuct * self.Ps[s][a] * math.sqrt(self.Ns[s]) / (
                                 1 + self.Nsa[(s, a)])
                 else:
-                    probability = self.Ps[s][a]
-
-                    u = self.args.cpuct * probability * math.sqrt(self.Ns[s] + EPS)  # Q = 0 ?
+                    u = self.args.cpuct * self.Ps[s][a] * math.sqrt(self.Ns[s] + EPS)  # Q = 0 ?
 
                 if u > cur_best:
                     cur_best = u
@@ -132,7 +137,7 @@ class MCTS():
         next_s, next_player = self.game.getNextState(canonicalBoard, 1, a)
         next_s = self.game.getCanonicalForm(next_s, next_player)
 
-        v = self.search(next_s)
+        v = self.search(next_s,False)
 
         if (s, a) in self.Qsa:
             self.Qsa[(s, a)] = (self.Nsa[(s, a)] * self.Qsa[(s, a)] + v) / (self.Nsa[(s, a)] + 1)

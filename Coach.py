@@ -25,7 +25,7 @@ class Coach():
         self.nnet = nnet
         self.pnet = self.nnet.__class__(self.game)  # the competitor network
         self.args = args
-        self.mcts = MCTS(self.game, self.nnet, self.args)
+        self.mcts = MCTS(self.game, self.nnet, self.args,mcts=True)
         self.trainExamplesHistory = []  # history of examples from args.numItersForTrainExamplesHistory latest iterations
         self.counter = 0
 
@@ -78,17 +78,17 @@ class Coach():
             if "othello" in self.args.trainExampleCheckpoint:
                 gp = othelloplayers.GreedyOthelloPlayer(self.game).play
                 rp = othelloplayers.RandomOthelloPlayer(self.game).play
-                mp = othelloplayers.MinMaxOthelloPlayer(self.game,3).play
+                mp = othelloplayers.MinMaxOthelloPlayer(self.game,4).play
             else:
                 if "gobang" in self.args.trainExampleCheckpoint:
                     gp = gobangplayers.GreedyGobangPlayer(self.game).play
                     rp = gobangplayers.RandomGobangPlayer(self.game).play
-                    mp = gobangplayers.MinMaxGobangPlayer(self.game,2).play
+                    mp = gobangplayers.MinMaxGobangPlayer(self.game,3).play
                 else:
                     if "connect4" in self.args.trainExampleCheckpoint:
                         rp = connect4players.RandomConnect4Player(self.game).play
                         gp = connect4players.GreedyConnect4Player(self.game).play
-                        mp = connect4players.MinMaxConnect4Player(self.game,2).play
+                        mp = connect4players.MinMaxConnect4Player(self.game,5).play
 
         return (gp, rp, mp)
 
@@ -219,7 +219,7 @@ class Coach():
 
             # training new network, keeping a copy of the old one
 
-            filename = "temp:iter" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + ":dim" + str(
+            filename = "curent"+str(i)+"temp:iter" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + ":dim" + str(
                 self.game.n) + ".pth.tar"
             filenameBest = "best" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + ":dim" + str(
                 self.game.n) + ".pth.tar"
@@ -289,7 +289,7 @@ class Coach():
 
             if pwins + nwins == 0 or float(nwins) / (pwins + nwins) <= self.args.updateThreshold:
                 print('REJECTING NEW MODEL')
-                filename = "temp:iter" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + ":dim" + str(
+                filename = "curent"+str(i)+"temp:iter" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + ":dim" + str(
                     self.game.n) + ".pth.tar"
                 filenameBest = "best" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + ":dim" + str(
                     self.game.n) + ".pth.tar"
@@ -301,12 +301,12 @@ class Coach():
 
             else:
                 print('ACCEPTING NEW MODEL')
-                self.mcts = MCTS(self.game, self.nnet, self.args)  # reset search tree
+
                 filename = "best" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + ":dim" + str(
                     self.game.n) + ".pth.tar"
                 self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=self.getCheckpointFile(i))
                 self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=filename)
-
+        self.mcts = MCTS(self.game, self.nnet, self.args, mcts=True)  # reset search tree
         self.writeLogsToFile(epochswin, epochdraw, training=True)
 
     def getCheckpointFile(self, iteration):
@@ -469,25 +469,25 @@ def returnplayer(args, playertype, g):
         elif playertype == "random":
             return tictacplayers.RandomTicTacToePlayer(g).play
         elif playertype == "minmax":
-            return tictacplayers.MinMaxTicTacToePlayer(g).play
+            return tictacplayers.MinMaxTicTacToePlayer(g,4).play
     elif args.name == "othello":
         if playertype == "greedy":
             return othelloplayers.GreedyOthelloPlayer(g).play
         elif playertype == "random":
             return othelloplayers.RandomOthelloPlayer(g).play
         elif playertype == "minmax":
-            return othelloplayers.MinMaxOthelloPlayer(g).play
+            return othelloplayers.MinMaxOthelloPlayer(g,4).play
     elif args.name == "gobang":
         if playertype == "greedy":
             return gobangplayers.GreedyGobangPlayer(g).play
         elif playertype == "random":
             return gobangplayers.RandomGobangPlayer(g).play
         elif playertype == "minmax":
-            return gobangplayers.MinMaxGobangPlayer(g).play
+            return gobangplayers.MinMaxGobangPlayer(g,4).play
     elif args.name == "connect4":
         if playertype == "greedy":
             return connect4players.GreedyConnect4Player(g).play
         elif playertype == "random":
             return connect4players.RandomConnect4Player(g).play
         elif playertype == "minmax":
-            return connect4players.MinMaxConnect4Player(g).play
+            return connect4players.MinMaxConnect4Player(g,4).play

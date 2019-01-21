@@ -19,37 +19,39 @@ from utils import *
 
 args = dotdict({
     'numIters': 75,
-    'numEps': 1,
-    'tempThreshold': 15,
+    'numEps': 95,
+    'tempThreshold': 16,
     'updateThreshold': 0.55,
     'maxlenOfQueue': 20000,
-    'numMCTSSims': 55,
-    'arenaCompare': 2,
-    'cpuct': 1,
+    'numMCTSSims':350,
+    'arenaCompare': 14,
+    'cpuct': 1.0,
     'parallel': 0,
+    'dirAlpha': 0.3,
+    'epsilon': 0.25,
     'checkpoint': './temp/',
     'load_model': False,
-    'load_folder_file': ('./temp/tictactoe/','checkpoint_13.pth.tar'),
+    'load_folder_file': ('./temp/othello/','checkpoint_2.pth.tar'),
     'numItersForTrainExamplesHistory': 15,
 
 })
 
 if __name__=="__main__":
 
-    choice="gobang"
+    choice="othello"
 
     if choice=="tictactoe":
-        g = Game(6)
+        g = Game(5)
         nnet = nn(g)
         args.update({'trainExampleCheckpoint': './temp/tictactoe/'})
         args.update({'name': 'tictactoe'})
     if choice=="othello":
-        g = Game1(6)
+        g = Game1(4)
         nnet = nn1(g)
         args.update({'trainExampleCheckpoint': './temp/othello/'})
         args.update({'name': 'othello'})
     if choice=="gobang":
-        g=Game2(6)
+        g=Game2(6,6)
         nnet = nn2(g)
         args.update({'trainExampleCheckpoint': './temp/gobang/'})
         args.update({'name': 'gobang'})

@@ -119,7 +119,6 @@ class Board():
 
         rezultat.append(min)
         rezultat.sort()
-        print(str(rezultat))
         sum=0
         for i in range(len(rezultat)):
             sum=sum+rezultat[i]
