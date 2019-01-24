@@ -12,6 +12,7 @@ from gobang import GobangPlayers as gobangplayers
 from connect4 import Connect4Players as connect4players
 import multiprocessing as mp
 import copy
+from pympler.tracker import SummaryTracker
 
 
 class Coach():
@@ -25,7 +26,7 @@ class Coach():
         self.nnet = nnet
         self.pnet = self.nnet.__class__(self.game)  # the competitor network
         self.args = args
-        self.mcts = MCTS(self.game, self.nnet, self.args,mcts=True)
+        self.mcts = MCTS(self.game, self.nnet, self.args, mcts=True)
         self.trainExamplesHistory = []  # history of examples from args.numItersForTrainExamplesHistory latest iterations
         self.counter = 0
 
@@ -144,6 +145,9 @@ class Coach():
         epochswinminmax = []  # count the number of wins against minmax at every epoch
         epochsdrawminmax = []  # count the number of draws against minmax at every epoch
 
+
+        tracker=SummaryTracker()
+
         if self.args.load_model == True:
             file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(
                 self.args.numEps) + ":dim" + str(self.game.n) + ".txt", "r+")
@@ -241,6 +245,11 @@ class Coach():
 
             pwins, nwins, draws = arena.playGames(self.args.arenaCompare, False)
 
+            pmcts.clear()
+            nmcts.clear()
+            del pmcts
+            del nmcts
+
             print(' ')
             print('NEW/PREV WINS : %d / %d ; DRAWS : %d' % (nwins, pwins, draws))
             if i == 1:
@@ -268,8 +277,18 @@ class Coach():
                 arenaminmax = Arena(lambda x: np.argmax(nmcts3.getActionProb(x, temp=0)), mp, self.game,nmcts3,evaluate=True)
 
                 pwinsminmax, nwinsminmax, drawsminmax = arenaminmax.playGames(self.args.arenaCompare)
+                print("minmax - "+str(pwinsminmax)+" "+str(nwinsminmax)+" "+str(drawsminmax))
                 pwinsgreedy, nwinsgreedy, drawsgreedy = arenagreedy.playGames(self.args.arenaCompare)
+                print("greedy - "+str(pwinsgreedy)+" "+str(nwinsgreedy)+" "+str(drawsgreedy))
                 pwinsreandom, nwinsrandom, drawsrandom = arenarandom.playGames(self.args.arenaCompare)
+                print("random - "+str(pwinsreandom)+" "+str(nwinsrandom)+" "+str(drawsrandom))
+
+                nmcts1.clear()
+                nmcts2.clear()
+                nmcts3.clear()
+                del nmcts1
+                del nmcts2
+                del nmcts3
 
             else:
                 p = self.parallel(self.args.arenaCompare)
@@ -306,8 +325,12 @@ class Coach():
                     self.game.n) + ".pth.tar"
                 self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=self.getCheckpointFile(i))
                 self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=filename)
-        self.mcts = MCTS(self.game, self.nnet, self.args, mcts=True)  # reset search tree
+            self.mcts.clear()
+            del self.mcts
+            self.mcts = MCTS(self.game, self.nnet, self.args, mcts=True)  # reset search tree
+            print(tracker.print_diff())
         self.writeLogsToFile(epochswin, epochdraw, training=True)
+
 
     def getCheckpointFile(self, iteration):
         return 'checkpoint_' + str(iteration) + '.pth.tar'
@@ -319,7 +342,7 @@ class Coach():
         filename = os.path.join(folder, self.getCheckpointFile(iteration) + ".examples")
         with open(filename, "wb+") as f:
             Pickler(f).dump(self.trainExamplesHistory)
-        f.closed
+        f.close()
 
     def loadTrainExamples(self):
         modelFile = os.path.join(self.args.load_folder_file[0], self.args.load_folder_file[1])
@@ -333,7 +356,7 @@ class Coach():
             print("File with trainExamples found. Read it.")
             with open(examplesFile, "rb") as f:
                 self.trainExamplesHistory = Unpickler(f).load()
-            f.closed
+            f.close()
 
     def parallel(self, num):
 
@@ -418,6 +441,7 @@ def callminmax(num, q, args):
             arenaminmax = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), mp, g,nmcts1,evaluate=True)
             pwins, nwins, drawwins = arenaminmax.playGames(num)
             q.put((pwins, nwins, drawwins))
+            nmcts1.clear()
             verify = 1
         except:
             verify = 0
@@ -436,6 +460,7 @@ def callrandom(num, q, args):
             arenarandom = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), rp, g)
             pwins, nwins, drawwins = arenarandom.playGames(num)
             q.put((pwins, nwins, drawwins))
+            nmcts1.clear()
             verify = 1
         except:
             verify = 0
@@ -454,6 +479,7 @@ def callgreedy(num, q, args):
             arenagreedy = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), gp, g)
             pwins, nwins, drawwins = arenagreedy.playGames(num)
             q.put((pwins, nwins, drawwins))
+            nmcts1.clear()
             verify = 1
         except:
             verify = 0

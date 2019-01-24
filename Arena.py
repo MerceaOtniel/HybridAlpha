@@ -33,6 +33,15 @@ class Arena():
         if self.mcts2:
             self.mcts2.clear()
 
+    def clearArena(self):
+        self.player1 = None
+        self.player2 = None
+        self.game = None
+        self.display = None
+        self.mcts1 = None
+        self.mcts2 = None
+        self.evaluate = None
+
     def playGame(self, verbose=False):
         """
         Executes one episode of a game.
@@ -141,4 +150,5 @@ class Arena():
             bar.next()
 
         bar.finish()
+        self.clearArena()
         return oneWon, twoWon, draws
