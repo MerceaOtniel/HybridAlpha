@@ -36,6 +36,9 @@ class MCTS():
         This function performs numMCTSSims simulations of MCTS starting from
         canonicalBoard.
         Returns:
+            canonicalBoard: presents the state of the table at a given moment
+            temp: temperature coeficient which is described in deep mind paper. If 0-> the best action is selected.
+                  If !0-> random action based on some probabilities
             probs: a policy vector where the probability of the ith action is
                    proportional to Nsa[(s,a)]**(1./temp)
         """
@@ -69,6 +72,8 @@ class MCTS():
         NOTE: the return values are the negative of the value of the current
         state. This is done since v is in [-1,1] and if v is the value of a
         state for the current player, then its value is -v for the other player.
+        isRootNode: used for Dirichlet Noise as described in deep mind paper. Only the root of every numSim has Dirichlet
+        Nose, the rest of the nodes don't contain it
         Returns:
             v: the negative of the value of the current canonicalBoard
         """

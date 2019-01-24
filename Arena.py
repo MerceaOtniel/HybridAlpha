@@ -16,6 +16,10 @@ class Arena():
             display: a function that takes board as input and prints it (e.g.
                      display in othello/OthelloGame). Is necessary for verbose
                      mode.
+            mcts1/mcts2: represernts the MonteCarloTrees used by the two networks(in case when we pit one against the other)
+                    or used by a single network when pit against an  agent(greedy, minmax,random)
+            evaluate: used only in pitting the network against itself and minimax because i want some randomness in the
+                    first move in order to evaluate the network better
         see othello/OthelloPlayers.py for an example. See pit.py for pitting
         human players/other baselines with each other.
         """
@@ -45,6 +49,7 @@ class Arena():
     def playGame(self, verbose=False):
         """
         Executes one episode of a game.
+        verbose: used to display the game in the console, otetwhise it will not draw it
         Returns:
             either
                 winner: player who won the game (1 if player1, -1 if player2)
@@ -93,6 +98,7 @@ class Arena():
     def playGames(self, num, verbose=False):
         """
         Plays num games in which player1 starts num/2 games and player2 starts
+        verbose: used to display the game in the console, otetwhise it will not draw it
         num/2 games.
         Returns:
             oneWon: games won by player1

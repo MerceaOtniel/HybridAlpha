@@ -71,6 +71,11 @@ class Coach():
 
     def decidePlayers(self):
 
+        '''
+
+        :return: the benchmarks for the desired game
+        '''
+
         if "tictactoe" in self.args.trainExampleCheckpoint:
             rp = tictacplayers.RandomTicTacToePlayer(self.game).play
             gp = tictacplayers.GreedyTicTacToePlayer(self.game).play
@@ -96,6 +101,14 @@ class Coach():
     ''' Use this function to write to file the number of draws/wins '''
 
     def writeToFile(self, file, epochs):
+
+        '''
+
+        :param file: the file where data will be written
+        :param epochs: the list of values that will be written in the file
+        :return: nothing
+        '''
+
         for text in epochs:
             file.write(str(text) + " ")
         file.write("\n")
@@ -107,6 +120,23 @@ class Coach():
 
     def writeLogsToFile(self, epochswin, epochdraw, epochswin2=[], epochsdraw2=[], epochswin3=[], epochsdraw3=[],
                         training=True):
+
+
+        '''
+
+        :param epochswin: network wins against greedy agent/ or against itself if training=True
+        :param epochdraw: network draws against greedy agent/ or against itself if training=True
+        :param epochswin2: network wins against random agent
+        :param epochsdraw2: network draws against random agent
+        :param epochswin3: network wins against minimax agent
+        :param epochsdraw3: network draws against minimax agent
+        :param training: specifies if we evaluate the network against itself, or against the benchmakrs mentioned
+        above
+        :return: nothing
+        This function has the role of logging the progress of the network to 2 files in order to plot it
+        '''
+
+
         if training == True:
             file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(
                 self.args.numEps) + ":dim" + str(self.game.n) + ".txt", "w+")
@@ -291,6 +321,9 @@ class Coach():
                 del nmcts3
 
             else:
+                '''
+                This will be used if you want to evaluate the network against the benchmarks in a parallel way
+                '''
                 p = self.parallel(self.args.arenaCompare)
                 (pwinsminmax, nwinsminmax, drawsminmax) = p[0]  # self.parallel("minmax", self.args.arenaCompare)
                 (pwinsgreedy, nwinsgreedy, drawsgreedy) = p[1]  # self.parallel("greedy",self.args.arenaCompare)
@@ -333,9 +366,23 @@ class Coach():
 
 
     def getCheckpointFile(self, iteration):
+        '''
+
+        :param iteration: the number of current iteration
+        :return: a name composed of iteration for saving files
+        '''
         return 'checkpoint_' + str(iteration) + '.pth.tar'
 
     def saveTrainExamples(self, iteration):
+
+        '''
+
+        :param iteration: the number of current iteration which will be used to name the example file in an organised
+        way
+        :return: nothing
+        Save the example file in an organised way in order to provide a way of reusing the examples in case of
+        unexpected failure
+        '''
         folder = self.args.trainExampleCheckpoint
         if not os.path.exists(folder):
             os.makedirs(folder)
@@ -345,6 +392,12 @@ class Coach():
         f.close()
 
     def loadTrainExamples(self):
+        '''
+
+        :return: doesn't return anything
+        It has the role of loading the examples from the file in order to be reused when the program starts again,
+        after maybe a failure, or unexpected interruption
+        '''
         modelFile = os.path.join(self.args.load_folder_file[0], self.args.load_folder_file[1])
         examplesFile = modelFile + ".examples"
         if not os.path.isfile(examplesFile):
@@ -359,6 +412,19 @@ class Coach():
             f.close()
 
     def parallel(self, num):
+
+        '''
+        :param num: the number of iterations for each agent
+        :return: the score for random agent, minimax agent, greedy agent
+
+        This function creates 4 processes: 2 processes for minimax that each will analyze half of games
+                                           1 process for greedy
+                                           1 process for random
+        In this way the whole evaluation is cut with somewhere around 40%, but it uses one gpu, so be aware if it goes
+        hot.
+
+        '''
+
 
         first_half = num / 2
         second_half = num / 2 + num % 2
@@ -400,12 +466,38 @@ class Coach():
 
 
 def startprocess(function, num, q, args):
+    '''
+
+    :param function: which agent to use
+    :param num: how many games should that agent play
+    :param q: the queue where the number of wins, loses and draws are stored
+    :param args: config for games and neural network,etc
+    :return: a variable which you can control the process
+
+    This function start the process and gives all the necessarily details
+    '''
     p = mp.Process(target=function, args=(num, q, args,))
     p.start()
     return p
 
 
 def verifyqueue(function, num, q, args):
+
+    '''
+
+    :param function: the agent which will be used
+    :param num: the number of games
+    :param q: the queue that will store the results
+    :param args: configs
+    :return: the number of wins/loses/draws
+
+    THis function has the responsibility of checking if the process played some games, sometimes
+    tensorflow will not be able to create a process and if this happens, q will be empty.
+    It tries to start a process while q is empty. When q becomes non-empty, it means that a process containing tensorflow
+    has been created
+
+    '''
+
     while q.empty() == True:
         p = startprocess(function, num, q, args)
         p.join()
@@ -413,6 +505,17 @@ def verifyqueue(function, num, q, args):
 
 
 def verifyvalues(function, num, q, args):
+
+    '''
+    :param function: the agent which will be used
+    :param num: the number of games
+    :param q: the queue that will store the results
+    :param args: configs
+    :return: the number of wins/loses/draws
+    Sometimes when it cannot create a new process for tensorflow the queue will not be empty, but draws wins and loses
+    will all be 0 which is impossible. So it checks for this and tries to recreate the process again if it fails.
+    '''
+
     (pwins, nwins, draws) = extractvaluefromqueue(q)
     while pwins == 0 and nwins == 0 and draws == 0:
         p = startprocess(function, num, q, args)
@@ -422,6 +525,13 @@ def verifyvalues(function, num, q, args):
 
 
 def extractvaluefromqueue(q):
+
+    '''
+
+    :param q: the queue that will store the results
+    :return: the results
+    '''
+
     (pwins1, nwins1, draws1) = q.get()
     while q.empty() == False:
         (pwins1, nwins1, draws1) = q.get()
@@ -429,6 +539,17 @@ def extractvaluefromqueue(q):
 
 
 def callminmax(num, q, args):
+
+    '''
+
+    :param num: number of games
+    :param q: the queue that will store the results
+    :param args: configs
+    :return: doesn't return anything, the results are stored in q
+
+    It uses the minmax agent to play the specified games
+    '''
+
     from tictactoe.TicTacToeGame import TicTacToeGame as Game
     from tictactoe.tensorflow.NNet import NNetWrapper as nn
     verify = 0
@@ -489,6 +610,15 @@ def callgreedy(num, q, args):
 
 
 def returnplayer(args, playertype, g):
+
+    '''
+
+    :param args: configs
+    :param playertype: which agent to use
+    :param g: game, and is needed to initialize an agent
+    :return: the specified agent
+    '''
+
     if args.name == "tictactoe":
         if playertype == "greedy":
             return tictacplayers.GreedyTicTacToePlayer(g).play
