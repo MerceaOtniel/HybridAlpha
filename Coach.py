@@ -22,6 +22,7 @@ class Coach():
     """
 
     def __init__(self, game, nnet, args):
+        self.tracker=SummaryTracker()
         self.game = game
         self.nnet = nnet
         self.pnet = self.nnet.__class__(self.game)  # the competitor network
@@ -176,8 +177,6 @@ class Coach():
         epochsdrawminmax = []  # count the number of draws against minmax at every epoch
 
 
-        tracker=SummaryTracker()
-
         if self.args.load_model == True:
             file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(
                 self.args.numEps) + ":dim" + str(self.game.n) + ".txt", "r+")
@@ -324,6 +323,9 @@ class Coach():
                 '''
                 This will be used if you want to evaluate the network against the benchmarks in a parallel way
                 '''
+
+                self.args.update({'index': str(i)})
+
                 p = self.parallel(self.args.arenaCompare)
                 (pwinsminmax, nwinsminmax, drawsminmax) = p[0]  # self.parallel("minmax", self.args.arenaCompare)
                 (pwinsgreedy, nwinsgreedy, drawsgreedy) = p[1]  # self.parallel("greedy",self.args.arenaCompare)
@@ -361,7 +363,7 @@ class Coach():
             self.mcts.clear()
             del self.mcts
             self.mcts = MCTS(self.game, self.nnet, self.args, mcts=True)  # reset search tree
-            print(tracker.print_diff())
+            print(self.tracker.print_diff())
         self.writeLogsToFile(epochswin, epochdraw, training=True)
 
 
@@ -557,6 +559,13 @@ def callminmax(num, q, args):
         try:
             g = Game(3)
             nnet = nn(g, 0.06)
+
+            filename = "curent" + args.index + "temp:iter" + str(args.numIters) + ":eps" + str(
+                args.numEps) + ":dim" + str(
+                g.n) + ".pth.tar"
+
+            nnet.load_checkpoint(folder=args.checkpoint, filename=filename)
+
             mp = returnplayer(args, "minmax", g)
             nmcts1 = MCTS(g, nnet, args)
             arenaminmax = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), mp, g,nmcts1,evaluate=True)
@@ -576,6 +585,13 @@ def callrandom(num, q, args):
         try:
             g = Game(3)
             nnet = nn(g, 0.06)
+
+            filename = "curent" + args.index + "temp:iter" + str(args.numIters) + ":eps" + str(
+                args.numEps) + ":dim" + str(
+                g.n) + ".pth.tar"
+
+            nnet.load_checkpoint(folder=args.checkpoint, filename=filename)
+
             rp = returnplayer(args, "random", g)
             nmcts1 = MCTS(g, nnet, args)
             arenarandom = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), rp, g)
@@ -595,6 +611,11 @@ def callgreedy(num, q, args):
         try:
             g = Game(3)
             nnet = nn(g, 0.06)
+
+            filename = "curent" + args.index + "temp:iter" + str(args.numIters) + ":eps" + \
+                       str(args.numEps) + ":dim" + str(g.n) + ".pth.tar"
+            nnet.load_checkpoint(folder=args.checkpoint, filename=filename)
+
             gp = returnplayer(args, "greedy", g)
             nmcts1 = MCTS(g, nnet, args)
             arenagreedy = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), gp, g)
