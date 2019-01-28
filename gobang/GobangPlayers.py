@@ -37,9 +37,20 @@ class HumanGobangPlayer():
 
 class GreedyGobangPlayer():
     def __init__(self, game):
+
+        '''
+        :param game:this includes valid move rules,etc.
+        '''
+
         self.game = game
 
     def play(self, board):
+
+        '''
+        :param board: the current configuration of the board
+        :return: if more actions have the same value, which is the best one, it returns randomly one action from these
+        '''
+
         valids = self.game.getValidMoves(board, 1)
         candidates = []
         for a in range(self.game.getActionSize()):
@@ -59,14 +70,35 @@ class GreedyGobangPlayer():
 
 class MinMaxGobangPlayer():
     def __init__(self,game,depth):
+       '''
+        :param game: the game with the rules
+        :param depth: the depth to which alpha beta to search
+       '''
        self.game=game
        self.depth=depth
 
     def play(self,board):
+
+        '''
+
+        :param board: the configuration of the board
+        :return: the action from the tuple (action, score) where this action is the best action detected by alfa-beta
+        '''
+
         score = self.minimax((board,-1),self.depth,1,-infinity,+infinity)
         return score[0]
 
     def minimax(self,state,depth,player,alfa,beta):
+
+        '''
+        :param state: the configuration of the board at current time
+        :param depth: depth of the search of alfa-beta
+        :param player: which player is currently moving(1-for current player,-1 for adversary)
+        :param alfa: the initialization of alfa(here is -infinity)
+        :param beta: the initialization of beta(here is +infinity)
+        :return: the [action,score] of the best move
+        '''
+
 
         best = [None, None]
 

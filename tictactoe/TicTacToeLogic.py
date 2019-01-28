@@ -38,6 +38,14 @@ class Board():
 
     def return_reward(self,count,count2,color):
 
+        '''
+
+        :param count: count the pieces of current player (1 Player)
+        :param count2: count the pieces of adversary(-1 Player)
+        :param color: represents the current player
+        :return: a value that describes how good the move is
+        '''
+
         if color==-1:
             aux=count
             count=count2
