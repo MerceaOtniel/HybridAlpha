@@ -72,7 +72,7 @@ class Coach():
 
         '''
 
-        :return: the benchmarks for the desired game
+        :return: the benchmarks(agents) for the desired game
         '''
 
         if "tictactoe" in self.args.trainExampleCheckpoint:
@@ -574,6 +574,17 @@ def callminmax(num, q, args):
 
 
 def callrandom(num, q, args):
+
+    '''
+
+    :param num: number of games
+    :param q: the queue that will store the results
+    :param args: configs
+    :return: doesn't return anything, the results are stored in q
+
+    It uses the random agent to play the specified games
+    '''
+
     from tictactoe.TicTacToeGame import TicTacToeGame as Game
     from tictactoe.tensorflow.NNet import NNetWrapper as nn
     verify = 0
@@ -600,6 +611,16 @@ def callrandom(num, q, args):
 
 
 def callgreedy(num, q, args):
+    '''
+
+    :param num: number of games
+    :param q: the queue that will store the results
+    :param args: configs
+    :return: doesn't return anything, the results are stored in q
+
+    It uses the greedy agent to play the specified games
+    '''
+
     from tictactoe.TicTacToeGame import TicTacToeGame as Game
     from tictactoe.tensorflow.NNet import NNetWrapper as nn
     verify = 0
@@ -623,13 +644,11 @@ def callgreedy(num, q, args):
             verify = 0
 
 
-'''Whenever adding new players and games this method needs to be updated'''
-
-
 def returnplayer(args, playertype, g):
 
     '''
 
+    Whenever adding new players and games this method needs to be updated
     :param args: configs
     :param playertype: which agent to use
     :param g: game, and is needed to initialize an agent
@@ -643,13 +662,16 @@ def returnplayer(args, playertype, g):
             return tictacplayers.RandomTicTacToePlayer(g).play
         elif playertype == "minmax":
             return tictacplayers.MinMaxTicTacToePlayer(g,4).play
+
     elif args.name == "othello":
+
         if playertype == "greedy":
             return othelloplayers.GreedyOthelloPlayer(g).play
         elif playertype == "random":
             return othelloplayers.RandomOthelloPlayer(g).play
         elif playertype == "minmax":
             return othelloplayers.MinMaxOthelloPlayer(g,4).play
+
     elif args.name == "gobang":
         if playertype == "greedy":
             return gobangplayers.GreedyGobangPlayer(g).play
@@ -657,6 +679,7 @@ def returnplayer(args, playertype, g):
             return gobangplayers.RandomGobangPlayer(g).play
         elif playertype == "minmax":
             return gobangplayers.MinMaxGobangPlayer(g,4).play
+
     elif args.name == "connect4":
         if playertype == "greedy":
             return connect4players.GreedyConnect4Player(g).play
