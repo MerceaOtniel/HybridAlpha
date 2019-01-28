@@ -166,7 +166,7 @@ class OthelloGame(Game):
         countPieces=self.countPiecesHeuristics(player,board)
         countCorners=self.cornerNumberHeuristics(player,board)
         countMoves=self.moveNumberHeuristics(player,board)
-        return (countCorners+countMoves+countPieces)
+        return (countMoves+countPieces+countCorners)
 
 def display(board):
     n = board.shape[0]

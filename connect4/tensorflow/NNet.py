@@ -113,9 +113,8 @@ class NNetWrapper(NeuralNet):
             os.mkdir(folder1)
         else:
             print("Checkpoint Directory exists! ")
-        if self.saver == None:
-            self.saver = tf.train.Saver(self.nnet.graph.get_collection('variables'))
         with self.nnet.graph.as_default():
+            self.saver = tf.train.Saver(self.nnet.graph.get_collection('variables'))
             self.saver.save(self.sess, filepath)
 
     def load_checkpoint(self, folder='checkpoint', filename='checkpoint.pth.tar'):

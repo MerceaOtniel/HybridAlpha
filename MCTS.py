@@ -124,7 +124,7 @@ class MCTS():
                 i+=1
 
                 if isRootNode==True and e > 0 and self.mcts == True:
-                    self.Ps[s][a] = (1 - e) * self.Ps[s][a] + e * noise[0]
+                    self.Ps[s][a] = (1 - e) * self.Ps[s][a] + e * noise[i]
 
                 if (s, a) in self.Qsa:
                     u = self.Qsa[(s, a)] + self.args.cpuct * self.Ps[s][a] * math.sqrt(self.Ns[s]) / (

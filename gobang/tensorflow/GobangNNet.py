@@ -22,8 +22,8 @@ class ResNet():
             x_image = tf.reshape(self.input_boards,
                                  [-1, self.board_x, self.board_y, 1])  # batch_size  x board_x x board_y x 1
 
-            x_image = tf.layers.conv2d(x_image, filters=args.num_channels, kernel_size=(1, 1), strides=(1, 1), padding='same',
-                                      use_bias=False)
+            x_image = tf.layers.conv2d(x_image, filters=args.num_channels, kernel_size=(3, 3), strides=(1, 1), padding='same',
+                                      use_bias=False,kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=1e-4))
             x_image = tf.layers.batch_normalization(x_image, axis=3, training=self.isTraining)
             x_image = tf.nn.relu(x_image)
 
@@ -67,21 +67,21 @@ class ResNet():
                                                  stage=19, block='u')
 
             policy = tf.layers.conv2d(residual_tower, 2, kernel_size=(1, 1), strides=(1, 1), name='pi', padding='same',
-                                      use_bias=False)
+                                      use_bias=False,kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=1e-4))
             policy = tf.layers.batch_normalization(policy, axis=3, name='bn_pi', training=self.isTraining)
             policy = tf.nn.relu(policy)
             policy = tf.layers.flatten(policy, name='p_flatten')
-            self.pi = tf.layers.dense(policy, self.action_size)
+            self.pi = tf.layers.dense(policy, self.action_size,kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=1e-4))
             self.prob = tf.nn.softmax(self.pi)
 
             value = tf.layers.conv2d(residual_tower, 1, kernel_size=(1, 1), strides=(1, 1), name='v', padding='same',
-                                     use_bias=False)
+                                     use_bias=False,kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=1e-4))
             value = tf.layers.batch_normalization(value, axis=3, name='bn_v', training=self.isTraining)
             value = tf.nn.relu(value)
             value = tf.layers.flatten(value, name='v_flatten')
-            value = tf.layers.dense(value, units=256)
+            value = tf.layers.dense(value, units=256,kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=1e-4))
             value = tf.nn.relu(value)
-            value = tf.layers.dense(value, 1)
+            value = tf.layers.dense(value, 1,kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=1e-4))
             self.v = tf.nn.tanh(value)
 
             self.calculate_loss()
@@ -93,12 +93,12 @@ class ResNet():
         shortcut = inputLayer
 
         residual_layer = tf.layers.conv2d(inputLayer, filters, kernel_size=(kernel_size, kernel_size), strides=(1, 1),
-                                          name=conv_name + '2a', padding='same', use_bias=False)
+                                          name=conv_name + '2a', padding='same', use_bias=False,kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=1e-4))
         residual_layer = tf.layers.batch_normalization(residual_layer, axis=3, name=bn_name + '2a',
                                                        training=self.isTraining)
         residual_layer = tf.nn.relu(residual_layer)
         residual_layer = tf.layers.conv2d(residual_layer, filters, kernel_size=(kernel_size, kernel_size),
-                                          strides=(1, 1), name=conv_name + '2b', padding='same', use_bias=False)
+                                          strides=(1, 1), name=conv_name + '2b', padding='same', use_bias=False,kernel_regularizer=tf.contrib.layers.l2_regularizer(scale=1e-4))
         residual_layer = tf.layers.batch_normalization(residual_layer, axis=3, name=bn_name + '2b',
                                                        training=self.isTraining)
         add_shortcut = tf.add(residual_layer, shortcut)
@@ -114,5 +114,5 @@ class ResNet():
         self.total_loss = self.loss_pi + self.loss_v
         update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
         with tf.control_dependencies(update_ops):
-            self.train_step = tf.train.AdamOptimizer(1e-3, epsilon=1e-4).minimize(self.total_loss)
+            self.train_step = tf.train.MomentumOptimizer(learning_rate=1e-3, momentum=0.9).minimize(self.total_loss)
 

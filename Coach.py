@@ -12,7 +12,6 @@ from gobang import GobangPlayers as gobangplayers
 from connect4 import Connect4Players as connect4players
 import multiprocessing as mp
 import copy
-from pympler.tracker import SummaryTracker
 
 
 class Coach():
@@ -22,7 +21,6 @@ class Coach():
     """
 
     def __init__(self, game, nnet, args):
-        self.tracker=SummaryTracker()
         self.game = game
         self.nnet = nnet
         self.pnet = self.nnet.__class__(self.game)  # the competitor network
@@ -256,7 +254,7 @@ class Coach():
                 self.game.n) + ".pth.tar"
             filenameBest = "best" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + ":dim" + str(
                 self.game.n) + ".pth.tar"
-
+            print("path with filename "+filename)
             self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=filename)
             exists = os.path.isfile(filenameBest)
             if exists:
@@ -355,7 +353,6 @@ class Coach():
 
             else:
                 print('ACCEPTING NEW MODEL')
-
                 filename = "best" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + ":dim" + str(
                     self.game.n) + ".pth.tar"
                 self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=self.getCheckpointFile(i))
@@ -363,7 +360,6 @@ class Coach():
             self.mcts.clear()
             del self.mcts
             self.mcts = MCTS(self.game, self.nnet, self.args, mcts=True)  # reset search tree
-            print(self.tracker.print_diff())
         self.writeLogsToFile(epochswin, epochdraw, training=True)
 
 

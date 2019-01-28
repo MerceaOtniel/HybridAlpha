@@ -20,7 +20,7 @@ from utils import *
 args = dotdict({
     'numIters': 75,
     'numEps': 140,
-    'tempThreshold': 8,
+    'tempThreshold': 20,
     'updateThreshold': 0.55,
     'maxlenOfQueue': 40000,
     'numMCTSSims':400,
@@ -32,7 +32,7 @@ args = dotdict({
     'checkpoint': './temp/',
     'load_model': False,
     'load_folder_file': ('./temp/othello/','checkpoint_2.pth.tar'),
-    'numItersForTrainExamplesHistory': 6,
+    'numItersForTrainExamplesHistory': 10,
 
 })
 
@@ -59,6 +59,7 @@ if __name__=="__main__":
         g=Game3(6,7)
         nnet=nn3(g)
         args.update({'trainExampleCheckpoint': './temp/connect4/'})
+
         args.update({'name': 'connect4'})
 
     filenameBest = "best" + str(args.numIters) + ":eps" + str(args.numEps) + ":dim" + str(
