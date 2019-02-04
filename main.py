@@ -69,13 +69,6 @@ from utils import *
 '''
 
 
-
-'''
-    atatea sampleuri erau inainte
-    2091/2091
-
-'''
-
 args = dotdict({
     'numIters': 75,
     'numEps': 110,
@@ -110,7 +103,7 @@ if __name__=="__main__":
         args.update({'trainExampleCheckpoint': './temp/othello/'})
         args.update({'name': 'othello'})
     if choice=="gobang":
-        g=Game2(6,6)
+        g=Game2(6,6)  # the second parameter is actually the number of continous pieces in order to win
         nnet = nn2(g)
         args.update({'trainExampleCheckpoint': './temp/gobang/'})
         args.update({'name': 'gobang'})
