@@ -13,7 +13,7 @@ class GobangGame(Game):
 
     def getInitBoard(self):
         # return initial board (numpy board)
-        b = Board(self.n)
+        b = Board(self.n,self.n_in_row)
         return np.array(b.pieces)
 
     def getBoardSize(self):
@@ -29,7 +29,7 @@ class GobangGame(Game):
         # action must be a valid move
         if action == self.n * self.n:
             return (board, -player)
-        b = Board(self.n)
+        b = Board(self.n,self.n_in_row)
         b.pieces = np.copy(board)
         move = (int(action / self.n), action % self.n)
         b.execute_move(move, player)
@@ -39,7 +39,7 @@ class GobangGame(Game):
     def getValidMoves(self, board, player):
         # return a fixed size binary vector
         valids = [0] * self.getActionSize()
-        b = Board(self.n)
+        b = Board(self.n,self.n_in_row)
         b.pieces = np.copy(board)
         legalMoves = b.get_legal_moves(player)
         if len(legalMoves) == 0:
@@ -50,7 +50,7 @@ class GobangGame(Game):
         return np.array(valids)
 
     def getScore(self, board, player):
-        b = Board(self.n)
+        b = Board(self.n,self.n_in_row)
         b.pieces = np.copy(board)
         return b.countDiff(player)
 
@@ -58,9 +58,9 @@ class GobangGame(Game):
     def getGameEnded(self, board, player):
         # return 0 if not ended, 1 if player 1 won, -1 if player 1 lost
         # player = 1
-        b = Board(self.n)
+        b = Board(self.n,self.n_in_row)
         b.pieces = np.copy(board)
-        n = 5
+        n = self.n_in_row
 
         for w in range(self.n):
             for h in range(self.n):

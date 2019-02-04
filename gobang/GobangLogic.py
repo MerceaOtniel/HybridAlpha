@@ -13,11 +13,12 @@ x is the column, y is the row.
 class Board():
     __directions = [(1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-1, 0), (-1, 1), (0, 1)]
 
-    def __init__(self, n):
+    def __init__(self, n,n_in_row):
         "Set up initial board configuration."
         self.n = n
         # Create the empty board array.
         self.moveNumber=0
+        self.n_in_row=n_in_row
         self.pieces = [None]*self.n
         for i in range(self.n):
             self.pieces[i] = [0]*self.n
@@ -119,7 +120,7 @@ class Board():
                 numbercontiguous = 0
                 pozx=i
                 pozy=j
-                for u in range(5):
+                for u in range(self.n_in_row):
                     if not(pozx>=0 and pozx<self.n):
                         break
                     if not(pozy>=0 and pozy<self.n):
@@ -130,7 +131,10 @@ class Board():
                         numbercontiguous=0
                         break
                     else:
-                        break
+                        pozprovx=pozx+x
+                        pozprovy=pozy+y
+                        if pozprovx<self.n and pozprovy<self.n and self[pozprovx][pozprovy]!=player:
+                            break
                     pozx+=x
                     pozy+=y
 
@@ -150,8 +154,8 @@ class Board():
         maxadv=max(maxadv,self.check_number_moves(1,1,-color))
         maxadv=max(maxadv,self.check_number_moves(1,-1,-color))
 
-        if maxadv ==5:
-            return -5*-color
+        if maxadv ==self.n_in_row:
+            return -color
 
         maxplayer=0
 
@@ -160,8 +164,8 @@ class Board():
         maxplayer = max(maxplayer, self.check_number_moves(1, 1, color))
         maxplayer = max(maxplayer, self.check_number_moves(1, -1, color))
 
-        if maxplayer==5:
-            return 5*color
+        if maxplayer==self.n_in_row:
+            return color
 
         if maxplayer+maxadv==0:
             return 0

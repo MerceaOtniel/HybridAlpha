@@ -103,7 +103,7 @@ if __name__=="__main__":
         args.update({'trainExampleCheckpoint': './temp/othello/'})
         args.update({'name': 'othello'})
     if choice=="gobang":
-        g=Game2(6,6)  # the second parameter is actually the number of continous pieces in order to win
+        g=Game2(6,3)  # the second parameter is actually the number of continous pieces in order to win
         nnet = nn2(g)
         args.update({'trainExampleCheckpoint': './temp/gobang/'})
         args.update({'name': 'gobang'})
