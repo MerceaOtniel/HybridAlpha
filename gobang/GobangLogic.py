@@ -53,7 +53,7 @@ class Board():
             maxY=centerY+1
             for y in range(self.n):
                 for x in range(self.n):
-                    if self[x][y]==0 and (x<minX or x>maxX) and (y<minY or y>maxY):
+                    if (x<minX or x>maxX) and (y<minY or y>maxY) and self[x][y]==0:
                         moves.add((x,y))
             return list(moves)
 
@@ -112,7 +112,7 @@ class Board():
             move=list(map(sum,zip(move,direction)))
             #move = (move[0]+direction[0],move[1]+direction[1])
 
-    def check_number_moves(self,x,y,player):
+    def check_number_moves(self,x,y,player,points):
 
         max=0
         for i in range(self.n):
@@ -121,12 +121,15 @@ class Board():
                 pozx=i
                 pozy=j
                 for u in range(self.n_in_row):
+
                     if not(pozx>=0 and pozx<self.n):
+                        numbercontiguous=0
                         break
                     if not(pozy>=0 and pozy<self.n):
+                        numbercontiguous=0
                         break
                     if self[pozx][pozy]==player:
-                        numbercontiguous+=1
+                        numbercontiguous+=points
                     elif self[pozx][pozy]==-player:
                         numbercontiguous=0
                         break
@@ -149,20 +152,20 @@ class Board():
 
 
         maxadv=0
-        maxadv=max(maxadv,self.check_number_moves(1,0,-color))
-        maxadv=max(maxadv,self.check_number_moves(0,1,-color))
-        maxadv=max(maxadv,self.check_number_moves(1,1,-color))
-        maxadv=max(maxadv,self.check_number_moves(1,-1,-color))
+        maxadv=max(maxadv,self.check_number_moves(1,0,-color,2))
+        maxadv=max(maxadv,self.check_number_moves(0,1,-color,2))
+        maxadv=max(maxadv,self.check_number_moves(1,1,-color,2))
+        maxadv=max(maxadv,self.check_number_moves(1,-1,-color,2))
 
-        if maxadv ==self.n_in_row:
+        if maxadv ==self.n_in_row*2:
             return -color
 
         maxplayer=0
 
-        maxplayer = max(maxplayer, self.check_number_moves(1, 0, color))
-        maxplayer = max(maxplayer, self.check_number_moves(0, 1, color))
-        maxplayer = max(maxplayer, self.check_number_moves(1, 1, color))
-        maxplayer = max(maxplayer, self.check_number_moves(1, -1, color))
+        maxplayer = max(maxplayer, self.check_number_moves(1, 0, color,1))
+        maxplayer = max(maxplayer, self.check_number_moves(0, 1, color,1))
+        maxplayer = max(maxplayer, self.check_number_moves(1, 1, color,1))
+        maxplayer = max(maxplayer, self.check_number_moves(1, -1, color,1))
 
         if maxplayer==self.n_in_row:
             return color

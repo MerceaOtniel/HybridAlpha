@@ -71,18 +71,18 @@ from utils import *
 
 args = dotdict({
     'numIters': 75,
-    'numEps': 110,
+    'numEps': 2,
     'tempThreshold': 20,
     'updateThreshold': 0.55,
     'maxlenOfQueue': 40000,
-    'numMCTSSims':500,
+    'numMCTSSims':3,
     'arenaCompare': 14,
     'cpuct': 2.0,
     'parallel': 0,
     'dirAlpha': 0.75,
     'epsilon': 0.25,
     'checkpoint': './temp/',
-    'load_model': True,
+    'load_model': False,
     'load_folder_file': ('./temp/gobang/','checkpoint_0.pth.tar'),
     'numItersForTrainExamplesHistory': 10,
 
@@ -103,7 +103,7 @@ if __name__=="__main__":
         args.update({'trainExampleCheckpoint': './temp/othello/'})
         args.update({'name': 'othello'})
     if choice=="gobang":
-        g=Game2(6,3)  # the second parameter is actually the number of continous pieces in order to win
+        g=Game2(5,3)  # the second parameter is actually the number of continous pieces in order to win
         nnet = nn2(g)
         args.update({'trainExampleCheckpoint': './temp/gobang/'})
         args.update({'name': 'gobang'})
