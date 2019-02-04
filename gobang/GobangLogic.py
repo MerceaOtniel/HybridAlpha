@@ -76,15 +76,8 @@ class Board():
 
     def execute_move(self, move, color):
 
-        flips = [flip for direction in self.__directions
-                      for flip in self._get_flips(move, direction, color)]
 
-        if len(list(flips))>0:
-            for x, y in flips:
-                #print(self[x][y],color)
-                self[x][y] = color
-        else:
-            self[move[0]][move[1]]=color
+         self[move[0]][move[1]]=color
 
 
     def _get_flips(self, origin, direction, color):
@@ -133,6 +126,9 @@ class Board():
                         break
                     if self[pozx][pozy]==player:
                         numbercontiguous+=1
+                    elif self[pozx][pozy]==-player:
+                        numbercontiguous=0
+                        break
                     else:
                         break
                     pozx+=x

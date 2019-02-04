@@ -38,7 +38,7 @@ from utils import *
     
     cpuct - represents a coefficient that weights the exploration factor over the exploitation factor
     
-    paralle - when you want to evaluate your network against greedy, random and alfa-beta at the same time every iteration
+    parallel - when you want to evaluate your network against greedy, random and alfa-beta at the same time every iteration
                 Be aware that in order to do this you need to set the GPU memory for the main process as to have
                 enought memory to run all 4 processes(one for each baseline + one for the main process)
                 
@@ -69,28 +69,35 @@ from utils import *
 '''
 
 
+
+'''
+    atatea sampleuri erau inainte
+    2091/2091
+
+'''
+
 args = dotdict({
     'numIters': 75,
-    'numEps': 140,
+    'numEps': 110,
     'tempThreshold': 20,
     'updateThreshold': 0.55,
     'maxlenOfQueue': 40000,
-    'numMCTSSims':400,
+    'numMCTSSims':500,
     'arenaCompare': 14,
-    'cpuct': 1.0,
+    'cpuct': 2.0,
     'parallel': 0,
-    'dirAlpha': 0.4,
+    'dirAlpha': 0.75,
     'epsilon': 0.25,
     'checkpoint': './temp/',
-    'load_model': False,
-    'load_folder_file': ('./temp/othello/','checkpoint_2.pth.tar'),
+    'load_model': True,
+    'load_folder_file': ('./temp/gobang/','checkpoint_0.pth.tar'),
     'numItersForTrainExamplesHistory': 10,
 
 })
 
 if __name__=="__main__":
 
-    choice="othello"
+    choice="gobang"
 
     if choice=="tictactoe":
         g = Game(5)
@@ -103,7 +110,7 @@ if __name__=="__main__":
         args.update({'trainExampleCheckpoint': './temp/othello/'})
         args.update({'name': 'othello'})
     if choice=="gobang":
-        g=Game2(5,5)
+        g=Game2(6,6)
         nnet = nn2(g)
         args.update({'trainExampleCheckpoint': './temp/gobang/'})
         args.update({'name': 'gobang'})

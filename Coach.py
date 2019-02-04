@@ -268,7 +268,8 @@ class Coach():
 
             print('PITTING AGAINST PREVIOUS VERSION')
             arena = Arena(lambda x: np.argmax(pmcts.getActionProb(x, temp=0)),
-                          lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), self.game,nmcts,pmcts,evaluate=True)
+                          lambda x: np.argmax(nmcts.getActionProb(x, temp=0)), self.game,nmcts,pmcts,evaluate=True,
+                          name=self.args.name)
 
             pwins, nwins, draws = arena.playGames(self.args.arenaCompare, False)
 
@@ -299,9 +300,12 @@ class Coach():
                 nmcts2 = MCTS(self.game, self.nnet, self.args)
                 nmcts3 = MCTS(self.game, self.nnet, self.args)
 
-                arenagreedy = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), gp, self.game,nmcts1)
-                arenarandom = Arena(lambda x: np.argmax(nmcts2.getActionProb(x, temp=0)), rp, self.game,nmcts2)
-                arenaminmax = Arena(lambda x: np.argmax(nmcts3.getActionProb(x, temp=0)), mp, self.game,nmcts3,evaluate=True)
+                arenagreedy = Arena(lambda x: np.argmax(nmcts1.getActionProb(x, temp=0)), gp, self.game,nmcts1
+                                    ,name=self.args.name)
+                arenarandom = Arena(lambda x: np.argmax(nmcts2.getActionProb(x, temp=0)), rp, self.game,nmcts2
+                                    ,name=self.args.name)
+                arenaminmax = Arena(lambda x: np.argmax(nmcts3.getActionProb(x, temp=0)), mp, self.game,nmcts3,
+                                    evaluate=True,name=self.args.name)
 
                 pwinsminmax, nwinsminmax, drawsminmax = arenaminmax.playGames(self.args.arenaCompare)
                 print("minmax - "+str(pwinsminmax)+" "+str(nwinsminmax)+" "+str(drawsminmax))
