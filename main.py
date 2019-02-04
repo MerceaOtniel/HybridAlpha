@@ -71,11 +71,11 @@ from utils import *
 
 args = dotdict({
     'numIters': 75,
-    'numEps': 2,
-    'tempThreshold': 20,
+    'numEps': 610,
+    'tempThreshold': 15,
     'updateThreshold': 0.55,
     'maxlenOfQueue': 40000,
-    'numMCTSSims':3,
+    'numMCTSSims':850,
     'arenaCompare': 14,
     'cpuct': 2.0,
     'parallel': 0,

@@ -34,11 +34,11 @@ if choice == "tictactoe":
     n1.load_checkpoint('./temp/', 'best75_eps95_dim5.pth.tar')
     gamename="tictactoe"
     display=display
-    hp = MinMaxTicTacToePlayer(g,4).play
+    hp = GreedyTicTacToePlayer(g).play
 if choice == "gobang":
-    g=GobangGame(5,3)
+    g=GobangGame(6,5)
     n1 = NNet1(g)
-    n1.load_checkpoint('./temp/', 'curent3temp:iter75:eps2:dim5.pth.tar')
+    n1.load_checkpoint('./temp/', 'best75:eps110:dim6.pth.tar')
     gamename="gobang"
     display=display1
     hp = GreedyGobangPlayer(g).play
@@ -63,7 +63,7 @@ if choice == "connect4":
 
 
 # nnet players
-args1 = dotdict({'numMCTSSims': 50, 'cpuct':1.0,'epsilon': 0,'dirAlpha':0.3})
+args1 = dotdict({'numMCTSSims': 350, 'cpuct':1.0,'epsilon': 0,'dirAlpha':0.3})
 mcts1 = MCTS(g, n1, args1)
 n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 
@@ -75,4 +75,4 @@ n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 #n2p = lambda x: np.argmax(mcts2.getActionProb(x, temp=0))
 
 arena = Arena.Arena(n1p, hp, g,mcts1,display=display,evaluate=True,name=gamename)
-print(arena.playGames(6, verbose=True))
+print(arena.playGames(14, verbose=True))
