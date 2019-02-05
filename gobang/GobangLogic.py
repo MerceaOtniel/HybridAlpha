@@ -152,13 +152,10 @@ class Board():
 
 
         maxadv=0
-        maxadv=max(maxadv,self.check_number_moves(1,0,-color,2))
-        maxadv=max(maxadv,self.check_number_moves(0,1,-color,2))
-        maxadv=max(maxadv,self.check_number_moves(1,1,-color,2))
-        maxadv=max(maxadv,self.check_number_moves(1,-1,-color,2))
-
-        if maxadv ==self.n_in_row*2:
-            return -color
+        maxadv=max(maxadv,self.check_number_moves(1,0,-color,1))
+        maxadv=max(maxadv,self.check_number_moves(0,1,-color,1))
+        maxadv=max(maxadv,self.check_number_moves(1,1,-color,1))
+        maxadv=max(maxadv,self.check_number_moves(1,-1,-color,1))
 
         maxplayer=0
 
@@ -169,6 +166,9 @@ class Board():
 
         if maxplayer==self.n_in_row:
             return color
+
+        if maxadv == self.n_in_row or maxadv == self.n_in_row - 1:
+            return -color
 
         if maxplayer+maxadv==0:
             return 0

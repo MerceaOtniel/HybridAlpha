@@ -71,15 +71,15 @@ from utils import *
 
 args = dotdict({
     'numIters': 75,
-    'numEps': 810,
-    'tempThreshold': 3,
+    'numEps': 1110,
+    'tempThreshold': 7,
     'updateThreshold': 0.55,
     'maxlenOfQueue': 40000,
-    'numMCTSSims':830,
+    'numMCTSSims':430,
     'arenaCompare': 14,
     'cpuct': 1.0,
     'parallel': 0,
-    'dirAlpha': 0.5,
+    'dirAlpha': 0.35,
     'epsilon': 0.25,
     'checkpoint': './temp/',
     'load_model': False,
@@ -103,7 +103,7 @@ if __name__=="__main__":
         args.update({'trainExampleCheckpoint': './temp/othello/'})
         args.update({'name': 'othello'})
     if choice=="gobang":
-        g=Game2(5,3)  # the second parameter is actually the number of continous pieces in order to win
+        g=Game2(5,4)  # the second parameter is actually the number of continous pieces in order to win
         nnet = nn2(g)
         args.update({'trainExampleCheckpoint': './temp/gobang/'})
         args.update({'name': 'gobang'})
