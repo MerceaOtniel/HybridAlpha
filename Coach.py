@@ -174,7 +174,7 @@ class Coach():
         epochswinminmax = []  # count the number of wins against minmax at every epoch
         epochsdrawminmax = []  # count the number of draws against minmax at every epoch
 
-
+        begining=1
         if self.args.load_model == True:
             file = open(self.args.trainExampleCheckpoint + "graphwins:iter" + str(self.args.numIters) + ":eps" + str(
                 self.args.numEps) + ":dim" + str(self.game.n) + ".txt", "r+")
@@ -207,7 +207,13 @@ class Coach():
             file.close()
             self.loadTrainExamples()
 
-        for i in range(1, self.args.numIters + 1):
+            file=open(self.args.trainExampleCheckpoint+"loopinformation","r+")
+            lines=file.readlines()
+            begining=lines[0]
+            file.close()
+
+
+        for i in range(int(begining), self.args.numIters + 1):
             # bookkeeping
             print('------ITER ' + str(i) + '------')
             # examples of the iteration
@@ -231,6 +237,10 @@ class Coach():
                 bar.next()
             bar.finish()
 
+            fileLoopInformation = open(self.args.trainExampleCheckpoint+"loopinformation","w+")
+            fileLoopInformation.write(str(i))
+            fileLoopInformation.close()
+
             # save the iteration examples to the history
             self.trainExamplesHistory.append(iterationTrainExamples)
 
@@ -250,8 +260,8 @@ class Coach():
 
             # training new network, keeping a copy of the old one
 
-            filename = "curent"+str(i)+"temp:iter" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + ":dim" + str(
-                self.game.n) + ".pth.tar"
+            filename = "curent"+str(i)+"temp:iter" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + \
+                       ":dim" + str(self.game.n) + ".pth.tar"
             filenameBest = "best" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + ":dim" + str(
                 self.game.n) + ".pth.tar"
             print("path with filename "+filename)
@@ -264,6 +274,9 @@ class Coach():
             pmcts = MCTS(self.game, self.pnet, self.args)
 
             self.nnet.train(trainExamples)
+            filenameCurrent="currentforprocess:temp:iter" + str(self.args.numIters) + \
+                            ":eps" + str(self.args.numEps) + ":dim" + str(self.game.n) + ".pth.tar"
+            self.nnet.save_checkpoint(folder=self.args.checkpoint,filename=filenameCurrent)
             nmcts = MCTS(self.game, self.nnet, self.args)
 
             print('PITTING AGAINST PREVIOUS VERSION')
@@ -560,11 +573,10 @@ def callminmax(num, q, args):
             g = Game(3)
             nnet = nn(g, 0.06)
 
-            filename = "curent" + args.index + "temp:iter" + str(args.numIters) + ":eps" + str(
-                args.numEps) + ":dim" + str(
-                g.n) + ".pth.tar"
+            filenameCurrent = "currentforprocess:temp:iter" + str(args.numIters) + \
+                              ":eps" + str(args.numEps) + ":dim" + str(g.n) + ".pth.tar"
 
-            nnet.load_checkpoint(folder=args.checkpoint, filename=filename)
+            nnet.load_checkpoint(folder=args.checkpoint, filename=filenameCurrent)
 
             mp = returnplayer(args, "minmax", g)
             nmcts1 = MCTS(g, nnet, args)
@@ -597,11 +609,10 @@ def callrandom(num, q, args):
             g = Game(3)
             nnet = nn(g, 0.06)
 
-            filename = "curent" + args.index + "temp:iter" + str(args.numIters) + ":eps" + str(
-                args.numEps) + ":dim" + str(
-                g.n) + ".pth.tar"
+            filenameCurrent = "currentforprocess:temp:iter" + str(args.numIters) + \
+                              ":eps" + str(args.numEps) + ":dim" + str(g.n) + ".pth.tar"
 
-            nnet.load_checkpoint(folder=args.checkpoint, filename=filename)
+            nnet.load_checkpoint(folder=args.checkpoint, filename=filenameCurrent)
 
             rp = returnplayer(args, "random", g)
             nmcts1 = MCTS(g, nnet, args)
@@ -632,10 +643,10 @@ def callgreedy(num, q, args):
         try:
             g = Game(3)
             nnet = nn(g, 0.06)
+            filenameCurrent = "currentforprocess:temp:iter" + str(args.numIters) + \
+                              ":eps" + str(args.numEps) + ":dim" + str(g.n) + ".pth.tar"
 
-            filename = "curent" + args.index + "temp:iter" + str(args.numIters) + ":eps" + \
-                       str(args.numEps) + ":dim" + str(g.n) + ".pth.tar"
-            nnet.load_checkpoint(folder=args.checkpoint, filename=filename)
+            nnet.load_checkpoint(folder=args.checkpoint, filename=filenameCurrent)
 
             gp = returnplayer(args, "greedy", g)
             nmcts1 = MCTS(g, nnet, args)

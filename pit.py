@@ -36,12 +36,12 @@ if choice == "tictactoe":
     display=display
     hp = GreedyTicTacToePlayer(g).play
 if choice == "gobang":
-    g=GobangGame(6,5)
+    g=GobangGame(5,3)
     n1 = NNet1(g)
-    n1.load_checkpoint('./temp/', 'best75:eps110:dim6.pth.tar')
+    n1.load_checkpoint('./temp/', 'curent11temp:iter75:eps810:dim5.pth.tar')
     gamename="gobang"
     display=display1
-    hp = GreedyGobangPlayer(g).play
+    hp = MinMaxGobangPlayer(g,3).play
 if choice == "othello":
     g=OthelloGame(4)
     n1 = NNet2(g)
@@ -63,7 +63,7 @@ if choice == "connect4":
 
 
 # nnet players
-args1 = dotdict({'numMCTSSims': 350, 'cpuct':1.0,'epsilon': 0,'dirAlpha':0.3})
+args1 = dotdict({'numMCTSSims': 300, 'cpuct':1.0,'epsilon': 0,'dirAlpha':0.3})
 mcts1 = MCTS(g, n1, args1)
 n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 

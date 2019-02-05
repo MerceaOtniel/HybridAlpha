@@ -71,19 +71,19 @@ from utils import *
 
 args = dotdict({
     'numIters': 75,
-    'numEps': 610,
-    'tempThreshold': 15,
+    'numEps': 810,
+    'tempThreshold': 3,
     'updateThreshold': 0.55,
     'maxlenOfQueue': 40000,
-    'numMCTSSims':850,
+    'numMCTSSims':830,
     'arenaCompare': 14,
-    'cpuct': 2.0,
+    'cpuct': 1.0,
     'parallel': 0,
-    'dirAlpha': 0.75,
+    'dirAlpha': 0.5,
     'epsilon': 0.25,
     'checkpoint': './temp/',
     'load_model': False,
-    'load_folder_file': ('./temp/gobang/','checkpoint_0.pth.tar'),
+    'load_folder_file': ('./temp/gobang/','checkpoint_2.pth.tar'),
     'numItersForTrainExamplesHistory': 10,
 
 })
