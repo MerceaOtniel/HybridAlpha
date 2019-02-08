@@ -71,11 +71,11 @@ from utils import *
 
 args = dotdict({
     'numIters': 75,
-    'numEps': 1110,
+    'numEps': 3,
     'tempThreshold': 7,
     'updateThreshold': 0.55,
     'maxlenOfQueue': 40000,
-    'numMCTSSims':430,
+    'numMCTSSims':20,
     'arenaCompare': 14,
     'cpuct': 1.0,
     'parallel': 0,
@@ -84,13 +84,13 @@ args = dotdict({
     'checkpoint': './temp/',
     'load_model': False,
     'load_folder_file': ('./temp/gobang/','checkpoint_2.pth.tar'),
-    'numItersForTrainExamplesHistory': 10,
+    'numItersForTrainExamplesHistory': 6,
 
 })
 
 if __name__=="__main__":
 
-    choice="gobang"
+    choice="connect4"
 
     if choice=="tictactoe":
         g = Game(5)
@@ -108,7 +108,7 @@ if __name__=="__main__":
         args.update({'trainExampleCheckpoint': './temp/gobang/'})
         args.update({'name': 'gobang'})
     if choice=="connect4":
-        g=Game3(6,7)
+        g=Game3(4,5)
         nnet=nn3(g)
         args.update({'trainExampleCheckpoint': './temp/connect4/'})
 

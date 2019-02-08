@@ -43,9 +43,9 @@ class Connect4Game(Game):
                 # draw has very little value.
                 return 1e-4
             elif winstate.winner == player:
-                return +1
+                return +1*player
             elif winstate.winner == -player:
-                return -1
+                return -1*player
             else:
                 raise ValueError('Unexpected winstate found: ', winstate)
         else:

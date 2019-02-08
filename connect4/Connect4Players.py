@@ -88,8 +88,7 @@ class MinMaxConnect4Player():
 
         if depth==0 or self.game.getGameEnded(state[0],player)!=0:
             score=self.game.getGameEnded(state[0],player)
-            #print("tabla="+str(state[0]))
-            return [None,score*player]
+            return [None,score]
         '''
         if depth==0 or self.game.getGameEnded(state[0],player)!=0:
             score=self.game.getGameEnded(state[0],player)
@@ -102,8 +101,6 @@ class MinMaxConnect4Player():
                 continue
             nextBoard= self.game.getNextState(state[0], player, a)
             score = self.minimax(nextBoard, depth-1, -player,alfa,beta)
-
-            #print("action ="+str(a)+" score ="+str(score)+" la depth="+str(depth))
             if player==1:
                 if score[1] > best[1]:
                     best[1]=score[1]

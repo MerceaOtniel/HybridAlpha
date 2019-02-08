@@ -93,7 +93,7 @@ class Coach():
                     if "connect4" in self.args.trainExampleCheckpoint:
                         rp = connect4players.RandomConnect4Player(self.game).play
                         gp = connect4players.GreedyConnect4Player(self.game).play
-                        mp = connect4players.MinMaxConnect4Player(self.game,5).play
+                        mp = connect4players.MinMaxConnect4Player(self.game,10).play
 
         return (gp, rp, mp)
 
