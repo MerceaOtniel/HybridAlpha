@@ -14,7 +14,8 @@ class Connect4Game(Game):
     def __init__(self, height=None, width=None, win_length=None, np_pieces=None):
         Game.__init__(self)
         self._base_board = Board(height, width, win_length, np_pieces)
-        self.n=height
+        self.height=height
+        self.width=width
 
     def getInitBoard(self):
         return self._base_board.np_pieces
@@ -34,6 +35,12 @@ class Connect4Game(Game):
     def getValidMoves(self, board, player):
         "Any zero value in top row in a valid move"
         return self._base_board.with_np_pieces(np_pieces=board).get_valid_moves()
+
+
+    def getScore(self, board, player):
+        b = self._base_board.with_np_pieces(np_pieces=board)
+        return b.countDiff(player)
+
 
     def getGameEnded(self, board, player):
         b = self._base_board.with_np_pieces(np_pieces=board)

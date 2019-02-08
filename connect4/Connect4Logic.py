@@ -79,3 +79,67 @@ class Board():
 
     def __str__(self):
         return str(self.np_pieces)
+
+
+
+    def check_number_moves(self,x,y,player,points):
+
+        max=0
+        for i in range(self.height):
+            for j in range(self.width):
+                numbercontiguous = 0
+                pozx=i
+                pozy=j
+                for u in range(4):
+
+                    if not(pozx>=0 and pozx<self.height):
+                        numbercontiguous=0
+                        break
+                    if not(pozy>=0 and pozy<self.width):
+                        numbercontiguous=0
+                        break
+                    if self.np_pieces[pozx][pozy]==player:
+                        numbercontiguous+=points
+                    elif self.np_pieces[pozx][pozy]==-player:
+                        numbercontiguous=0
+                        break
+                    else:
+                        pozprovx=pozx+x
+                        pozprovy=pozy+y
+                        if pozprovx<self.height and pozprovy<self.width and self.np_pieces[pozprovx][pozprovy]!=player:
+                            break
+                    pozx+=x
+                    pozy+=y
+
+                if numbercontiguous>max:
+                    max=numbercontiguous
+        return max
+
+
+    def countDiff(self, color):
+        """Counts the # pieces of the given color
+        (1 for white, -1 for black, 0 for empty spaces)"""
+
+
+        maxadv=0
+        maxadv=max(maxadv,self.check_number_moves(1,0,-color,1))
+        maxadv=max(maxadv,self.check_number_moves(0,1,-color,1))
+        maxadv=max(maxadv,self.check_number_moves(1,1,-color,1))
+        maxadv=max(maxadv,self.check_number_moves(1,-1,-color,1))
+
+        maxplayer=0
+
+        maxplayer = max(maxplayer, self.check_number_moves(1, 0, color,1))
+        maxplayer = max(maxplayer, self.check_number_moves(0, 1, color,1))
+        maxplayer = max(maxplayer, self.check_number_moves(1, 1, color,1))
+        maxplayer = max(maxplayer, self.check_number_moves(1, -1, color,1))
+
+        if maxplayer==4:
+            return color
+
+        if maxadv == 4 or maxadv == 4 - 1:
+            return -color
+
+        if maxplayer+maxadv==0:
+            return 0
+        return ((maxplayer-maxadv)/(maxplayer+maxadv))*color

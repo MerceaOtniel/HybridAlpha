@@ -52,10 +52,10 @@ if choice == "othello":
 if choice == "connect4":
     g=Connect4Game(4,5)
     n1=NNet3(g)
-    n1.load_checkpoint('./temp/','curent1temp:iter75:eps3:dim4.pth.tar')
+    n1.load_checkpoint('./temp/','curent2temp:iter75:eps2:dim4.pth.tar')
     gamename = "connect4"
     display=display3
-    hp=MinMaxConnect4Player(g,10).play
+    hp=MinMaxConnect4Player(g,3).play
 
 # all players
 #rp = RandomPlayer(g).play
