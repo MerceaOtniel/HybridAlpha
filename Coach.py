@@ -214,6 +214,11 @@ class Coach():
 
 
         for i in range(int(begining), self.args.numIters + 1):
+
+            fileLoopInformation = open(self.args.trainExampleCheckpoint + "loopinformation", "w+")
+            fileLoopInformation.write(str(i))
+            fileLoopInformation.close()
+
             # bookkeeping
             print('------ITER ' + str(i) + '------')
             # examples of the iteration
@@ -236,10 +241,6 @@ class Coach():
                                                                                                            eta=bar.eta_td)
                 bar.next()
             bar.finish()
-
-            fileLoopInformation = open(self.args.trainExampleCheckpoint+"loopinformation","w+")
-            fileLoopInformation.write(str(i))
-            fileLoopInformation.close()
 
             # save the iteration examples to the history
             self.trainExamplesHistory.append(iterationTrainExamples)

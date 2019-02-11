@@ -26,7 +26,7 @@ from utils import *
 use this script to play any two agents against each other, or play manually with
 any agent.
 """
-choice ="connect4"
+choice ="gobang"
 
 if choice == "tictactoe":
     g = TicTacToeGame(5)
@@ -36,12 +36,12 @@ if choice == "tictactoe":
     display=display
     hp = GreedyTicTacToePlayer(g).play
 if choice == "gobang":
-    g=GobangGame(5,4)
+    g=GobangGame(5,3)
     n1 = NNet1(g)
-    n1.load_checkpoint('./temp/', 'best75:eps400:dim5.pth.tar')
+    n1.load_checkpoint('./temp/', 'best75_eps1110_dim5.pth.tar')
     gamename="gobang"
     display=display1
-    hp = GreedyGobangPlayer(g).play
+    hp = MinMaxGobangPlayer(g,5).play
 if choice == "othello":
     g=OthelloGame(4)
     n1 = NNet2(g)
@@ -52,10 +52,10 @@ if choice == "othello":
 if choice == "connect4":
     g=Connect4Game(4,5)
     n1=NNet3(g)
-    n1.load_checkpoint('./temp/','curent2temp:iter75:eps2:dim4.pth.tar')
+    n1.load_checkpoint('./temp/','best75_eps400_dim4.pth.tar')
     gamename = "connect4"
     display=display3
-    hp=MinMaxConnect4Player(g,3).play
+    hp=MinMaxConnect4Player(g,7).play
 
 # all players
 #rp = RandomPlayer(g).play
@@ -63,7 +63,7 @@ if choice == "connect4":
 
 
 # nnet players
-args1 = dotdict({'numMCTSSims': 50, 'cpuct':1.0,'epsilon': 0,'dirAlpha':0.3})
+args1 = dotdict({'numMCTSSims': 10, 'cpuct':1.0,'epsilon': 0,'dirAlpha':0.3})
 mcts1 = MCTS(g, n1, args1)
 n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 

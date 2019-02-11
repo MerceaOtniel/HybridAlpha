@@ -110,7 +110,7 @@ class MinMaxGobangPlayer():
 
         if self.game.getGameEnded(state[0],player)!=0:
             score=self.game.getGameEnded(state[0],player)
-            return [None,score]
+            return [None,score+depth/(depth+1)*-player]
         elif depth==0:
             score=self.game.getScore(state[0],player)
             return [None,score]
