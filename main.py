@@ -57,7 +57,7 @@ from utils import *
     
     numItersForTraininExampleHistory - represents how many examples will be used for training. After the number of 
                                         iterations exced this number, it will start to delete at every iteration the first
-                                        batch of examples from the queue, and in add the new batch(generated in the current
+                                        batch of examples from the queue, and add in the new batch(generated in the current
                                         iteration), so you will have in the examples queue
                                         at most numItersForTrainingExampleHIstory batches.
     

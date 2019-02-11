@@ -26,7 +26,7 @@ from utils import *
 use this script to play any two agents against each other, or play manually with
 any agent.
 """
-choice ="gobang"
+choice ="othello"
 
 if choice == "tictactoe":
     g = TicTacToeGame(5)
@@ -43,12 +43,12 @@ if choice == "gobang":
     display=display1
     hp = MinMaxGobangPlayer(g,5).play
 if choice == "othello":
-    g=OthelloGame(4)
+    g=OthelloGame(6)
     n1 = NNet2(g)
-    n1.load_checkpoint('./temp/', 'best75:eps225:dim4.pth.tar')
+    n1.load_checkpoint('./temp/', 'best75_eps140_dim6.pth.tar')
     gamename = "othello"
     display=display2
-    hp = MinMaxOthelloPlayer(g,9).play
+    hp = MinMaxOthelloPlayer(g,3).play
 if choice == "connect4":
     g=Connect4Game(4,5)
     n1=NNet3(g)
@@ -63,7 +63,7 @@ if choice == "connect4":
 
 
 # nnet players
-args1 = dotdict({'numMCTSSims': 10, 'cpuct':1.0,'epsilon': 0,'dirAlpha':0.3})
+args1 = dotdict({'numMCTSSims': 300, 'cpuct':1.0,'epsilon': 0,'dirAlpha':0.3})
 mcts1 = MCTS(g, n1, args1)
 n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 
