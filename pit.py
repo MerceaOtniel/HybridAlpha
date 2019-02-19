@@ -45,17 +45,17 @@ if choice == "gobang":
 if choice == "othello":
     g=OthelloGame(6)
     n1 = NNet2(g)
-    n1.load_checkpoint('./temp/', 'best75_eps140_dim6.pth.tar')
+    n1.load_checkpoint('./temp/', 'curent20temp_iter75_eps140_dim6.pth.tar')
     gamename = "othello"
     display=display2
     hp = MinMaxOthelloPlayer(g,3).play
 if choice == "connect4":
-    g=Connect4Game(4,5)
+    g=Connect4Game(6,7)
     n1=NNet3(g)
-    n1.load_checkpoint('./temp/','best75_eps400_dim4.pth.tar')
+    n1.load_checkpoint('./temp/','best75_eps200_dim6.pth.tar')
     gamename = "connect4"
     display=display3
-    hp=MinMaxConnect4Player(g,7).play
+    hp=MinMaxConnect4Player(g,3).play
 
 # all players
 #rp = RandomPlayer(g).play
@@ -63,7 +63,7 @@ if choice == "connect4":
 
 
 # nnet players
-args1 = dotdict({'numMCTSSims': 300, 'cpuct':1.0,'epsilon': 0,'dirAlpha':0.3})
+args1 = dotdict({'numMCTSSims': 400, 'cpuct':1.0,'epsilon': 0,'dirAlpha':0.3})
 mcts1 = MCTS(g, n1, args1)
 n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 

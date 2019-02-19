@@ -71,11 +71,11 @@ from utils import *
 
 args = dotdict({
     'numIters': 75,
-    'numEps': 300,
+    'numEps': 200,
     'tempThreshold': 3,
     'updateThreshold': 0.55,
     'maxlenOfQueue': 40000,
-    'numMCTSSims':300,
+    'numMCTSSims':400,
     'arenaCompare': 14,
     'cpuct': 1.0,
     'parallel': 0,
@@ -83,14 +83,14 @@ args = dotdict({
     'epsilon': 0.25,
     'checkpoint': './temp/',
     'load_model': False,
-    'load_folder_file': ('./temp/connect4/','checkpoint_0.pth.tar'),
+    'load_folder_file': ('./temp/othello/','checkpoint_2.pth.tar'),
     'numItersForTrainExamplesHistory': 7,
 
 })
 
 if __name__=="__main__":
 
-    choice="connect4"
+    choice="othello"
 
     if choice=="tictactoe":
         g = Game(5)
@@ -108,10 +108,9 @@ if __name__=="__main__":
         args.update({'trainExampleCheckpoint': './temp/gobang/'})
         args.update({'name': 'gobang'})
     if choice=="connect4":
-        g=Game3(5,6) #the height and width. the number of pieces in a row (in this case 4) is constant
+        g=Game3(6,7) #the height and width. the number of pieces in a row (in this case 4) is constant
         nnet=nn3(g)
         args.update({'trainExampleCheckpoint': './temp/connect4/'})
-
         args.update({'name': 'connect4'})
 
     filenameBest = "best" + str(args.numIters) + ":eps" + str(args.numEps) + ":dim" + str(

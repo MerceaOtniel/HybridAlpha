@@ -91,7 +91,6 @@ class MinMaxOthelloPlayer():
         '''
 
         score = self.minimax((board,-1),self.depth,1,-infinity,+infinity)
-        print("minmax at depth "+str(self.depth))
         return score[0]
 
     def minimax(self,state,depth,player,alfa,beta):
