@@ -82,11 +82,13 @@ args = dotdict({
     'dirAlpha': 0.35,
     'epsilon': 0.25,
     'checkpoint': './temp/',
-    'load_model': False,
+    'load_model': True,
     'load_folder_file': ('./temp/othello/','checkpoint_2.pth.tar'),
     'numItersForTrainExamplesHistory': 7,
 
 })
+
+
 
 if __name__=="__main__":
 

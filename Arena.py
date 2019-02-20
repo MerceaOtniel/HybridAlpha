@@ -60,6 +60,7 @@ class Arena():
         players = [self.player2, None, self.player1]
         curPlayer = 1
         board = self.game.getInitBoard()
+        self.display(board)
         self.clearMCTS()
         it = 0
         while self.game.getGameEnded(board, curPlayer) == 0:
