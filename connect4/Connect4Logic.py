@@ -14,7 +14,7 @@ class Board():
     """
 
     def __init__(self, height=None, width=None, win_length=None, np_pieces=None):
-        "Set up initial board configuration."
+        """Set up initial board configuration."""
         self.height = height or DEFAULT_HEIGHT
         self.width = width or DEFAULT_WIDTH
         self.win_length = win_length or DEFAULT_WIN_LENGTH
@@ -26,7 +26,7 @@ class Board():
             assert self.np_pieces.shape == (self.height, self.width)
 
     def add_stone(self, column, player):
-        "Create copy of board containing new stone."
+        """Create copy of board containing new stone."""
         available_idx, = np.where(self.np_pieces[:, column] == 0)
         if len(available_idx) == 0:
             raise ValueError("Can't play column %s on board %s" % (column, self))
@@ -80,66 +80,62 @@ class Board():
     def __str__(self):
         return str(self.np_pieces)
 
-
-
-    def check_number_moves(self,x,y,player,points):
-
-        max=0
+    def check_number_moves(self, x, y, player, points):
+        maxcontiguous = 0
         for i in range(self.height):
             for j in range(self.width):
                 numbercontiguous = 0
-                pozx=i
-                pozy=j
+                pozx = i
+                pozy = j
                 for u in range(4):
 
-                    if not(pozx>=0 and pozx<self.height):
-                        numbercontiguous=0
+                    if not(pozx >= 0 and pozx < self.height):
+                        numbercontiguous = 0
                         break
-                    if not(pozy>=0 and pozy<self.width):
-                        numbercontiguous=0
+                    if not(pozy >= 0 and pozy < self.width):
+                        numbercontiguous = 0
                         break
-                    if self.np_pieces[pozx][pozy]==player:
-                        numbercontiguous+=points
-                    elif self.np_pieces[pozx][pozy]==-player:
-                        numbercontiguous=0
+                    if self.np_pieces[pozx][pozy] == player:
+                        numbercontiguous += points
+                    elif self.np_pieces[pozx][pozy] == -player:
+                        numbercontiguous = 0
                         break
                     else:
-                        pozprovx=pozx+x
-                        pozprovy=pozy+y
-                        if pozprovx<self.height and pozprovy<self.width and self.np_pieces[pozprovx][pozprovy]!=player:
+                        pozprovx = pozx+x
+                        pozprovy = pozy+y
+                        if pozprovx < self.height and pozprovy < self.width and \
+                                self.np_pieces[pozprovx][pozprovy] != player:
                             break
-                    pozx+=x
-                    pozy+=y
+                    pozx += x
+                    pozy += y
 
-                if numbercontiguous>max:
-                    max=numbercontiguous
-        return max
-
+                if numbercontiguous > maxcontiguous:
+                    maxcontiguous = numbercontiguous
+        return maxcontiguous
 
     def countDiff(self, color):
         """Counts the # pieces of the given color
         (1 for white, -1 for black, 0 for empty spaces)"""
 
+        maxadv = 0
+        maxadv = max(maxadv, self.check_number_moves(1, 0, -color, 1))
+        maxadv = max(maxadv, self.check_number_moves(0, 1, -color, 1))
+        maxadv = max(maxadv, self.check_number_moves(1, 1, -color, 1))
+        maxadv = max(maxadv, self.check_number_moves(1, -1, -color, 1))
 
-        maxadv=0
-        maxadv=max(maxadv,self.check_number_moves(1,0,-color,1))
-        maxadv=max(maxadv,self.check_number_moves(0,1,-color,1))
-        maxadv=max(maxadv,self.check_number_moves(1,1,-color,1))
-        maxadv=max(maxadv,self.check_number_moves(1,-1,-color,1))
+        maxplayer = 0
 
-        maxplayer=0
+        maxplayer = max(maxplayer, self.check_number_moves(1, 0, color, 1))
+        maxplayer = max(maxplayer, self.check_number_moves(0, 1, color, 1))
+        maxplayer = max(maxplayer, self.check_number_moves(1, 1, color, 1))
+        maxplayer = max(maxplayer, self.check_number_moves(1, -1, color, 1))
 
-        maxplayer = max(maxplayer, self.check_number_moves(1, 0, color,1))
-        maxplayer = max(maxplayer, self.check_number_moves(0, 1, color,1))
-        maxplayer = max(maxplayer, self.check_number_moves(1, 1, color,1))
-        maxplayer = max(maxplayer, self.check_number_moves(1, -1, color,1))
-
-        if maxplayer==4:
+        if maxplayer == 4:
             return color
 
         if maxadv == 4 or maxadv == 4 - 1:
             return -color
 
-        if maxplayer+maxadv==0:
+        if maxplayer+maxadv == 0:
             return 0
         return ((maxplayer-maxadv)/(maxplayer+maxadv))*color

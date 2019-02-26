@@ -13,7 +13,7 @@ class GobangGame(Game):
 
     def getInitBoard(self):
         # return initial board (numpy board)
-        b = Board(self.n,self.n_in_row)
+        b = Board(self.n, self.n_in_row)
         return np.array(b.pieces)
 
     def getBoardSize(self):
@@ -29,7 +29,7 @@ class GobangGame(Game):
         # action must be a valid move
         if action == self.n * self.n:
             return (board, -player)
-        b = Board(self.n,self.n_in_row)
+        b = Board(self.n, self.n_in_row)
         b.pieces = np.copy(board)
         move = (int(action / self.n), action % self.n)
         b.execute_move(move, player)
@@ -50,7 +50,7 @@ class GobangGame(Game):
         return np.array(valids)
 
     def getScore(self, board, player):
-        b = Board(self.n,self.n_in_row)
+        b = Board(self.n, self.n_in_row)
         b.pieces = np.copy(board)
         return b.countDiff(player)
 

@@ -405,6 +405,7 @@ class Coach():
         filename = os.path.join(folder, self.getCheckpointFile(iteration) + ".examples")
         with open(filename, "wb+") as f:
             Pickler(f).dump(self.trainExamplesHistory)
+            Pickler(f).clear_memo()
         f.close()
 
     def loadTrainExamples(self):
