@@ -1,4 +1,5 @@
 from Coach import Coach
+from AlphaZeroCoach import AlphaZeroCoach
 
 from tictactoe.TicTacToeGame import TicTacToeGame as Game
 from tictactoe.tensorflow.NNet import NNetWrapper as Nn
@@ -68,21 +69,22 @@ from utils import *
 
 
 args = dotdict({
-    'numIters': 75,
-    'numEps': 200,
-    'tempThreshold': 13,
+    'numIters': 10,
+    'numEps': 95,
+    'tempThreshold': 16,
     'updateThreshold': 0.55,
     'maxlenOfQueue': 40000,
-    'numMCTSSims': 200,
+    'numMCTSSims': 350,
     'arenaCompare': 14,
-    'cpuct': 1.5,
+    'cpuct': 1.0,
     'parallel': 0,
-    'dirAlpha': 0.35,
+    'dirAlpha': 0.3,
     'epsilon': 0.25,
     'checkpoint': './temp/',
-    'load_model': True,
+    'load_model': False,
+    'alphazero':  True,
     'load_folder_file': ('./temp/othello/', 'checkpoint_5.pth.tar'),
-    'numItersForTrainExamplesHistory': 5,
+    'numItersForTrainExamplesHistory': 15,
 
 })
 
@@ -90,7 +92,7 @@ args = dotdict({
 
 if __name__=="__main__":
 
-    choice = "othello"
+    choice = "tictactoe"
 
     if choice == "tictactoe":
         g = Game(5)
@@ -119,8 +121,18 @@ if __name__=="__main__":
     if args.load_model:
         nnet.load_checkpoint(args.checkpoint, filenameBest)
 
-    c = Coach(g, nnet, args)
-    if args.load_model:
-        print("Load trainExamples from file")
-        c.loadTrainExamples()
-    c.learn()
+    if args.alphazero==False:
+        print("HybridAlpha")
+        c = Coach(g, nnet, args)
+        if args.load_model:
+            print("Load trainExamples from file")
+            c.loadTrainExamples()
+        c.learn()
+    else:
+        print("AlphaZero")
+        c = AlphaZeroCoach(g, nnet, args)
+        if args.load_model:
+            print("Load trainExamples from file")
+            c.loadTrainExamples()
+        c.learn()
+

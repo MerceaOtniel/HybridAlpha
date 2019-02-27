@@ -95,6 +95,13 @@ class TicTacToeGame(Game):
                 l += [(newB, list(newPi.ravel()) + [pi[-1]])]
         return l
 
+
+    def getNoSymmetries(self, board, pi):
+        # mirror, rotational
+        assert(len(pi) == self.n**2+1)  # 1 for pass
+        l = [(board, pi)]
+        return l
+
     def stringRepresentation(self, board):
         # 8x8 numpy array (canonical board)
         return board.tostring()
