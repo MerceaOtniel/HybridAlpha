@@ -69,22 +69,22 @@ from utils import *
 
 
 args = dotdict({
-    'numIters': 10,
-    'numEps': 95,
-    'tempThreshold': 16,
+    'numIters': 20,
+    'numEps': 140,
+    'tempThreshold': 8,
     'updateThreshold': 0.55,
     'maxlenOfQueue': 40000,
-    'numMCTSSims': 350,
+    'numMCTSSims': 400,
     'arenaCompare': 14,
     'cpuct': 1.0,
     'parallel': 0,
-    'dirAlpha': 0.3,
+    'dirAlpha': 0.4,
     'epsilon': 0.25,
     'checkpoint': './temp/',
     'load_model': False,
     'alphazero':  True,
     'load_folder_file': ('./temp/othello/', 'checkpoint_5.pth.tar'),
-    'numItersForTrainExamplesHistory': 15,
+    'numItersForTrainExamplesHistory': 6,
 
 })
 
@@ -92,15 +92,15 @@ args = dotdict({
 
 if __name__=="__main__":
 
-    choice = "tictactoe"
+    choice = "othello"
 
     if choice == "tictactoe":
-        g = Game(5)
+        g = Game(3)
         nnet = Nn(g)
         args.update({'trainExampleCheckpoint': './temp/tictactoe/'})
         args.update({'name': 'tictactoe'})
     if choice == "othello":
-        g = Game1(8)
+        g = Game1(6)
         nnet = Nn1(g)
         args.update({'trainExampleCheckpoint': './temp/othello/'})
         args.update({'name': 'othello'})

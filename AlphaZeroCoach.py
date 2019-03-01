@@ -135,7 +135,7 @@ class AlphaZeroCoach():
 
             # training new network, keeping a copy of the old one
 
-            filename = "curent" + str(i) + "temp:iter" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + \
+            filename = "AlphaZerocurent" + str(i) + "temp:iter" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + \
                        ":dim" + str(self.game.n) + ".pth.tar"
 
             self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=filename)
