@@ -66,6 +66,11 @@ class Connect4Game(Game):
         """Board is left/right board symmetric"""
         return [(board, pi), (board[:, ::-1], pi[::-1])]
 
+    def getNoSymmetries(self, board, pi):
+        # mirror, rotational
+        l = [(board, pi)]
+        return l
+
     def stringRepresentation(self, board):
         return str(self._base_board.with_np_pieces(np_pieces=board))
 

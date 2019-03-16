@@ -69,22 +69,22 @@ from utils import *
 
 
 args = dotdict({
-    'numIters': 20,
-    'numEps': 140,
-    'tempThreshold': 8,
+    'numIters': 14,
+    'numEps': 200,
+    'tempThreshold': 13,
     'updateThreshold': 0.55,
     'maxlenOfQueue': 40000,
-    'numMCTSSims': 400,
+    'numMCTSSims': 200,
     'arenaCompare': 14,
-    'cpuct': 1.0,
+    'cpuct': 1.5,
     'parallel': 0,
-    'dirAlpha': 0.4,
+    'dirAlpha': 0.35,
     'epsilon': 0.25,
     'checkpoint': './temp/',
     'load_model': False,
-    'alphazero':  True,
+    'alphazero':  False,
     'load_folder_file': ('./temp/othello/', 'checkpoint_5.pth.tar'),
-    'numItersForTrainExamplesHistory': 6,
+    'numItersForTrainExamplesHistory': 5,
 
 })
 
@@ -100,17 +100,17 @@ if __name__=="__main__":
         args.update({'trainExampleCheckpoint': './temp/tictactoe/'})
         args.update({'name': 'tictactoe'})
     if choice == "othello":
-        g = Game1(6)
+        g = Game1(8)
         nnet = Nn1(g)
         args.update({'trainExampleCheckpoint': './temp/othello/'})
         args.update({'name': 'othello'})
     if choice == "gobang":
-        g = Game2(5, 4)  # the second parameter is actually the number of continous pieces in order to win
+        g = Game2(5, 3)  # the second parameter is actually the number of continous pieces in order to win
         nnet = Nn2(g)
         args.update({'trainExampleCheckpoint': './temp/gobang/'})
         args.update({'name': 'gobang'})
     if choice == "connect4":
-        g = Game3(6, 7)  # the height and width. the number of pieces in a row (in this case 4) is constant
+        g = Game3(4, 5)  # the height and width. the number of pieces in a row (in this case 4) is constant
         nnet = Nn3(g)
         args.update({'trainExampleCheckpoint': './temp/connect4/'})
         args.update({'name': 'connect4'})

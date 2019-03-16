@@ -133,14 +133,12 @@ class AlphaZeroCoach():
                 trainExamples.extend(e)
             shuffle(trainExamples)
 
-            # training new network, keeping a copy of the old one
-
             filename = "AlphaZerocurent" + str(i) + "temp:iter" + str(self.args.numIters) + ":eps" + str(self.args.numEps) + \
                        ":dim" + str(self.game.n) + ".pth.tar"
 
-            self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=filename)
-
             self.nnet.train(trainExamples)
+
+            self.nnet.save_checkpoint(folder=self.args.checkpoint, filename=filename)
 
             self.mcts.clear()
             del self.mcts
