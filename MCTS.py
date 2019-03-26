@@ -88,13 +88,7 @@ class MCTS():
 
         if s not in self.Ps:
             # leaf node
-
-            pi=[0 for _ in range(self.game.getActionSize())] # dummy value used to call getSymmetries
-            sym = self.game.getSymmetries(canonicalBoard, pi)
-
-            board, _ = random.choice(sym)
-
-            self.Ps[s], v = self.nnet.predict(board)
+            self.Ps[s], v = self.nnet.predict(canonicalBoard)
             valids = self.game.getValidMoves(canonicalBoard, 1)
             self.Ps[s] = self.Ps[s] * valids  # masking invalid moves
             sum_Ps_s = np.sum(self.Ps[s])
