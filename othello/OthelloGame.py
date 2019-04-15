@@ -82,36 +82,6 @@ class OthelloGame(Game):
                 l += [(newB, list(newPi.ravel()) + [pi[-1]])]
         return l
 
-    def getPolicyNormal(self, augmentedBoard, canonicalBoard, policy):
-
-        assert(len(policy) == self.n**2+1)
-
-        pi_board=np.reshape(policy[:-1], (self.n, self.n))
-        for i in range(1, 5):
-            for j in [True, False]:
-                newB = np.rot90(augmentedBoard, i)
-                if j:
-                    newB = np.fliplr(newB)
-                    isFlipped = 1
-                else:
-                    isFlipped = 0
-                if (newB == canonicalBoard).all():
-
-                    newPi=np.rot90(pi_board,i)
-                    if isFlipped == 1:
-                        newPi=np.fliplr(newPi)
-                    return list(newPi.ravel()) + [policy[-1]]
-
-    def getBoardSymmetries(self, board):
-        l = []
-        for i in range(1, 5):
-            for j in [True, False]:
-                newB = np.rot90(board, i)
-                if j:
-                    newB = np.fliplr(newB)
-                l += [newB]
-        return l
-
     def getNoSymmetries(self, board, pi):
         # mirror, rotational
         assert(len(pi) == self.n**2+1)  # 1 for pass

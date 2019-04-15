@@ -34,28 +34,28 @@ if choice == "tictactoe":
     n1.load_checkpoint('./temp/', 'best75_eps95_dim3.pth.tar')
     gamename = "tictactoe"
     display = display
-    hp = GreedyTicTacToePlayer(g).play
+    hp = RandomTicTacToePlayer(g).play
 if choice == "gobang":
     g = GobangGame(5, 4)
     n1 = NNet1(g)
     n1.load_checkpoint('./temp/', 'curent13temp_iter75_eps350_dim5.pth.tar')
     gamename = "gobang"
     display = display1
-    hp = RandomGobangPlayer(g).play
+    hp = MinMaxGobangPlayer(g,5).play
 if choice == "othello":
-    g = OthelloGame(6)
+    g = OthelloGame(8)
     n1 = NNet2(g)
-    n1.load_checkpoint('./temp/', 'celalaltbun')
+    n1.load_checkpoint('./temp/', 'curent10temp:iter14:eps200:dim8.pth.tar')
     gamename = "othello"
     display = display2
-    hp = GreedyOthelloPlayer(g).play
+    hp = MinMaxOthelloPlayer(g,3).play
 if choice == "connect4":
-    g = Connect4Game(4, 5)
+    g = Connect4Game(6, 7)
     n1 = NNet3(g)
-    n1.load_checkpoint('./temp/','best75_eps400_dim4.pth.tar')
+    n1.load_checkpoint('./temp/','best75_eps200_dim6.pth.tar')
     gamename = "connect4"
     display = display3
-    hp = GreedyConnect4Player(g).play
+    hp = RandomConnect4Player(g).play
 
 # all players
 #rp = RandomPlayer(g).play
@@ -63,17 +63,17 @@ if choice == "connect4":
 
 
 # nnet players
-args1 = dotdict({'numMCTSSims': 200, 'cpuct': 1, 'epsilon': 0, 'dirAlpha': 0.3})
+args1 = dotdict({'numMCTSSims': 400, 'cpuct': 1.5, 'epsilon': 0, 'dirAlpha': 0.3})
 mcts1 = MCTS(g, n1, args1)
 n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 
 
 #n2 = NNet2(g)
-#n2.load_checkpoint('./temp/', 'AlphaZerocurent7temp:iter7:eps225:dim4.pth.tar')
-#args2 = dotdict({'numMCTSSims': 300, 'cpuct': 1, 'epsilon': 0, 'dirAlpha': 0.3})
+#n2.load_checkpoint('./temp/', 'AlphaZerocurent20temp:iter20:eps140:dim6.pth.tar')
+#args2 = dotdict({'numMCTSSims': 2, 'cpuct': 1.5, 'epsilon': 0, 'dirAlpha': 0.3})
 #mcts2 = MCTS(g, n2, args2)
 #n2p = lambda x: np.argmax(mcts2.getActionProb(x, temp=0))
 
 
-arena = Arena.Arena(n1p, hp, g, mcts1, display=display, evaluate=True, name=gamename)
-print(arena.playGames(8, verbose=True))
+arena = Arena.Arena(n1p, hp,  g, mcts1,  display=display, evaluate=True, name=gamename)
+print(arena.playGames(4, verbose=True))
