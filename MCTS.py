@@ -42,6 +42,7 @@ class MCTS():
             probs: a policy vector where the probability of the ith action is
                    proportional to Nsa[(s,a)]**(1./temp)
         """
+        self.temp=temp
         self.search(canonicalBoard,True)
         for i in range(self.args.numMCTSSims):
             self.search(canonicalBoard,False)
@@ -88,6 +89,7 @@ class MCTS():
 
         if s not in self.Ps:
             # leaf node
+            
             self.Ps[s], v = self.nnet.predict(canonicalBoard)
             valids = self.game.getValidMoves(canonicalBoard, 1)
             self.Ps[s] = self.Ps[s] * valids  # masking invalid moves
@@ -139,9 +141,7 @@ class MCTS():
                     best_act.append(a)
 
         a = random.choice(best_act)
-
         next_s, next_player = self.game.getNextState(canonicalBoard, 1, a)
-
         next_s = self.game.getCanonicalForm(next_s, next_player)
 
         v = self.search(next_s,False)

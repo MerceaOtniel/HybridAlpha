@@ -1,3 +1,5 @@
+import numpy as np
+
 from Coach import Coach
 from AlphaZeroCoach import AlphaZeroCoach
 
@@ -69,22 +71,22 @@ from utils import *
 
 
 args = dotdict({
-    'numIters': 14,
-    'numEps': 200,
-    'tempThreshold': 13,
+    'numIters': 7,
+    'numEps': 225,
+    'tempThreshold': 3,
     'updateThreshold': 0.55,
     'maxlenOfQueue': 40000,
-    'numMCTSSims': 200,
+    'numMCTSSims': 1150,
     'arenaCompare': 14,
-    'cpuct': 1.5,
+    'cpuct': 1.0,
     'parallel': 0,
-    'dirAlpha': 0.35,
+    'dirAlpha': 0.4,
     'epsilon': 0.25,
     'checkpoint': './temp/',
     'load_model': False,
     'alphazero':  False,
-    'load_folder_file': ('./temp/othello/', 'checkpoint_12.pth.tar'),
-    'numItersForTrainExamplesHistory': 5,
+    'load_folder_file': ('./temp/othello/', 'checkpoint_6.pth.tar'),
+    'numItersForTrainExamplesHistory': 15,
 
 })
 
@@ -100,17 +102,17 @@ if __name__=="__main__":
         args.update({'trainExampleCheckpoint': './temp/tictactoe/'})
         args.update({'name': 'tictactoe'})
     if choice == "othello":
-        g = Game1(8)
+        g = Game1(4)
         nnet = Nn1(g)
         args.update({'trainExampleCheckpoint': './temp/othello/'})
         args.update({'name': 'othello'})
     if choice == "gobang":
-        g = Game2(5, 3)  # the second parameter is actually the number of continous pieces in order to win
+        g = Game2(5, 4)  # the second parameter is actually the number of continous pieces in order to win
         nnet = Nn2(g)
         args.update({'trainExampleCheckpoint': './temp/gobang/'})
         args.update({'name': 'gobang'})
     if choice == "connect4":
-        g = Game3(4, 5)  # the height and width. the number of pieces in a row (in this case 4) is constant
+        g = Game3(6, 7)  # the height and width. the number of pieces in a row (in this case 4) is constant
         nnet = Nn3(g)
         args.update({'trainExampleCheckpoint': './temp/connect4/'})
         args.update({'name': 'connect4'})
