@@ -26,36 +26,36 @@ from utils import *
 use this script to play any two agents against each other, or play manually with
 any agent.
 """
-choice = "othello"
+choice = "connect4"
 
 if choice == "tictactoe":
     g = TicTacToeGame(3)
     n1 = NNet(g)
-    n1.load_checkpoint('./temp/', 'curent5temp:iter12:eps95:dim3.pth.tar')
+    n1.load_checkpoint('./temp/', 'best75_eps95_dim3.pth.tar')
     gamename = "tictactoe"
     display = display
-    hp = GreedyTicTacToePlayer(g).play
+    hp = HumanTicTacToePlayer(g).play
 if choice == "gobang":
     g = GobangGame(5, 4)
     n1 = NNet1(g)
-    n1.load_checkpoint('./temp/', 'best16:eps350:dim5.pth.tar')
+    n1.load_checkpoint('./temp/', 'curent13temp_iter75_eps350_dim5.pth.tar')
     gamename = "gobang"
     display = display1
-    hp = MinMaxGobangPlayer(g,5).play
+    hp = HumanGobangPlayer(g).play
 if choice == "othello":
-    g = OthelloGame(8)
+    g = OthelloGame(4)
     n1 = NNet2(g)
-    n1.load_checkpoint('./temp/', 'best14:eps200:dim8.pth.tar')
+    n1.load_checkpoint('./temp/', 'curent5temp_iter75_eps225_dim4.pth.tar')
     gamename = "othello"
     display = display2
     hp = HumanOthelloPlayer(g).play
 if choice == "connect4":
-    g = Connect4Game(6, 7)
+    g = Connect4Game(5, 6)
     n1 = NNet3(g)
-    n1.load_checkpoint('./temp/','best12:eps200:dim6.pth.tar')
+    n1.load_checkpoint('./temp/','best75_eps300_dim5.pth.tar')
     gamename = "connect4"
     display = display3
-    hp = RandomConnect4Player(g).play
+    hp = HumanConnect4Player(g).play
 
 # all players
 #rp = RandomPlayer(g).play
@@ -63,7 +63,7 @@ if choice == "connect4":
 
 
 # nnet players
-args1 = dotdict({'numMCTSSims': 500, 'cpuct': 1.5, 'epsilon': 0, 'dirAlpha': 0.3})
+args1 = dotdict({'numMCTSSims': 10, 'cpuct': 1.5, 'epsilon': 0, 'dirAlpha': 0.3})
 mcts1 = MCTS(g, n1, args1)
 n1p = lambda x: np.argmax(mcts1.getActionProb(x, temp=0))
 
@@ -76,4 +76,4 @@ n2p = lambda x: np.argmax(mcts2.getActionProb(x, temp=0))
 '''
 
 arena = Arena.Arena(n1p, hp, g, mcts1,  display=display, name=gamename)
-print(arena.playGames(4, verbose=True))
+print(arena.playGames(2, verbose=True))

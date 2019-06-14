@@ -179,21 +179,30 @@ class OthelloGame(Game):
 def display(board):
     n = board.shape[0]
 
+    print("   ", end="")
     for y in range(n):
-        print (y,"|",end="")
+        print(y, "", end="")
     print("")
-    print(" -----------------------")
+    print("  ", end="")
+    for _ in range(n):
+        print("-", end="-")
+    print("--")
     for y in range(n):
-        print(y, "|",end="")    # print the row #
+        print(y, "|", end="")  # print the row #
         for x in range(n):
-            piece = board[y][x]    # get the piece to print
-            if piece == -1: print("b ",end="")
-            elif piece == 1: print("W ",end="")
+            piece = board[y][x]  # get the piece to print
+            if piece == -1:
+                print("B ", end="")
+            elif piece == 1:
+                print("W ", end="")
             else:
-                if x==n:
-                    print("-",end="")
+                if x == n:
+                    print("-", end="")
                 else:
-                    print("- ",end="")
+                    print("- ", end="")
         print("|")
 
-    print("   -----------------------")
+    print("  ", end="")
+    for _ in range(n):
+        print("-", end="-")
+    print("--")
