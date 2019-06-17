@@ -1,6 +1,4 @@
 '''
-Author: MBoss
-Date: Jan 17, 2018.
 Board class.
 Board data:
   1=white, -1=black, 0=empty

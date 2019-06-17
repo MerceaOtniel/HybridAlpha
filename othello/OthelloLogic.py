@@ -1,6 +1,4 @@
 '''
-Author: Eric P. Nichols
-Date: Feb 8, 2008.
 Board class.
 Board data:
   1=white, -1=black, 0=empty

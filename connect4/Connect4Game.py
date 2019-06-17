@@ -78,7 +78,7 @@ class Connect4Game(Game):
 def display(board):
     n = board.shape[0]
     m = board.shape[1]
-
+    print("\n")
     print("   ", end="")
     for y in range(m):
         print(y, "", end="")

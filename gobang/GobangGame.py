@@ -115,7 +115,7 @@ class GobangGame(Game):
 
 def display(board):
     n = board.shape[0]
-
+    print("\n")
     print("   ", end="")
     for y in range(n):
         print(y, "", end="")

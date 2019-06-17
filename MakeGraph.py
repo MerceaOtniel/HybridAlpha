@@ -56,13 +56,13 @@ def prepareGraphForPrint(filename, training=False):
         print(int_list)
         print(draws)
 
-        displayGraphEnglish(int_list, draws, loses, information, dimension,
+        displayGraphEnglish(loses, draws, int_list, information, dimension,
                      "wins against current network",
                      "draws against current network",
                      "losses against current network",
                      "network",
                      "               Evolution of the best network against the current network" +"\n in each iteration")
-        displayGraphRomanian(int_list, draws, loses, information, dimension,
+        displayGraphRomanian(loses, draws, int_list, information, dimension,
                     "victorii împotriva reţelei curente",
                     "egaluri împotriva reţelei curente",
                     "înfrângeri împotriva reţelei curente",
@@ -136,5 +136,5 @@ def prepareGraphForPrint(filename, training=False):
 
         #afisareGraf(minmaxwin, minmaxdraw, minmaxlose, informatii, dimensiune, "minmaxwin", "minmaxydraw", "minmaxlose","minmax")
 
-prepareGraphForPrint("./temp/tictactoe/graphwins_iter75_eps200_dim8.txt")
-prepareGraphForPrint("./temp/tictactoe/graphwins_iter75_eps200_dim8_greedyrandom.txt", True)
+prepareGraphForPrint("./temp/tictactoe/graphwins_iter75_eps350_dim5.txt")
+prepareGraphForPrint("./temp/tictactoe/graphwins_iter75_eps350_dim5_greedyrandom.txt", True)

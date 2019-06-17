@@ -6,15 +6,7 @@ from .TicTacToeLogic import Board
 import numpy as np
 from copy import copy, deepcopy
 
-"""
-Game class implementation for the game of TicTacToe.
-Based on the OthelloGame then getGameEnded() was adapted to new rules.
 
-Author: Evgeny Tyurin, github.com/evg-tyurin
-Date: Jan 5, 2018.
-
-Based on the OthelloGame by Surag Nair.
-"""
 class TicTacToeGame(Game):
     def __init__(self, n=3):
         self.n = n
@@ -116,7 +108,7 @@ class TicTacToeGame(Game):
 
 def display(board):
     n = board.shape[0]
-
+    print("\n")
     print("   ", end="")
     for y in range(n):
         print (y,"", end="")

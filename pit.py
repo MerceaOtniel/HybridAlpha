@@ -26,7 +26,7 @@ from utils import *
 use this script to play any two agents against each other, or play manually with
 any agent.
 """
-choice = "connect4"
+choice = "tictactoe"
 
 if choice == "tictactoe":
     g = TicTacToeGame(3)
