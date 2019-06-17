@@ -2,31 +2,44 @@ import matplotlib.pyplot as plt
 
 
 
-def afisareGraf(wins,draws,lose,informatii,dimensiune,name1,name2,name3,name4):
+def displayGraphRomanian(wins, draws, lose, information, dimension, name1, name2, name3, name4, title):
 
-    plt.title("Evolutia retelei in comparatie cu celelalte policies " + informatii[1] + " " + informatii[2] + " " +
-              dimensiune[0])
     plt.subplot(223)
+    plt.title("                "+title)
     plt.plot(wins)  # int_list signifies wins against greedy policy
     plt.plot(draws)
     plt.plot(lose)
-    plt.ylabel("numar jocuri")
-    plt.xlabel("numar epoci")
-    plt.ylim(-1, 41)
+    plt.ylabel("numărul de jocuri")
+    plt.xlabel("numărul de iteraţii")
+    plt.ylim(-0.1, 14.1)
+    plt.legend(
+        [name1, name2, name3], bbox_to_anchor=(1.01, 1), loc=2, borderaxespad=0.)
+    plt.savefig(
+        "./temp/tictactoe/graph_rom" + information[1] + ":" + information[2] + ":" + dimension[0] + name4 + ".png")
+    plt.show()
+
+def displayGraphEnglish(wins, draws, lose, information, dimension, name1, name2, name3, name4, title):
+    plt.subplot(223)
+    plt.title("                   "+title)
+    plt.plot(wins)  # int_list signifies wins against greedy policy
+    plt.plot(draws)
+    plt.plot(lose)
+    plt.ylabel("number of games")
+    plt.xlabel("number of iterations")
+    plt.ylim(-0.1, 14.1)
     plt.legend(
         [name1, name2, name3], bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
     plt.savefig(
-        "./temp/tictactoe/graph" + informatii[1] + ":" + informatii[2] + ":" + dimensiune[0] + name4+".png")
+        "./temp/tictactoe/graph_eng" + information[1] + ":" + information[2] + ":" + dimension[0] + name4 + ".png")
     plt.show()
 
 
-
-def paintGraph(filename,training=False):
+def prepareGraphForPrint(filename, training=False):
 
 
     if training==False:
-        informatii=filename.split(":")
-        dimensiune=informatii[3].split(".")
+        information=filename.split("_")
+        dimension=information[3].split(".")
 
         file = open(filename, "r")
         lines=file.readlines()
@@ -38,16 +51,27 @@ def paintGraph(filename,training=False):
                 draws=[int(i) for i in v]
         loses=[]
         for i in range(len(int_list)):
-            loses.append(40-int_list[i]-draws[i])
+            loses.append(14-int_list[i]-draws[i])
 
         print(int_list)
         print(draws)
 
-        afisareGraf(int_list,loses,draws,informatii,dimensiune,"castigate","pierdute","remize","retea")
+        displayGraphEnglish(int_list, draws, loses, information, dimension,
+                     "wins against current network",
+                     "draws against current network",
+                     "losses against current network",
+                     "network",
+                     "               Evolution of the best network against the current network" +"\n in each iteration")
+        displayGraphRomanian(int_list, draws, loses, information, dimension,
+                    "victorii împotriva reţelei curente",
+                    "egaluri împotriva reţelei curente",
+                    "înfrângeri împotriva reţelei curente",
+                    "reţea",
+                    "                Evoluţia celei mai bune reţele împotriva reţelei curente " +"\n în fiecare iteraţie")
 
     else:
-        informatii = filename.split(":")
-        dimensiune = informatii[3].split(".")
+        information = filename.split("_")
+        dimension = information[3].split(".")
 
         file = open(filename, "r")
 
@@ -78,17 +102,39 @@ def paintGraph(filename,training=False):
                 minmaxdraw=[int(i) for i in v]
 
         for i in range(len(greedywin)):
-            greedylose.append(40-greedywin[i]-greedydraw[i])
-            randomlose.append(40-randomwin[i]-randomdraw[i])
-            minmaxlose.append(40-minmaxwin[i]-minmaxdraw[i])
+            greedylose.append(14-greedywin[i]-greedydraw[i])
+            randomlose.append(14-randomwin[i]-randomdraw[i])
+            minmaxlose.append(14-minmaxwin[i]-minmaxdraw[i])
 
 
-        plt.title("Evolutia retelei in comparatie cu celelalte policies "+informatii[1]+" "+informatii[2]+" "+dimensiune[0])
-
-        afisareGraf(greedywin,greedydraw,greedylose,informatii,dimensiune,"greedywin","greedydraw","greedylose","greedy")
-        afisareGraf(randomwin, randomdraw, randomlose, informatii, dimensiune, "randomwin", "randomdraw", "randomlose","random")
-        afisareGraf(minmaxwin, minmaxdraw, minmaxlose, informatii, dimensiune, "minmaxwin", "minmaxydraw", "minmaxlose","minmax")
 
 
-paintGraph("./temp/tictactoe/graphwins:iter75:eps50:dim3.txt")
-paintGraph("./temp/tictactoe/graphwins:iter75:eps50:dim3:greedyrandom.txt",True)
+        displayGraphEnglish(greedywin, greedydraw, greedylose, information, dimension,
+                     "number of wins against Greedy",
+                     "number of draws against Greedy",
+                     "number of losses against Greedy",
+                     "greedy",
+                     "Evolution of the network against Greedy baseline")
+        displayGraphEnglish(randomwin, randomdraw, randomlose, information, dimension,
+                     "number of wins against Random",
+                     "number of draws against Random",
+                     "number of losses against Random",
+                     "random",
+                     "Evolution of the network against Random baseline")
+        displayGraphRomanian(greedywin, greedydraw, greedylose, information, dimension,
+                    "numărul de victorii împotriva Greedy",
+                    "numărul de egaluri împotriva Greedy",
+                    "numărul de înfrângeri împotriva Greedy",
+                    "greedy",
+                    "Evoluţia reţelei împotriva agentului Greedy")
+        displayGraphRomanian(randomwin, randomdraw, randomlose, information, dimension,
+                    "numărul de victorii împotriva Random",
+                    "numărul de egaluri împotriva Random",
+                    "numărul de înfrângeri împotriva Random",
+                    "random",
+                    "Evoluţia reţelei împotriva agentului Random")
+
+        #afisareGraf(minmaxwin, minmaxdraw, minmaxlose, informatii, dimensiune, "minmaxwin", "minmaxydraw", "minmaxlose","minmax")
+
+prepareGraphForPrint("./temp/tictactoe/graphwins_iter75_eps200_dim8.txt")
+prepareGraphForPrint("./temp/tictactoe/graphwins_iter75_eps200_dim8_greedyrandom.txt", True)
