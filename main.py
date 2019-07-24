@@ -72,11 +72,11 @@ from utils import *
 
 args = dotdict({
     'numIters': 14,
-    'numEps': 200,
+    'numEps': 20,
     'tempThreshold': 13,
     'updateThreshold': 0.55,
     'maxlenOfQueue': 40000,
-    'numMCTSSims': 200,
+    'numMCTSSims': 20,
     'arenaCompare': 14,
     'cpuct': 1.5,
     'parallel': 0,
@@ -94,7 +94,7 @@ args = dotdict({
 
 if __name__=="__main__":
 
-    choice = "othello"
+    choice = "connect4"
 
     if choice == "tictactoe":
         g = Game(3)

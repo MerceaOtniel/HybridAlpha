@@ -63,6 +63,8 @@ class NNetWrapper(NeuralNet):
                 # record loss
                 self.sess.run(self.nnet.train_step, feed_dict=input_dict)
                 pi_loss, v_loss = self.sess.run([self.nnet.loss_pi, self.nnet.loss_v], feed_dict=input_dict)
+
+                #_ = self.sess.run([self.nnet.x], feed_dict=input_dict)
                 pi_losses.update(pi_loss, len(boards))
                 v_losses.update(v_loss, len(boards))
 
