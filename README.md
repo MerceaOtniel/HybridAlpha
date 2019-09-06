@@ -49,3 +49,6 @@ MakeGraph.py is the tool used for generating graphs based on the data that is lo
 
 You will find a list of parameters that you want to set in each scritpt. Modify the parameters there in order to take effect.
 
+To use a game of your choice, subclass the classes in Game.py and NeuralNet.py and implement their functions. Example implementations for Othello can be found in othello/OthelloGame.py and othello/{pytorch,keras,tensorflow}/NNet.py.
+
+Coach.py contains the core training loop and MCTS.py performs the Monte Carlo Tree Search. Additional neural network parameters are in, for example, othello/{pytorch,keras,tensorflow}/NNet.py (cuda flag, batch size, epochs, learning rate etc.).
