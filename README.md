@@ -2,7 +2,8 @@
 HybridAlpha - a mix between AlphaGo Zero and AlphaZero for multiple games
 
 This project has the goal of creating an Hybrid between AlphaZero and AlphaGo Zero, both published by DeepMind.
-Moreover, this is an improved and extended implementation of the project which can be found here https://github.com/suragnair/alpha-zero-general
+
+Moreover, this is an improved and extended implementation of the project which can be found here https://github.com/suragnair/alpha-zero-general. However, this project wants to copy as much as possible the algorithm provided by AlphaZero, being different in only certain key aspects which makes HybridAlpha more performant than AlphaZero when run on resource constrained systems.
 
 # Ways in which this project improves over the repository presented above are:
 
@@ -20,6 +21,7 @@ Moreover, this is an improved and extended implementation of the project which c
 -Othello game is updated in order to take a draw into account.
 
 -this implementation provides means of tracking the progress of the network through the training. This info is provided as the number of games won,lost or which resulted in a draw in each epoch against Greedy, Random and Alpha-Beta pruning. However, you can turn this feature off.
+-the networks in HybridAlpha are as close as possible to those provided by AlphaZero and AlphaGo Zero. The only difference is in the shape of the input and output. The other project uses very small networks which are unsuitable to learn more complex games, thus not being general enough to be used for all games.
 
 # Ways in which this project is different from AlphaZero and AlphaGo Zero:
 
@@ -39,4 +41,6 @@ In order to pit the network against another network/Greed/Random/Alpha-Beta/Huma
 In order to train the network you need to run main.py
 
 MakeGraph.py is the tool used for generating graphs based on the data that is logged during training
+
+you will find a list of parameters that you want to set in each scritpt. Modify the parameters there in order to take effect.
 
