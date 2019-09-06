@@ -32,3 +32,7 @@ Ways in which this project is different from AlphaZero and AlphaGo Zero:
 It seems that by using symmetries and evaluation phase, HybridAlpha is better compared with a sequential implementation of AlphaZero when running and training on resource constrained systems.
 Moreover, this repo also contains a version of HybridAlpha which doesn't use any symmetries.
 
+In order to pit the network against another network/Greed/Random/Alpha-Beta/Human player you need to run pit.py.
+In order to train the network you need to run main.py
+MakeGraph.py is the tool used for generating graphs based on the data that is logged during training
+
