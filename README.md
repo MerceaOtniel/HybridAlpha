@@ -4,7 +4,7 @@ HybridAlpha - a mix between AlphaGo Zero and AlphaZero for multiple games
 This project has the goal of creating an Hybrid between AlphaZero and AlphaGo Zero, both published by DeepMind.
 Moreover, this is an improved and extended implementation of the project which can be found here https://github.com/suragnair/alpha-zero-general
 
-Ways in which this project improves over the repository presented above are:
+# Ways in which this project improves over the repository presented above are:
 
 -better heuristics for testing the networks
 
@@ -21,7 +21,7 @@ Ways in which this project improves over the repository presented above are:
 
 -this implementation provides means of tracking the progress of the network through the training. This info is provided as the number of games won,lost or which resulted in a draw in each epoch against Greedy, Random and Alpha-Beta pruning. However, you can turn this feature off.
 
-Ways in which this project is different from AlphaZero and AlphaGo Zero:
+# Ways in which this project is different from AlphaZero and AlphaGo Zero:
 
 -HybridAlpha uses symmetries, unlike AlphaZero. AlphaGo Zero also uses symmetries.
 
