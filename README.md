@@ -7,6 +7,7 @@ Moreover, this is an improved and extended implementation of the project which c
 Ways in which this project improves over the repository presented above are:
 
 -better heuristics for testing the networks
+
 -addition of alpha-beta pruning algorithms which for some of the games also take into account the depth in the search tree.
 -the games start from random position when pitting the network, in this case the network is evaluated better, as games tend to be different. Also, in this way we can see how well the network generalize.
 -using Dirichlet noise, this repo manages to randomize(to a certain degree) even the games that are generated in self-play, so the games are more unique, and the network tends to learn better.
