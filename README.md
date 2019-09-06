@@ -47,5 +47,5 @@ In order to train the network you need to run main.py
 
 MakeGraph.py is the tool used for generating graphs based on the data that is logged during training
 
-you will find a list of parameters that you want to set in each scritpt. Modify the parameters there in order to take effect.
+You will find a list of parameters that you want to set in each scritpt. Modify the parameters there in order to take effect.
 
