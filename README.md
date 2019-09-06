@@ -21,7 +21,8 @@ Moreover, this is an improved and extended implementation of the project which c
 -Othello game is updated in order to take a draw into account.
 
 -this implementation provides means of tracking the progress of the network through the training. This info is provided as the number of games won,lost or which resulted in a draw in each epoch against Greedy, Random and Alpha-Beta pruning. However, you can turn this feature off.
--the networks in HybridAlpha are as close as possible to those provided by AlphaZero and AlphaGo Zero. The only difference is in the shape of the input and output. The other project uses very small networks which are unsuitable to learn more complex games, thus not being general enough to be used for all games.
+
+- this implementation provide complex neural networks that can be used for every game and are capable of learning any game. The project mentioned above uses very small networks which are unsuitable to learn more complex games, thus not being general enough to be used for all games.
 
 # Ways in which this project is different from AlphaZero and AlphaGo Zero:
 
@@ -31,8 +32,12 @@ Moreover, this is an improved and extended implementation of the project which c
 
 -HybridAlpha has the goal of mastering any 2-player, perfect information, zero-sum game. This goal is similar to AlphaZero. However, AlphaGo Zero is only capable of mastering the game of GO.
 
-It seems that by using symmetries and evaluation phase, HybridAlpha is better compared with a sequential implementation of AlphaZero when running and training on resource constrained systems.
-Moreover, this repo also contains a version of HybridAlpha which doesn't use any symmetries.
+-HybridAlpha uses a network very similar to those provided by AlphaZero and AlphaGo Zero. However, due to the constraints of running and training on resource constrained systems, the shapes of the input and output of the network are smaller. Without this constraint, HybridAlpha can't be run on resource constrained systems.
+
+-HybridAlpha is a sequential algorithm, which means that the generation, training and validation phases executes in parallel. This was done in order to be able to use this algorithm on a resource-constrained system. AlphaZero and AlphaGo Zero are heavily parallelized.
+
+It seems that by using symmetries and evaluation phase, HybridAlpha is better compared with a sequential implementation of AlphaZero when running and training on resource constrained system and when AlphaZero has the same input-output shape as HybridAlpha. Without this constraint, AlphaZero can't be run on resource constrained system and i am unable to test the performances of HybridAlpha against AlphaZero.
+
 
 # How to run the program
 
