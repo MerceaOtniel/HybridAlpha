@@ -1,4 +1,4 @@
-# AlphaZero
+# HybridAlpha
 HybridAlpha - a mix between AlphaGo Zero and AlphaZero for multiple games
 
 This project has the goal of creating an Hybrid between AlphaZero and AlphaGo Zero, both published by DeepMind.
