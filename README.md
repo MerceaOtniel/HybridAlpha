@@ -52,3 +52,6 @@ You will find a list of parameters that you want to set in each scritpt. Modify 
 To use a game of your choice, subclass the classes in Game.py and NeuralNet.py and implement their functions. Example implementations for Othello can be found in othello/OthelloGame.py and othello/{pytorch,keras,tensorflow}/NNet.py.
 
 Coach.py contains the core training loop and MCTS.py performs the Monte Carlo Tree Search. Additional neural network parameters are in, for example, othello/{pytorch,keras,tensorflow}/NNet.py (cuda flag, batch size, epochs, learning rate etc.).
+
+All games include a Tensorflow implementation as close as possible to that provided by AlphaZero and AlphaGo Zero. For keras/pythorch, the networks are very small and they can't do anything.
+
