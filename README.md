@@ -32,6 +32,8 @@ Moreover, this is an improved and extended implementation of the project which c
 It seems that by using symmetries and evaluation phase, HybridAlpha is better compared with a sequential implementation of AlphaZero when running and training on resource constrained systems.
 Moreover, this repo also contains a version of HybridAlpha which doesn't use any symmetries.
 
+# How to run the program
+
 In order to pit the network against another network/Greed/Random/Alpha-Beta/Human player you need to run pit.py.
 
 In order to train the network you need to run main.py
