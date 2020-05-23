@@ -30,6 +30,3 @@ You can play againt the model by switching to HumanPlayer in ```pit.py```
 * [Evgeny Tyurin](https://github.com/evg-tyurin)
 
 The implementation is based on the game of Othello (https://github.com/suragnair/alpha-zero-general/tree/master/othello).
-
-### AlphaGo / AlphaZero Events
-* February 8, 2018 - [Solving Alpha Go Zero + TensorFlow, Kubernetes-based Serverless AI Models on GPU](https://www.meetup.com/Advanced-Spark-and-TensorFlow-Meetup/events/245308722/)
