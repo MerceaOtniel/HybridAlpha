@@ -1,7 +1,7 @@
 # HybridAlpha
 HybridAlpha - a mix between AlphaGo Zero and AlphaZero for multiple games
 
-This project has the goal of creating an Hybrid between AlphaZero and AlphaGo Zero, both published by DeepMind.
+This project has the goal of creating an Hybrid between AlphaZero https://arxiv.org/abs/1712.01815 and AlphaGo Zero https://www.nature.com/articles/nature24270.epdf?author_access_token=VJXbVjaSHxFoctQQ4p2k4tRgN0jAjWel9jnR3ZoTv0PVW4gB86EEpGqTRDtpIz-2rmo8-KG06gqVobU5NSCFeHILHcVFUeMsbvwS-lxjqQGg98faovwjxeTUgZAUMnRQ, both published by DeepMind.
 
 Moreover, this is an improved and extended implementation of the project which can be found here https://github.com/suragnair/alpha-zero-general. However, this project wants to copy as much as possible the algorithm provided by AlphaZero, being different in only certain key aspects which makes HybridAlpha more performant than AlphaZero when run on resource constrained systems.
 
